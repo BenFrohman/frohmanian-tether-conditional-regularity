@@ -79,16 +79,22 @@ Statement (B) for 3D Navier–Stokes on T³.
 
 `FrohmanianTetherConditional/AnalyticBridgeTarget.lean` states Clay Millennium
 Problem Statement (B) on T³ as an **open formalization target**. It contains
-exactly one intentional `sorry`, marking the open problem. Nothing in that
-file is claimed proved.
+exactly one intentional `sorry` (`analytic_bridge_unconditional`), marking the
+open problem. Nothing in that file is claimed to resolve Clay (B).
 
+- **Proved (no `sorry`):** the easy direction `clayB_implies_bkm_integrable`
+  (global lifespan ⇒ L¹_t L^∞ vorticity integrability, via assumed
+  `vort_cont`), the conditional equivalence `clayB_iff_bkm_integrable` under
+  an assumed `BKMCriterion` (Beale–Kato–Majda 1984, cited, not proved), and
+  the one-directional `hypothesisB_implies_clayB` (Hypothesis B + BKM ⇒
+  Clay(B)). There is **no** Clay(B) → Hypothesis B direction.
 - It is **not** imported by the library root `FrohmanianTetherConditional.lean`,
   so `lake build` and the zero-`sorry` kernel/axiom CI check stay green.
 - `scripts/kernel_check.sh` explicitly excludes this file from the forbidden-
   token scan for that reason.
 - `solves_NS` and `maximal` are labelled PLACEHOLDER: Mathlib cannot yet state
-  the PDE on the torus, so a proof of this exact statement would **not** yet
-  constitute a proof of Clay (B).
+  the PDE on the torus, so a proof of `analytic_bridge_unconditional` would
+  **not** yet constitute a proof of Clay (B).
 
 ## Build and check
 

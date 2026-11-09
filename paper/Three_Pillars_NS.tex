@@ -1,0 +1,161 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,amsfonts}
+\usepackage{booktabs}
+\usepackage{bm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Three Pillars of 3D Incompressible Navier--Stokes Theory:\\Kato Local Existence, Fujita--Kato Small-Data Globality, and the Beale--Kato--Majda Continuation Criterion\\(While the Roof Remains Open)}
+\author{Benjamin Stanley Frohman}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We collect, in a self-contained form, the three classical pillars of the local and conditional theory of the three-dimensional incompressible Navier--Stokes equations on the torus \(\mathbb{T}^3\). Pillar~I is Kato's local existence theorem together with an explicit lifespan bound for arbitrary divergence-free data in \(H^s\) (\(s>5/2\)). Pillar~II is the Fujita--Kato theorem of global regularity for sufficiently small data in the critical space \(\dot{H}^{1/2}\). Pillar~III is the Beale--Kato--Majda continuation criterion in its one-directional form: if the vorticity (or strain) supremum is integrable on \([0,T]\), then a maximal Kato solution remains smooth up to time \(T\). These results form the standard rigorous baseline; the question of unconditional global regularity for arbitrary large smooth data (Clay Millennium Problem Statement~B) remains open.
+\end{abstract}
+
+\section{Introduction}
+The three-dimensional incompressible Navier--Stokes equations on the torus \(\mathbb{T}^3=\mathbb{R}^3/(2\pi\mathbb{Z})^3\) read
+\begin{equation}\label{eq:NS}
+\partial_t\mathbf{u}+(\mathbf{u}\cdot\nabla)\mathbf{u}+\nabla p=\nu\Delta\mathbf{u},\qquad\nabla\cdot\mathbf{u}=0,\qquad\mathbf{u}(\cdot,0)=\mathbf{u}_0,
+\end{equation}
+with \(\nu>0\). Taking the curl yields the vorticity formulation
+\begin{equation}\label{eq:vorticity}
+\partial_t\boldsymbol{\omega}+(\mathbf{u}\cdot\nabla)\boldsymbol{\omega}=(\boldsymbol{\omega}\cdot\nabla)\mathbf{u}+\nu\Delta\boldsymbol{\omega},\qquad\nabla\cdot\boldsymbol{\omega}=0.
+\end{equation}
+The classical theory of these equations rests on three fundamental results, established between 1964 and 1984. We record them here as a compact reference, with proofs expanded to the level of standard energy and commutator estimates. No claim is made that the large-data global-regularity problem is solved.
+
+\section{Pillar I: Kato Local Existence and Lifespan Bound}
+
+\begin{theorem}[Kato local existence]\label{thm:kato}
+Let \(s>5/2\) and let \(\mathbf{u}_0\in H^s(\mathbb{T}^3)\) be divergence-free. There exist \(T_{\mathrm{loc}}>0\) and a unique solution
+\[
+\mathbf{u}\in C([0,T_{\mathrm{loc}});H^s(\mathbb{T}^3))\cap C^\infty(\mathbb{T}^3\times(0,T_{\mathrm{loc}}))
+\]
+of \eqref{eq:NS}. Moreover the lifespan satisfies
+\[
+T_{\mathrm{loc}}\ge\frac{c_s}{\|\mathbf{u}_0\|_{H^s}}
+\]
+for a constant \(c_s>0\) depending only on \(s\) and dimension.
+\end{theorem}
+
+\begin{proof}
+We record the three standard pillars of the Kato theory~\cite{Kato1972}.
+
+\paragraph{(a) Full Kato--Ponce commutator bound.}
+Apply \(\Lambda^s=(I-\Delta)^{s/2}\) to~\eqref{eq:NS} and take the \(L^2\) pairing with \(\Lambda^s\mathbf{u}\). After cancellation of the pressure and the divergence-free constraint one obtains
+\[
+\frac12\frac{d}{dt}\|\mathbf{u}\|_{H^s}^2+\nu\|\nabla\mathbf{u}\|_{H^s}^2
+\le C_s\Bigl(\|\nabla\mathbf{u}\|_{L^\infty}\|\mathbf{u}\|_{H^s}+\|\nabla\mathbf{u}\|_{L^\infty}\|\nabla\mathbf{u}\|_{H^{s-1}}\Bigr)\|\mathbf{u}\|_{H^s}.
+\]
+For \(s>5/2\) the second summand is absorbed into the first by the Sobolev embedding \(H^{s-1}\hookrightarrow L^\infty\) on the gradient factor (or by interpolating \(\|\nabla\mathbf{u}\|_{H^{s-1}}\le C\|\mathbf{u}\|_{H^s}\)), yielding the closed Riccati inequality
+\begin{equation}\label{eq:kato_riccati}
+\frac{d}{dt}\|\mathbf{u}\|_{H^s}\le C_s\|\mathbf{u}\|_{H^s}^2.
+\end{equation}
+
+\paragraph{(b) Existence via mollified/Galerkin approximations.}
+Let \(\mathbf{u}_0^\varepsilon=J_\varepsilon\mathbf{u}_0\) be a family of smooth mollifications (or finite-mode Galerkin projections) of the initial datum, with \(\|\mathbf{u}_0^\varepsilon\|_{H^s}\le\|\mathbf{u}_0\|_{H^s}\). The corresponding approximate solutions \(\mathbf{u}^\varepsilon\) satisfy~\eqref{eq:kato_riccati} with constants independent of \(\varepsilon\). Integrating the Riccati inequality on the common interval
+\[
+\bigl[0,T_{\mathrm{loc}}\bigr),\qquad T_{\mathrm{loc}}=\frac{1}{2C_s\|\mathbf{u}_0\|_{H^s}},
+\]
+gives a uniform bound \(\sup_{t<T_{\mathrm{loc}}}\|\mathbf{u}^\varepsilon(t)\|_{H^s}\le 2\|\mathbf{u}_0\|_{H^s}\). An Aubin--Lions compactness argument (boundedness in \(L^\infty_t H^s\) and of \(\partial_t\mathbf{u}^\varepsilon\) in a negative Sobolev space) produces a limit \(\mathbf{u}\in L^\infty([0,T_{\mathrm{loc}});H^s)\) solving~\eqref{eq:NS} distributionally; continuity in time with values in \(H^s\) follows by the standard energy-identity argument for strong solutions. Parabolic bootstrap then upgrades to \(\mathbf{u}\in C^\infty(\mathbb{T}^3\times(0,T_{\mathrm{loc}}))\).
+
+\paragraph{(c) \(L^2\) uniqueness.}
+If \(\mathbf{u}\) and \(\mathbf{v}\) are two strong solutions on \([0,T]\) with the same initial datum, set \(\mathbf{w}=\mathbf{u}-\mathbf{v}\). Testing the difference of the momentum equations against \(\mathbf{w}\) yields
+\[
+\frac12\frac{d}{dt}\|\mathbf{w}\|_{L^2}^2+\nu\|\nabla\mathbf{w}\|_{L^2}^2
+=-\int_{\mathbb{T}^3}\bigl((\mathbf{w}\cdot\nabla)\mathbf{v}\bigr)\cdot\mathbf{w}\,dV
+\le\|\nabla\mathbf{v}\|_{L^\infty}\|\mathbf{w}\|_{L^2}^2.
+\]
+Gronwall's lemma with \(\mathbf{w}(0)=0\) forces \(\mathbf{w}\equiv 0\). (The gradient factor is that of the second solution \(\mathbf{v}\), consistent with the subtraction \(\mathbf{u}-\mathbf{v}\).)
+\end{proof}
+
+\section{Pillar II: Fujita--Kato Small-Data Global Regularity}
+
+\begin{theorem}[Fujita--Kato]\label{thm:fk}
+There exists an absolute dimensionless constant \(\varepsilon>0\) such that if \(\mathbf{u}_0\in\dot{H}^{1/2}(\mathbb{T}^3)\) satisfies
+\[
+\|\mathbf{u}_0\|_{\dot{H}^{1/2}}\le\varepsilon\nu,
+\]
+then the solution of Theorem~\ref{thm:kato} exists globally and satisfies
+\[
+\mathbf{u}\in C([0,\infty);\dot{H}^{1/2}(\mathbb{T}^3))\cap L^2([0,\infty);\dot{H}^{3/2}(\mathbb{T}^3))\cap C^\infty(\mathbb{T}^3\times(0,\infty)).
+\]
+\end{theorem}
+
+\begin{proof}
+Testing~\eqref{eq:NS} against \((-\Delta)^{1/2}\mathbf{u}\) and applying product estimates in homogeneous Sobolev spaces~\cite{FujitaKato1964} gives
+\[
+\frac12\frac{d}{dt}\|\mathbf{u}(t)\|_{\dot{H}^{1/2}}^2+\nu\|\mathbf{u}(t)\|_{\dot{H}^{3/2}}^2\le C_{\mathrm{FK}}\|\mathbf{u}(t)\|_{\dot{H}^{1/2}}\|\mathbf{u}(t)\|_{\dot{H}^{3/2}}^2.
+\]
+Choosing \(\varepsilon<1/(2C_{\mathrm{FK}})\) ensures that \((\nu-C_{\mathrm{FK}}\|\mathbf{u}_0\|_{\dot{H}^{1/2}})>\nu/2>0\) at \(t=0\), trapping \(\|\mathbf{u}(t)\|_{\dot{H}^{1/2}}\le\|\mathbf{u}_0\|_{\dot{H}^{1/2}}\) for all \(t\ge 0\) and forcing
+\[
+\int_0^\infty\|\mathbf{u}(t)\|_{\dot{H}^{3/2}}^2\,dt\le\frac1\nu\|\mathbf{u}_0\|_{\dot{H}^{1/2}}^2.
+\]
+Interpolating this global \(\dot{H}^{3/2}\) dissipation into higher-order \(H^s\) norms yields global control of \(\|\nabla\mathbf{u}(t)\|_{L^\infty}\) in \(L^1([0,\infty))\). By the local existence theory of Pillar~I and the continuation criterion of Pillar~III, one obtains \(T^*=+\infty\) and smoothness for \(t>0\).
+\end{proof}
+
+\section{Pillar III: Beale--Kato--Majda Continuation Criterion}
+
+\begin{theorem}[Beale--Kato--Majda, one-directional]\label{thm:bkm}
+Let \(\mathbf{u}\) be the maximal Kato solution of Theorem~\ref{thm:kato} with existence time \(T^*\). If, for a finite \(T\le T^*\),
+\[
+\int_0^{T}\|\boldsymbol{\omega}(t)\|_{L^\infty(\mathbb{T}^3)}\,dt<\infty
+\]
+(or, equivalently, \(\int_0^{T}\|S(t)\|_{L^\infty}\,dt<\infty\) with \(S=\frac12(\nabla\mathbf{u}+(\nabla\mathbf{u})^T)\)), then \(T^*>T\). In particular, if the integral remains finite on every finite horizon then \(T^*=+\infty\) and the solution is globally smooth for \(t>0\).
+\end{theorem}
+
+\begin{proof}
+The logarithmic Sobolev inequality of Beale--Kato--Majda (refined by Kozono--Taniuchi) states
+\[
+\|\nabla\mathbf{u}\|_{L^\infty}\le C\Bigl(1+\|\boldsymbol{\omega}\|_{L^\infty}\log\bigl(e+\|\mathbf{u}\|_{H^s}\bigr)+\|\boldsymbol{\omega}\|_{L^2}\Bigr).
+\]
+Inserting this bound into the Kato energy inequality
+\[
+\frac{d}{dt}\|\mathbf{u}\|_{H^s}^2\le C_s\|\nabla\mathbf{u}\|_{L^\infty}\|\mathbf{u}\|_{H^s}^2
+\]
+and setting \(Y(t):=\log(e+\|\mathbf{u}\|_{H^s}^2)\) produces
+\[
+\frac{d}{dt}Y(t)\le C'\bigl(1+\|\boldsymbol{\omega}(t)\|_{L^2}+\|\boldsymbol{\omega}(t)\|_{L^\infty}\bigr)Y(t).
+\]
+Gronwall's lemma, together with the unconditional \(L^2_t L^2_x\) enstrophy bound from the energy inequality, shows that finiteness of \(\int_0^T\|\boldsymbol{\omega}\|_{L^\infty}\,dt\) keeps \(\|\mathbf{u}(T)\|_{H^s}\) finite. By the local existence theory of Pillar~I the solution can be continued past \(T\). (We state only this one-directional implication; the converse ``blow-up forces the integral to diverge'' for smooth solutions is classical but is not needed for the continuation applications recorded here.)
+\end{proof}
+
+\section{Concluding remarks and status matrix}
+
+The three theorems together constitute the classical baseline of the local and conditional theory. Pillar~I guarantees a unique smooth solution for a short time for every reasonable initial datum. Pillar~II shows that the solution is in fact global when the datum is small in the critical norm. Pillar~III gives a precise one-directional obstruction to continuation for large data: the time-integrability of the vorticity (or strain) supremum. Whether this obstruction can ever occur for smooth solutions of the Navier--Stokes equations remains the open Clay Millennium Problem.
+
+\begin{table}[htbp]
+\centering
+\caption{Status matrix for the three classical pillars.}
+\label{tab:status}
+\begin{tabular}{@{}llp{6.8cm}@{}}
+\toprule
+\textbf{Item} & \textbf{Status} & \textbf{Content} \\
+\midrule
+Pillar~I (Kato) & Unconditional Local & Lifespan \(T_{\mathrm{loc}}\ge c_s/\|\mathbf{u}_0\|_{H^s}\); smoothness for \(t>0\) \\
+Pillar~II (Fujita--Kato) & Unconditional Small-Data Global & \(\|\mathbf{u}_0\|_{\dot{H}^{1/2}}\le\varepsilon\nu\) \\
+Pillar~III (BKM) & One-directional & \(\int_0^T\|\boldsymbol{\omega}\|_{L^\infty}\,dt<\infty\implies T^*>T\) \\
+Clay Statement~(B) & Open & Large-data global regularity \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{thebibliography}{9}
+\bibitem{Kato1972} T. Kato, Nonstationary flows of viscous and ideal fluids in \(\mathbb{R}^3\), J. Funct. Anal. \textbf{9} (1972), 296--305.
+\bibitem{FujitaKato1964} H. Fujita and T. Kato, On the Navier--Stokes initial value problem. I, Arch. Rational Mech. Anal. \textbf{16} (1964), 269--315.
+\bibitem{BKM1984} J. T. Beale, T. Kato, and A. Majda, Remarks on the breakdown of smooth solutions for the 3-D Euler equations, Comm. Math. Phys. \textbf{94} (1984), 61--66.
+\bibitem{KozonoTaniuchi2000} H. Kozono and Y. Taniuchi, Bilinear estimates in BMO and the Navier--Stokes equations, Math. Z. \textbf{235} (2000), 173--194.
+\end{thebibliography}
+
+\end{document}

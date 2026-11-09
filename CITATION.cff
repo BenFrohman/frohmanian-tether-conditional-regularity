@@ -1,27 +1,46 @@
 cff-version: 1.2.0
 message: "If you use this work, please cite it as below."
-title: "Conditional Continuation and Small-Data Regularity for 3D Navier–Stokes on T³, with the Frohmanian Symplectic Tether as a Metric (Non-Poisson) Correction"
+title: "Frohmanian Tether: Conditional Continuation and Small-Data Regularity for 3D Navier–Stokes on T³ (Lean 4 formalization and companion materials)"
 type: software
 authors:
   - family-names: Frohman
     given-names: Benjamin Stanley
     orcid: "https://orcid.org/0009-0006-7068-3718"
+    affiliation: Independent Researcher
     email: frohmanbenjamin@gmail.com
 license: Apache-2.0
 repository-code: "https://github.com/BenFrohman/frohmanian-tether-conditional-regularity"
 keywords:
   - Navier-Stokes
   - Beale-Kato-Majda
-  - Kozono-Taniuchi
   - Kato local existence
   - Fujita-Kato
   - metriplectic
   - Frohmanian Symplectic Tether
+  - Lean 4
 abstract: >-
-  Expository, conditional preprint. Theorems A (Beale–Kato–Majda /
-  Kozono–Taniuchi continuation criterion), B (Kato local existence) and
-  C (Fujita–Kato small-data global existence) are classical results, cited
-  as such. The Frohmanian Symplectic Tether B(F,G) is symmetric and is
-  treated as a metric-type (metriplectic) term, not a Poisson correction.
-  Large-data global regularity remains open; no Clay Millennium Problem
-  proof is claimed. The paper is licensed CC-BY-4.0; code is Apache-2.0.
+  Strictly conditional, expository companion repository. Theorem A
+  (Beale–Kato–Majda continuation) is one-directional and conditional on
+  Form B; Theorem B (Kato local existence) and Theorem C (Fujita–Kato
+  small-data global regularity) are classical unconditional results, cited
+  as such. The metriplectic tether B(F,G) is symmetric and degenerate,
+  B(F,H) = 0. The Lean 4 file FrohmanianTripleArchitecture.lean checks the
+  metriplectic algebra, degeneracy, alignment-kernel bound and Grönwall
+  logic over abstract PDE input types, with zero sorry and only Lean's three
+  standard axioms. Large-data global regularity (Clay Statement B) remains
+  open; no Clay Millennium Problem proof is claimed.
+references:
+  - type: article
+    title: "Geometric Phase-Space Completion and Conditional Global Regularity for the 3D Incompressible Navier–Stokes Equations (draft)"
+    authors:
+      - family-names: Frohman
+        given-names: Benjamin Stanley
+    doi: 10.5281/zenodo.24079623
+    notes: "Reserved DOI; unpublished Zenodo draft."
+  - type: article
+    title: "Three Pillars of 3D Incompressible Navier–Stokes Theory (draft)"
+    authors:
+      - family-names: Frohman
+        given-names: Benjamin Stanley
+    doi: 10.5281/zenodo.24080310
+    notes: "Reserved DOI; unpublished Zenodo draft."

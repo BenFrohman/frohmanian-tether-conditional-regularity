@@ -1,0 +1,13 @@
+Frohmanian Tether: Conditional Continuation and Small-Data Regularity
+for 3D Navier–Stokes on T^3
+Copyright 2026 Benjamin Stanley Frohman
+
+Code in this repository is licensed under the Apache License, Version 2.0
+(see LICENSE).
+
+The paper (LaTeX source and PDF under paper/) is licensed under the
+Creative Commons Attribution 4.0 International License (see LICENSE-paper).
+
+Theorems A, B and C described in this repository are classical results due
+to Beale–Kato–Majda (1984), Kozono–Taniuchi (2000), Kato (1972/1984) and
+Fujita–Kato (1964). They are cited, not claimed as new.

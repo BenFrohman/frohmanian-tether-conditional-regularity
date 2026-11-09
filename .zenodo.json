@@ -1,0 +1,24 @@
+{
+  "title": "Conditional Continuation and Small-Data Regularity for 3D Navier–Stokes on T³, with the Frohmanian Symplectic Tether as a Metric (Non-Poisson) Correction",
+  "upload_type": "publication",
+  "publication_type": "preprint",
+  "creators": [
+    {
+      "name": "Frohman, Benjamin Stanley",
+      "orcid": "0009-0006-7068-3718"
+    }
+  ],
+  "license": "cc-by-4.0",
+  "access_right": "open",
+  "keywords": [
+    "Navier-Stokes",
+    "Beale-Kato-Majda",
+    "Kozono-Taniuchi",
+    "Kato local existence",
+    "Fujita-Kato",
+    "metriplectic",
+    "Frohmanian Symplectic Tether"
+  ],
+  "description": "<p>Expository, conditional preprint. Theorems A (Beale–Kato–Majda / Kozono–Taniuchi continuation criterion), B (Kato local existence) and C (Fujita–Kato small-data global existence) are classical results and are cited as such. The Frohmanian Symplectic Tether B(F,G) is symmetric, so it is a metric-type (metriplectic) term, not a Poisson correction; no Jacobi identity is claimed. In the velocity-slot form, B(F,H)=0. Large-data global regularity remains open; this work makes no claim to resolve the Clay Millennium Problem.</p><p>Paper: CC-BY-4.0. Code: Apache-2.0.</p>",
+  "notes": "Code in the accompanying GitHub repository is licensed Apache-2.0; the paper is CC-BY-4.0."
+}

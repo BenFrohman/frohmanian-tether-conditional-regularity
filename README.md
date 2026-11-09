@@ -82,12 +82,16 @@ Problem Statement (B) on T³ as an **open formalization target**. It contains
 exactly one intentional `sorry` (`analytic_bridge_unconditional`), marking the
 open problem. Nothing in that file is claimed to resolve Clay (B).
 
-- **Proved (no `sorry`):** the easy direction `clayB_implies_bkm_integrable`
-  (global lifespan ⇒ L¹_t L^∞ vorticity integrability, via assumed
-  `vort_cont`), the conditional equivalence `clayB_iff_bkm_integrable` under
-  an assumed `BKMCriterion` (Beale–Kato–Majda 1984, cited, not proved), and
-  the one-directional `hypothesisB_implies_clayB` (Hypothesis B + BKM ⇒
-  Clay(B)). There is **no** Clay(B) → Hypothesis B direction.
+- **Form B (B-grad) in Lean:** full-gradient integrability
+  `∫₀ᵀ ‖∇u‖_{L^∞} dt ≤ C_*(T)` with derived constant `C_star`, plus cited
+  Kato–Ponce integrated energy and BKM-in-∇u continuation inputs.
+- **Proved (no `sorry`):** `clayB_implies_bkm_integrable`,
+  `clayB_iff_bkm_integrable`, `formB_implies_clayB` /
+  `hypothesisB_implies_clayB`, integral/differential Grönwall, and
+  `formB_Hs_bound`
+  (`‖u(t)‖_{Hˢ} ≤ ‖u₀‖_{Hˢ} exp(C_s C_*(T))`). There is **no**
+  Clay(B) → Form B direction. A strain-only (B-strain) path is recorded in
+  the Unified manuscript only; it is not given a second `sorry` here.
 - It is **not** imported by the library root `FrohmanianTetherConditional.lean`,
   so `lake build` and the zero-`sorry` kernel/axiom CI check stay green.
 - `scripts/kernel_check.sh` explicitly excludes this file from the forbidden-

@@ -14,8 +14,8 @@ Frohman:
   10.5281/zenodo.24080310.
 
 > **Status:** draft. Both Zenodo records are unpublished; their reserved DOIs
-> do not resolve yet. The `paper/` directory is a placeholder until the LaTeX
-> source and PDFs are synced from the drafts.
+> do not resolve yet. The `paper/` directory holds the current LaTeX sources
+> and PDFs from both drafts (MD5s listed in `paper/README.md`).
 
 ## Scope (read this first)
 
@@ -94,7 +94,10 @@ on every push and pull request.
 | `FrohmanianTetherConditional.lean` | Library root |
 | `scripts/PrintAxioms.lean`, `scripts/kernel_check.sh` | Axiom audit used by CI |
 | `lakefile.toml`, `lean-toolchain`, `lake-manifest.json` | Lake project and pins |
-| `paper/` | LaTeX source and PDF (placeholder until synced from the Zenodo drafts) |
+| `paper/Frohmanian_Tether_Unified.tex`, `.pdf` | Frohmanian Tether draft manuscript (10.5281/zenodo.24079623) |
+| `paper/references.bib` | BibTeX references for the Unified paper |
+| `paper/Three_Pillars_NS.tex`, `.pdf` | Three Pillars draft manuscript (10.5281/zenodo.24080310) |
+| `paper/README.md` | Manuscript file list with MD5 checksums |
 | `LICENSE` | Apache License 2.0 (code) |
 | `LICENSE-paper` | CC BY 4.0 (paper) |
 | `NOTICE` | Copyright and attribution notice |

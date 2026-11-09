@@ -1,24 +1,40 @@
 {
-  "title": "Conditional Continuation and Small-Data Regularity for 3D Navier–Stokes on T³, with the Frohmanian Symplectic Tether as a Metric (Non-Poisson) Correction",
-  "upload_type": "publication",
-  "publication_type": "preprint",
+  "title": "Frohmanian Tether: Conditional Continuation and Small-Data Regularity for 3D Navier–Stokes on T³ (Lean 4 formalization and companion materials)",
+  "upload_type": "software",
   "creators": [
     {
       "name": "Frohman, Benjamin Stanley",
-      "orcid": "0009-0006-7068-3718"
+      "orcid": "0009-0006-7068-3718",
+      "affiliation": "Independent Researcher"
     }
   ],
-  "license": "cc-by-4.0",
+  "license": "Apache-2.0",
   "access_right": "open",
   "keywords": [
     "Navier-Stokes",
     "Beale-Kato-Majda",
-    "Kozono-Taniuchi",
     "Kato local existence",
     "Fujita-Kato",
     "metriplectic",
-    "Frohmanian Symplectic Tether"
+    "Lie-Poisson",
+    "Frohmanian Symplectic Tether",
+    "Lean 4",
+    "Mathlib"
   ],
-  "description": "<p>Expository, conditional preprint. Theorems A (Beale–Kato–Majda / Kozono–Taniuchi continuation criterion), B (Kato local existence) and C (Fujita–Kato small-data global existence) are classical results and are cited as such. The Frohmanian Symplectic Tether B(F,G) is symmetric, so it is a metric-type (metriplectic) term, not a Poisson correction; no Jacobi identity is claimed. In the velocity-slot form, B(F,H)=0. Large-data global regularity remains open; this work makes no claim to resolve the Clay Millennium Problem.</p><p>Paper: CC-BY-4.0. Code: Apache-2.0.</p>",
-  "notes": "Code in the accompanying GitHub repository is licensed Apache-2.0; the paper is CC-BY-4.0."
+  "description": "<p>Strictly conditional, expository companion repository. It does not resolve the Clay Millennium Problem on Navier–Stokes existence and smoothness.</p><ul><li>Theorem A (Beale–Kato–Majda continuation, one-directional): for each finite T, ∫₀ᵀ‖S(t)‖_{L^∞} dt &lt; ∞ implies the solution continues past T. Conditional on Form B / Hypothesis B.</li><li>Theorem B (Kato): unconditional local existence and uniqueness for u₀ ∈ Hˢ(T³), s &gt; 5/2.</li><li>Theorem C (Fujita–Kato): unconditional global regularity for small data, ‖u₀‖_{Ḣ^{1/2}} ≤ εν.</li><li>Metriplectic geometry: Arnold Lie–Poisson bracket (Jacobi identity cited from Arnold 1966, Marsden–Weinstein 1983, Arnold–Khesin 1998) plus the symmetric, degenerate tether B(F,H) ≡ 0.</li><li>Clay Statement (B), global regularity for arbitrary large data: OPEN.</li></ul><p>The Lean 4 file FrohmanianTripleArchitecture.lean (Lean 4.30.0-rc1, Mathlib v4.30.0-rc1) is a machine-checked proof of the metriplectic algebra, tether degeneracy and symmetry, the ℝ³ alignment-kernel bound, and Grönwall logic over abstract PDE input types. It has zero sorry and uses only propext, Classical.choice and Quot.sound. The Navier–Stokes analytic content (BKM, the vorticity growth inequality, Lie–Poisson skew-symmetry) enters as assumed structure fields and is not derived in Lean.</p><p>Code: Apache-2.0. Paper: CC-BY-4.0.</p>",
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.24079623",
+      "relation": "isSupplementTo",
+      "scheme": "doi",
+      "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "10.5281/zenodo.24080310",
+      "relation": "isSupplementTo",
+      "scheme": "doi",
+      "resource_type": "publication-preprint"
+    }
+  ],
+  "notes": "Related DOIs 10.5281/zenodo.24079623 (Frohmanian Tether draft) and 10.5281/zenodo.24080310 (Three Pillars draft) are reserved for unpublished drafts and do not resolve yet. Code is Apache-2.0; the paper is CC-BY-4.0."
 }

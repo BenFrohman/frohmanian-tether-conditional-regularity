@@ -10,12 +10,15 @@ cd "$(dirname "$0")/.."
 mkdir -p certificates
 
 echo "== forbidden-token scan =="
+# AnalyticBridgeTarget.lean is an OPEN Clay (B) target with exactly one intentional
+# sorry; it is not imported by the library root and is excluded from this scan.
 if grep -rnE '\b(sorry|admit|native_decide|implemented_by)\b|^\s*(axiom|unsafe|opaque)\b' \
      --include='*.lean' FrohmanianTetherConditional FrohmanianTetherConditional.lean \
-   | grep -v 'Zero-sorry'; then
+   | grep -v 'Zero-sorry' \
+   | grep -v 'AnalyticBridgeTarget\.lean'; then
   echo "FAIL: forbidden token found"; exit 1
 fi
-echo "OK: no sorry/admit/axiom/native_decide/opaque/unsafe"
+echo "OK: no sorry/admit/axiom/native_decide/opaque/unsafe (AnalyticBridgeTarget.lean open-target excluded)"
 
 echo "== #print axioms (all theorems/lemmas listed in scripts/PrintAxioms.lean) =="
 out="$(lake env lean scripts/PrintAxioms.lean 2>&1)" || {

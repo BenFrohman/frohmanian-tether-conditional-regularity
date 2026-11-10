@@ -2,20 +2,20 @@
 
 [![Lean build and kernel check](https://github.com/BenFrohman/frohmanian-tether-conditional-regularity/actions/workflows/lean.yml/badge.svg)](https://github.com/BenFrohman/frohmanian-tether-conditional-regularity/actions/workflows/lean.yml)
 
-Companion repository for two unpublished preprint drafts by Benjamin Stanley
+Companion repository for two published preprint drafts by Benjamin Stanley
 Frohman:
 
 - *Geometric Phase-Space Completion and Conditional Global Regularity for the
   3D Incompressible Navier–Stokes Equations* (Frohmanian Tether draft),
-  reserved DOI 10.5281/zenodo.24079623.
+  DOI [10.5281/zenodo.24079623](https://doi.org/10.5281/zenodo.24079623).
 - *Three Pillars of 3D Incompressible Navier–Stokes Theory: Kato Local
   Existence, Fujita–Kato Small-Data Globality, and the Beale–Kato–Majda
-  Continuation Criterion* (Three Pillars draft), reserved DOI
-  10.5281/zenodo.24080310.
+  Continuation Criterion* (Three Pillars draft),
+  DOI [10.5281/zenodo.24080310](https://doi.org/10.5281/zenodo.24080310).
 
-> **Status:** draft. Both Zenodo records are unpublished; their reserved DOIs
-> do not resolve yet. The `paper/` directory is a placeholder until the LaTeX
-> source and PDFs are synced from the drafts.
+> **Status:** the two Zenodo records above are published. The `paper/`
+> directory holds the LaTeX sources and PDFs (MD5s listed in
+> `paper/README.md`).
 
 ## Scope (read this first)
 
@@ -74,6 +74,32 @@ So `hypothesisB_implies_clayStatementB` and `three_way_equivalence` are
 logical consequences of those assumptions. They are not a proof of Clay
 Statement (B) for 3D Navier–Stokes on T³.
 
+
+## Open target
+
+`FrohmanianTetherConditional/AnalyticBridgeTarget.lean` states Clay Millennium
+Problem Statement (B) on T³ as an **open formalization target**. It contains
+exactly one intentional `sorry` (`analytic_bridge_unconditional`), marking the
+open problem. Nothing in that file is claimed to resolve Clay (B).
+
+- **Form B (B-grad) in Lean:** full-gradient integrability
+  `∫₀ᵀ ‖∇u‖_{L^∞} dt ≤ C_*(T)` with derived constant `C_star`, plus cited
+  Kato–Ponce integrated energy and BKM-in-∇u continuation inputs.
+- **Proved (no `sorry`):** `clayB_implies_bkm_integrable`,
+  `clayB_iff_bkm_integrable`, `formB_implies_clayB` /
+  `hypothesisB_implies_clayB`, integral/differential Grönwall, and
+  `formB_Hs_bound`
+  (`‖u(t)‖_{Hˢ} ≤ ‖u₀‖_{Hˢ} exp(C_s C_*(T))`). There is **no**
+  Clay(B) → Form B direction. A strain-only (B-strain) path is recorded in
+  the Unified manuscript only; it is not given a second `sorry` here.
+- It is **not** imported by the library root `FrohmanianTetherConditional.lean`,
+  so `lake build` and the zero-`sorry` kernel/axiom CI check stay green.
+- `scripts/kernel_check.sh` explicitly excludes this file from the forbidden-
+  token scan for that reason.
+- `solves_NS` and `maximal` are labelled PLACEHOLDER: Mathlib cannot yet state
+  the PDE on the torus, so a proof of `analytic_bridge_unconditional` would
+  **not** yet constitute a proof of Clay (B).
+
 ## Build and check
 
 ```bash
@@ -91,10 +117,14 @@ on every push and pull request.
 | Path | Description |
 |------|-------------|
 | `FrohmanianTetherConditional/FrohmanianTripleArchitecture.lean` | Lean 4 formalization (conditional, abstract PDE inputs) |
+| `FrohmanianTetherConditional/AnalyticBridgeTarget.lean` | OPEN Clay (B) target (one intentional `sorry`; not imported; excluded from kernel check) |
 | `FrohmanianTetherConditional.lean` | Library root |
 | `scripts/PrintAxioms.lean`, `scripts/kernel_check.sh` | Axiom audit used by CI |
 | `lakefile.toml`, `lean-toolchain`, `lake-manifest.json` | Lake project and pins |
-| `paper/` | LaTeX source and PDF (placeholder until synced from the Zenodo drafts) |
+| `paper/Frohmanian_Tether_Unified.tex`, `.pdf` | Frohmanian Tether draft manuscript (10.5281/zenodo.24079623) |
+| `paper/references.bib` | BibTeX references for the Unified paper |
+| `paper/Three_Pillars_NS.tex`, `.pdf` | Three Pillars draft manuscript (10.5281/zenodo.24080310) |
+| `paper/README.md` | Manuscript file list with MD5 checksums |
 | `LICENSE` | Apache License 2.0 (code) |
 | `LICENSE-paper` | CC BY 4.0 (paper) |
 | `NOTICE` | Copyright and attribution notice |

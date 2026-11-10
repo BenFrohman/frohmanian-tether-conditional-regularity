@@ -100,6 +100,32 @@ open problem. Nothing in that file is claimed to resolve Clay (B).
   the PDE on the torus, so a proof of `analytic_bridge_unconditional` would
   **not** yet constitute a proof of Clay (B).
 
+### Finding (Nov 2026): the target, as encoded, is refutable
+
+`FrohmanianTetherConditional/AnalyticBridgeRefutation.lean` (library
+`AnalyticBridgeAudit`) proves, with only `propext`, `Classical.choice`,
+`Quot.sound`:
+
+- `analytic_bridge_target_statement_false`: the negation of the literal type of
+  `analytic_bridge_unconditional`. Because `NSSolution` does not encode the
+  Navier–Stokes equations (`solves_NS`/`maximal` are unconstrained `Prop` fields
+  and `Tstar` is arbitrary), the zero field with lifespan `Tstar = 1` is a valid
+  `NSSolution`, so "every solution is global" is false. This says **nothing**
+  about Clay (B) itself, which remains open.
+- `not_nonempty_BKMCriterion`: `BKMCriterion N` is uninhabited for every `N`, so
+  `clayB_iff_bkm_integrable`, `formB_implies_clayB`, `hypothesisB_implies_clayB`
+  and `formB_Hs_bound` are vacuously true as stated.
+- `hypothesisB_holds` / `clayStatementB_holds`: in `FrohmanianTripleArchitecture`,
+  `NavierStokesUnifiedData.differential_bounds` (continuity of `strainSup` on every
+  `[0,T]`) already implies Hypothesis B, so every such data object satisfies
+  `clayStatementB`; the structure presupposes global regularity.
+
+The open target file is left unchanged (its single marked placeholder stays, and
+it stays out of the library root and the forbidden-token scan). It is now
+compiled as a dependency of `AnalyticBridgeAudit`, so `lake build` shows its one
+expected placeholder warning. `scripts/PrintAxiomsBridge.lean` is audited by
+`scripts/kernel_check.sh` (log: `certificates/axioms-bridge.log`).
+
 ## Build and check
 
 ```bash

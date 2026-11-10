@@ -1,6 +1,6 @@
 name = "frohmanian_tether"
 version = "0.1.0"
-defaultTargets = ["FrohmanianTetherConditional"]
+defaultTargets = ["FrohmanianTetherConditional", "AnalyticBridgeAudit"]
 
 [[require]]
 name = "mathlib"
@@ -9,3 +9,11 @@ rev = "v4.30.0-rc1"
 
 [[lean_lib]]
 name = "FrohmanianTetherConditional"
+
+# Refutation of the current encoding of the open analytic-bridge target, plus vacuity
+# checks. Separate library because the target file and the triple-architecture file
+# both declare root-level/namespace names (`HypothesisB`, `gronwall_differential_bound`)
+# that would make the main audit's unqualified `#print axioms` ambiguous.
+[[lean_lib]]
+name = "AnalyticBridgeAudit"
+roots = ["FrohmanianTetherConditional.AnalyticBridgeRefutation"]

@@ -35,3 +35,12 @@ jobs:
           use-mathlib-cache: true
       - name: Forbidden tokens and #print axioms
         run: ./scripts/kernel_check.sh
+      - name: Upload axiom certificate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: axiom-certificate
+          path: |
+            certificates/axioms.log
+            certificates/SUMMARY.txt
+          if-no-files-found: warn

@@ -131,7 +131,7 @@ files:
   with the Tether Zenodo record); use the `…Lifespan` versions instead.
 
 None of this proves anything about Navier–Stokes regularity. A write-up of how these
-defects were found is in `papers/vacuity-audit/`.
+defects were found is in `paper/vacuity-audit/`.
 
 ## Build and check
 
@@ -155,7 +155,7 @@ on every push and pull request.
 | `FrohmanianTetherConditional/ClassicalNS.lean` | Genuine classical periodic NS solutions, maximal lifespan, BKM/Kato–Ponce as named cited hypotheses, non-vacuity lemmas |
 | `FrohmanianTetherConditional/ClassicalNSOpenTarget.lean` | The single OPEN Clay (B) target (one intentional `sorry`; excluded from scan and audits) |
 | `FrohmanianTetherConditional/FrohmanianTripleArchitectureLifespan.lean` | Lifespan-corrected `NavierStokesUnifiedData` with non-vacuity models |
-| `papers/vacuity-audit/` | Side note (LaTeX + PDF + draft Zenodo metadata) on these findings |
+| `paper/vacuity-audit/` | Side note (LaTeX + PDF + draft Zenodo metadata) on these findings |
 | `FrohmanianTetherConditional.lean` | Library root |
 | `scripts/PrintAxioms.lean`, `scripts/PrintAxiomsBridge.lean`, `scripts/kernel_check.sh` | Axiom audits used by CI |
 | `lakefile.toml`, `lean-toolchain`, `lake-manifest.json` | Lake project and pins |

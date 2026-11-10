@@ -75,63 +75,70 @@ logical consequences of those assumptions. They are not a proof of Clay
 Statement (B) for 3D Navier–Stokes on T³.
 
 
-## Open target
+## Genuine Navier–Stokes encoding and the OPEN target (Nov 2026)
 
-`FrohmanianTetherConditional/AnalyticBridgeTarget.lean` states Clay Millennium
-Problem Statement (B) on T³ as an **open formalization target**. It contains
-exactly one intentional `sorry` (`analytic_bridge_unconditional`), marking the
-open problem. Nothing in that file is claimed to resolve Clay (B).
+`FrohmanianTetherConditional/ClassicalNS.lean` (namespace `ClassicalNS`) defines a
+solution object that **requires** the equations:
 
-- **Form B (B-grad) in Lean:** full-gradient integrability
-  `∫₀ᵀ ‖∇u‖_{L^∞} dt ≤ C_*(T)` with derived constant `C_star`, plus cited
-  Kato–Ponce integrated energy and BKM-in-∇u continuation inputs.
-- **Proved (no `sorry`):** `clayB_implies_bkm_integrable`,
-  `clayB_iff_bkm_integrable`, `formB_implies_clayB` /
-  `hypothesisB_implies_clayB`, integral/differential Grönwall, and
-  `formB_Hs_bound`
-  (`‖u(t)‖_{Hˢ} ≤ ‖u₀‖_{Hˢ} exp(C_s C_*(T))`). There is **no**
-  Clay(B) → Form B direction. A strain-only (B-strain) path is recorded in
-  the Unified manuscript only; it is not given a second `sorry` here.
-- It is **not** imported by the library root `FrohmanianTetherConditional.lean`,
-  so `lake build` and the zero-`sorry` kernel/axiom CI check stay green.
-- `scripts/kernel_check.sh` explicitly excludes this file from the forbidden-
-  token scan for that reason.
-- `solves_NS` and `maximal` are labelled PLACEHOLDER: Mathlib cannot yet state
-  the PDE on the torus, so a proof of `analytic_bridge_unconditional` would
-  **not** yet constitute a proof of Clay (B).
+- **Genuinely encoded:** periodic (`T³ = ℝ³/ℤ³` as 1-periodic functions on ℝ³)
+  velocity `u` and pressure `p`; `u(0) = u₀`; `C^∞` in space at every lifespan time and
+  jointly `C^∞` on `(0, T⋆) × ℝ³`; `u` and `∇u` jointly continuous on `[0, T⋆) × ℝ³`;
+  `div u = 0`; and `∂ₜuⱼ = νΔuⱼ − (u·∇)uⱼ − ∂ⱼp` pointwise on `(0, T⋆)`, with `ν > 0`.
+  **Maximality:** no classical solution on a strictly longer interval agrees with `u`
+  on `[0, T⋆)`. `‖∇u‖_∞` is a real definition (sup of `‖Du‖` over the period cell).
+- **Cited hypotheses (named, not proved):** `BKMCriterion` (finite `T⋆` ⇒
+  `∫₀^{T⋆}‖∇u‖_∞ = ∞`; Beale–Kato–Majda 1984 / Kato) and `KatoPonceEnergy`, where
+  the `Hˢ` norm is an explicitly documented parameter `HsR` (Mathlib has no Sobolev
+  spaces on `T³`). `HypothesisB` is a Clay-strength assumption whose truth is open.
+- **Non-vacuity, proved:** `zeroSolution` / `constSolution` are genuine global
+  solutions (`nonempty_NSSolution_zero`); `old_counterexample_invalid` (the zero field
+  with `T⋆ = 1` is not an `NSSolution`); `zero_field_is_global`;
+  `linear_in_time_not_NS` (the momentum equation really constrains).
+- **Proved with genuine content:** `global_implies_gradIntegral_finite`,
+  `gradLinf_continuousOn`; **conditional** on the cited hypotheses:
+  `clayB_iff_gradIntegral_finite`, `formB_implies_clayB`, `analyticBridge_of_formB`,
+  `formB_Hs_bound`.
+- **OPEN:** `ClassicalNSOpenTarget.lean` states `ClassicalNS.analytic_bridge_unconditional
+  : AnalyticBridgeStatement` (every maximal classical solution is global, with finite
+  `∫₀ᵀ‖∇u‖_∞`). Modulo standard local existence/uniqueness facts (not formalized) this
+  is Clay Millennium Problem (B). It has exactly one intentional `sorry`, is excluded
+  from the forbidden-token scan and from every axiom audit, and is **not claimed**.
 
-### Finding (Nov 2026): the target, as encoded, is refutable
+`FrohmanianTetherConditional/FrohmanianTripleArchitectureLifespan.lean` gives the
+lifespan-corrected `NavierStokesUnifiedData` (regularity only on `[0, T⋆)`,
+`clayStatementB := T⋆ = ⊤`), re-proves `hypothesisB_implies_clayStatementB` and
+`three_way_equivalence` (conditional on the cited BKM field) and proves they are no
+longer contentless: `blowupModel` (`T⋆ = 1`) satisfies the structure but not Clay (B)
+(`clayStatementB_not_automatic`, `hypothesisB_not_automatic`,
+`old_trivialization_fails`).
 
-`FrohmanianTetherConditional/AnalyticBridgeRefutation.lean` (library
-`AnalyticBridgeAudit`) proves, with only `propext`, `Classical.choice`,
-`Quot.sound`:
+### LEGACY findings (kept, not deleted)
 
-- `analytic_bridge_target_statement_false`: the negation of the literal type of
-  `analytic_bridge_unconditional`. Because `NSSolution` does not encode the
-  Navier–Stokes equations (`solves_NS`/`maximal` are unconstrained `Prop` fields
-  and `Tstar` is arbitrary), the zero field with lifespan `Tstar = 1` is a valid
-  `NSSolution`, so "every solution is global" is false. This says **nothing**
-  about Clay (B) itself, which remains open.
-- `not_nonempty_BKMCriterion`: `BKMCriterion N` is uninhabited for every `N`, so
-  `clayB_iff_bkm_integrable`, `formB_implies_clayB`, `hypothesisB_implies_clayB`
-  and `formB_Hs_bound` are vacuously true as stated.
-- `hypothesisB_holds` / `clayStatementB_holds`: in `FrohmanianTripleArchitecture`,
-  `NavierStokesUnifiedData.differential_bounds` (continuity of `strainSup` on every
-  `[0,T]`) already implies Hypothesis B, so every such data object satisfies
-  `clayStatementB`; the structure presupposes global regularity.
+`FrohmanianTetherConditional/AnalyticBridgeRefutation.lean` proves, about the LEGACY
+files:
 
-The open target file is left unchanged (its single marked placeholder stays, and
-it stays out of the library root and the forbidden-token scan). It is now
-compiled as a dependency of `AnalyticBridgeAudit`, so `lake build` shows its one
-expected placeholder warning. `scripts/PrintAxiomsBridge.lean` is audited by
-`scripts/kernel_check.sh` (log: `certificates/axioms-bridge.log`).
+- `analytic_bridge_target_statement_false`: the LEGACY target statement
+  (`analytic_bridge_unconditional_statement` in `AnalyticBridgeTarget.lean`, formerly a
+  theorem with a placeholder proof) is **false**, because the LEGACY `NSSolution` does
+  not encode Navier–Stokes (zero field with `Tstar = 1`).
+- `not_nonempty_BKMCriterion`: the LEGACY `BKMCriterion N` is uninhabited, so the
+  LEGACY `clayB_iff_bkm_integrable`, `formB_implies_clayB`,
+  `hypothesisB_implies_clayB`, `formB_Hs_bound` are **vacuous**.
+- `hypothesisB_holds` / `clayStatementB_holds`: the original
+  `FrohmanianTripleArchitecture.NavierStokesUnifiedData` presupposes `clayStatementB`,
+  so the original `hypothesisB_implies_clayStatementB` and `three_way_equivalence`
+  carry **no information**. That file is left byte-identical (it is the file archived
+  with the Tether Zenodo record); use the `…Lifespan` versions instead.
+
+None of this proves anything about Navier–Stokes regularity. A write-up of how these
+defects were found is in `paper/vacuity-audit/`.
 
 ## Build and check
 
 ```bash
 # needs elan (https://github.com/leanprover/elan)
 lake exe cache get        # download prebuilt Mathlib
-lake build                # builds FrohmanianTetherConditional
+lake build                # builds all three libraries (one expected OPEN-target warning)
 ./scripts/kernel_check.sh # forbidden-token scan + #print axioms audit
 ```
 
@@ -143,9 +150,14 @@ on every push and pull request.
 | Path | Description |
 |------|-------------|
 | `FrohmanianTetherConditional/FrohmanianTripleArchitecture.lean` | Lean 4 formalization (conditional, abstract PDE inputs) |
-| `FrohmanianTetherConditional/AnalyticBridgeTarget.lean` | OPEN Clay (B) target (one intentional `sorry`; not imported; excluded from kernel check) |
+| `FrohmanianTetherConditional/AnalyticBridgeTarget.lean` | LEGACY placeholder encoding (refuted / vacuous; kept for the record) |
+| `FrohmanianTetherConditional/AnalyticBridgeRefutation.lean` | Kernel-checked refutation and vacuity witnesses for the LEGACY files |
+| `FrohmanianTetherConditional/ClassicalNS.lean` | Genuine classical periodic NS solutions, maximal lifespan, BKM/Kato–Ponce as named cited hypotheses, non-vacuity lemmas |
+| `FrohmanianTetherConditional/ClassicalNSOpenTarget.lean` | The single OPEN Clay (B) target (one intentional `sorry`; excluded from scan and audits) |
+| `FrohmanianTetherConditional/FrohmanianTripleArchitectureLifespan.lean` | Lifespan-corrected `NavierStokesUnifiedData` with non-vacuity models |
+| `paper/vacuity-audit/` | Side note (LaTeX + PDF + draft Zenodo metadata) on these findings |
 | `FrohmanianTetherConditional.lean` | Library root |
-| `scripts/PrintAxioms.lean`, `scripts/kernel_check.sh` | Axiom audit used by CI |
+| `scripts/PrintAxioms.lean`, `scripts/PrintAxiomsBridge.lean`, `scripts/kernel_check.sh` | Axiom audits used by CI |
 | `lakefile.toml`, `lean-toolchain`, `lake-manifest.json` | Lake project and pins |
 | `paper/Frohmanian_Tether_Unified.tex`, `.pdf` | Frohmanian Tether draft manuscript (10.5281/zenodo.24079623) |
 | `paper/references.bib` | BibTeX references for the Unified paper |

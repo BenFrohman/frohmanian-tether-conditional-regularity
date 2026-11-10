@@ -10,15 +10,16 @@ cd "$(dirname "$0")/.."
 mkdir -p certificates
 
 echo "== forbidden-token scan =="
-# AnalyticBridgeTarget.lean is an OPEN Clay (B) target with exactly one intentional
-# sorry; it is not imported by the library root and is excluded from this scan.
+# ClassicalNSOpenTarget.lean is the single OPEN Clay (B) target (genuine definitions)
+# with exactly one intentional placeholder proof; it is excluded from this scan and
+# from the axiom audits. (The LEGACY AnalyticBridgeTarget.lean is now scanned.)
 if grep -rnE '\b(sorry|admit|native_decide|implemented_by)\b|^\s*(axiom|unsafe|opaque)\b' \
      --include='*.lean' FrohmanianTetherConditional FrohmanianTetherConditional.lean \
    | grep -v 'Zero-sorry' \
-   | grep -v 'AnalyticBridgeTarget\.lean'; then
+   | grep -v 'ClassicalNSOpenTarget\.lean'; then
   echo "FAIL: forbidden token found"; exit 1
 fi
-echo "OK: no sorry/admit/axiom/native_decide/opaque/unsafe (AnalyticBridgeTarget.lean open-target excluded)"
+echo "OK: no sorry/admit/axiom/native_decide/opaque/unsafe (ClassicalNSOpenTarget.lean open-target excluded)"
 
 audit() {
   # $1 = audit .lean file, $2 = log file
@@ -65,7 +66,7 @@ expected=$AUDITED
   echo "allowed_axioms=propext,Classical.choice,Quot.sound"
   echo "result=PASS"
   echo "scope=conditional abstract algebra/Grönwall over assumed PDE structure fields; not Clay Statement B"
-  echo "bridge_audit=AnalyticBridgeRefutation: current encoding of analytic_bridge_unconditional is refuted (not Clay B); BKMCriterion uninhabited; NavierStokesUnifiedData presupposes clayStatementB"
+  echo "bridge_audit=LEGACY placeholder target refuted; ClassicalNS genuine NS encoding with non-vacuity lemmas; lifespan-corrected triple architecture; OPEN target ClassicalNS.analytic_bridge_unconditional (Clay B) NOT audited, NOT claimed"
 } | tee certificates/SUMMARY.txt
 
 echo "OK: all $expected declarations use only propext, Classical.choice, Quot.sound"

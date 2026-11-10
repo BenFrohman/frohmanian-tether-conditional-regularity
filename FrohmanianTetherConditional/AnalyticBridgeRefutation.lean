@@ -3,7 +3,10 @@ import FrohmanianTetherConditional.AnalyticBridgeTarget
 import FrohmanianTetherConditional.FrohmanianTripleArchitecture
 
 /-!
-# The analytic bridge target, as currently formalized, is false
+# The LEGACY analytic bridge target, as formalized there, is false
+
+(LEGACY findings; the corrected encoding is `ClassicalNS.lean`, the corrected
+triple-architecture data is `FrohmanianTripleArchitectureLifespan.lean`.)
 
 This file does **not** prove or disprove Clay Millennium Problem (B). It shows that
 the Lean *encoding* in `AnalyticBridgeTarget.lean` cannot be proved, because it is
@@ -78,11 +81,11 @@ theorem analytic_bridge_unconditional_false :
   exact zeroSolution_Tstar_ne_top zeroNorms 1
     (h zeroNorms 1 one_pos 3 hs (fun _ => 0) isPeriodic_zero hfin (zeroSolution zeroNorms 1)).1
 
-/-- Same result stated against the *literal* type of `analytic_bridge_unconditional`
-(read off the declaration with `type_of%`), so no restatement drift is possible.
-Only the type is used, not the (open-target) proof term. -/
+/-- Same result stated against the legacy statement definition
+`analytic_bridge_unconditional_statement` (the former placeholder-proof theorem's exact type;
+in PR #3 this was checked against `type_of% @analytic_bridge_unconditional`). -/
 theorem analytic_bridge_target_statement_false :
-    ¬ (type_of% @analytic_bridge_unconditional) :=
+    ¬ analytic_bridge_unconditional_statement :=
   fun h => analytic_bridge_unconditional_false h
 
 /-- Stronger: for every `NormData`, every `ν`, `s`, the target fails at `u0 = 0`

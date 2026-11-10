@@ -1,0 +1,358 @@
+% Copyright 2026 Benjamin Stanley Frohman. CC BY 4.0 (see LICENSE-paper).
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{basicstyle=\ttfamily\small,breaklines=true,columns=fullflexible,frame=single,
+  literate={⊤}{{$\top$}}1 {≠}{{$\neq$}}1 {→}{{$\to$}}1 {∀}{{$\forall$}}1 {∫}{{$\int$}}1
+  {⁻}{{$^{-}$}}1 {ℝ}{{$\mathbb{R}$}}1 {≤}{{$\le$}}1 {∧}{{$\wedge$}}1 {¬}{{$\neg$}}1
+  {ν}{{$\nu$}}1 {∞}{{$\infty$}}1 {×}{{$\times$}}1 {ˢ}{{$^s$}}1 {∘}{{$\circ$}}1}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\T}{\mathbb{T}^3}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Tstar}{T^\star}
+\newcommand{\lean}[1]{\texttt{#1}}
+
+\title{Vacuity and model-adequacy findings in a Lean formalization of conditional
+Navier--Stokes regularity}
+\author{Frohman, Benjamin Stanley\\
+\small Independent Researcher, Texas, United States\\
+\small ORCID \href{https://orcid.org/0009-0006-7068-3718}{0009-0006-7068-3718}\quad
+\href{mailto:frohmanbenjamin@gmail.com}{frohmanbenjamin@gmail.com}}
+\date{November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We report defects found in the Lean~4 companion formalization of two preprints on
+conditional regularity for the three-dimensional incompressible Navier--Stokes
+equations on the torus $\T$
+(\href{https://doi.org/10.5281/zenodo.24079623}{10.5281/zenodo.24079623},
+\href{https://doi.org/10.5281/zenodo.24080310}{10.5281/zenodo.24080310}).
+An attempt to prove the stated ``analytic bridge'' target led instead to a
+kernel-checked proof of its \emph{negation}: the solution object did not encode the
+equations, so a zero velocity field with lifespan $1$ counted as a solution. The same
+object shows that the cited Beale--Kato--Majda hypothesis was uninhabitable, making four
+conditional theorems vacuously true. Independently, the abstract data structure used for
+the ``three-way equivalence'' presupposed global regularity, so that equivalence carried
+no information. We describe each mechanism, the exact Lean theorems that establish it,
+and the corrected encoding: solutions that satisfy the Navier--Stokes equations on a
+maximal lifespan, the BKM and Kato--Ponce estimates as named cited hypotheses, and
+non-vacuity lemmas. \textbf{This note does not solve, and makes no claim about, the Clay
+Millennium Problem.} Global regularity for large data (Clay Statement~(B)) remains open;
+in the corrected repository it is a single explicitly labelled open target.
+\end{abstract}
+
+\section{What was claimed}
+
+The repository
+\href{https://github.com/BenFrohman/frohmanian-tether-conditional-regularity}{\texttt{BenFrohman/frohmanian-tether-conditional-regularity}}
+accompanies the two preprints above. Its \lean{README} and the file
+\lean{AnalyticBridgeTarget.lean} stated:
+\begin{enumerate}
+\item an \emph{open target} \lean{analytic\_bridge\_unconditional}, described as
+``Clay Millennium Problem Statement~(B) on the periodic 3-torus'', with one intentional
+\lean{sorry}, and explicitly flagged as using placeholder fields;
+\item proved conditional results \lean{clayB\_iff\_bkm\_integrable},
+\lean{formB\_implies\_clayB}, \lean{hypothesisB\_implies\_clayB} and
+\lean{formB\_Hs\_bound}, each taking a cited Beale--Kato--Majda (BKM) continuation
+hypothesis \lean{BKMCriterion N} as an argument;
+\item in \lean{FrohmanianTripleArchitecture.lean} (the file archived with the Tether
+record), \lean{hypothesisB\_implies\_clayStatementB} and \lean{three\_way\_equivalence}
+over an abstract structure \lean{NavierStokesUnifiedData}.
+\end{enumerate}
+All proved declarations passed a kernel audit (\lean{\#print axioms} reporting only
+\lean{propext}, \lean{Classical.choice}, \lean{Quot.sound}). That audit establishes that
+proofs are correct \emph{relative to the definitions}; it says nothing about whether the
+definitions model Navier--Stokes, nor whether hypotheses can ever be supplied. The
+findings below are of exactly that second kind.
+
+\section{How the defects were caught}
+
+The user asked for a full proof of the open target. The procedure was:
+\begin{enumerate}
+\item Read the exact statement and every definition it depends on.
+\item Ask which objects inhabit the hypothesis types. The structure \lean{NSSolution}
+had fields \lean{solves\_NS : Prop} and \lean{maximal : Prop}: these are \emph{data}
+(arbitrary propositions chosen by whoever builds the object), not proof obligations.
+The lifespan \lean{Tstar} was an arbitrary element of $[0,\infty]$.
+\item Build the simplest object of the type with a finite lifespan, and prove the
+negation of the target in Lean, against the \emph{literal} type of the declaration
+(read off with Lean's \lean{type\_of\%} elaborator in the first commit, so that no
+hand restatement could drift from the original).
+\item Re-use the same object against every hypothesis structure; check each abstract
+structure for a field that silently implies its conclusion.
+\end{enumerate}
+Every finding is therefore a kernel-checked theorem, not an informal remark.
+
+\section{The counterexample and the refutation}
+
+\begin{definition}[legacy zero object]
+For any norm package $N$ and viscosity $\nu$, \lean{zeroSolution N ν} is the legacy
+\lean{NSSolution} with $u_0 = 0$, $u(t,x) = 0$ for all $t,x$, $\Tstar = 1$,
+\lean{solves\_NS := True}, \lean{maximal := True}. Every remaining field
+(initial condition, periodicity, $C^\omega$ smoothness of each $u(t)$, continuity of
+$t\mapsto N(u(t))$ for the three norm functionals) holds because every function involved
+is constant.
+\end{definition}
+
+\begin{theorem}[\lean{analytic\_bridge\_target\_statement\_false}]
+The legacy target statement is false.
+\end{theorem}
+\begin{proof}
+Take $N$ with all norms identically $0$ (\lean{zeroNorms}), $\nu = 1$, $s = 3 > 5/2$,
+$u_0 = 0$. Then $u_0$ is periodic and $N.\mathrm{Hs}(3,u_0) = 0 < \infty$, so all
+hypotheses hold. The target asserts $\Tstar = \top$ for \emph{every} solution object; for
+\lean{zeroSolution} we have $\Tstar = 1 \neq \top$. Contradiction.
+\end{proof}
+
+\begin{theorem}[\lean{not\_nonempty\_BKMCriterion}]
+For every $N$, the legacy type \lean{BKMCriterion N} is empty.
+\end{theorem}
+\begin{proof}
+A term of \lean{BKMCriterion N} maps any solution object whose function
+$t \mapsto N.\mathrm{gradLinf}(u(t))$ is interval-integrable on every $[0,T]$ to a
+proof of $\Tstar = \top$. For \lean{zeroSolution N 0} this function is the constant
+$N.\mathrm{gradLinf}(0)$, which is integrable on every bounded interval, but
+$\Tstar = 1 \ne \top$.
+\end{proof}
+
+\begin{remark}[consequence]
+Each of \lean{clayB\_iff\_bkm\_integrable}, \lean{formB\_implies\_clayB},
+\lean{hypothesisB\_implies\_clayB}, \lean{formB\_Hs\_bound} has an argument of type
+\lean{BKMCriterion N}. Since that type is empty, each theorem is of the form
+$\bot \to P$ and is vacuously true (\lean{BKMCriterion\_elim} derives \lean{False} from
+any such argument). They were correct proofs of statements with no content.
+\end{remark}
+
+\section{The presupposed-regularity mechanism}
+
+\lean{FrohmanianTripleArchitecture.NavierStokesUnifiedData} has a field
+\begin{lstlisting}
+differential_bounds : ∀ T > 0, (∀ t ∈ Icc 0 T, DifferentiableAt ℝ vorticitySup t) ∧
+  ContinuousOn vorticitySup (Icc 0 T) ∧ ContinuousOn strainSup (Icc 0 T) ∧ ...
+\end{lstlisting}
+and defines Hypothesis~B as: for every $T>0$ there is $C$ with
+$\int_0^t \|S\|_\infty \le C$ for all $t\in[0,T]$.
+
+\begin{theorem}[\lean{hypothesisB\_holds}, \lean{clayStatementB\_holds}]
+Every \lean{NavierStokesUnifiedData} satisfies Hypothesis~B and \lean{clayStatementB}.
+\end{theorem}
+\begin{proof}
+Fix $T>0$. By \lean{differential\_bounds}, $f = \mathrm{strainSup}$ is continuous on
+the compact interval $[0,T]$, hence $|f| \le K$ there for some $K$. For $t\in[0,T]$,
+$\int_0^t f \le \int_0^t \max(K,0) = \max(K,0)\,t \le \max(K,0)\,T$. This is
+Hypothesis~B with $C = \max(K,0)T$. The existing theorem
+\lean{hypothesisB\_implies\_clayStatementB} then yields \lean{clayStatementB}.
+\end{proof}
+Continuity of the strain on \emph{every} $[0,T]$ is already a global-in-time
+regularity statement; it was placed in the structure as an input. Consequently the
+``three-way equivalence'' between Hypothesis~B, BKM integrability and Clay~(B) is an
+equivalence between three propositions that are all provable for every object, and
+carries no information.
+
+\section{The fixes}
+
+\subsection{A solution object that requires the equations}
+In \lean{ClassicalNS.lean}, $\T=\R^3/\mathbb{Z}^3$ is modelled by functions on $\R^3$
+that are $1$-periodic in each coordinate, and $\partial_i g(x) = Dg(x)e_i$ (Fréchet
+derivative). For $\nu$, $u_0$, $u:\R\times\R^3\to\R^3$, $p:\R\times\R^3\to\R$ and
+$\Tstar\in[0,\infty]$, the predicate \lean{IsClassicalNS ν u0 u p Tstar} requires, with
+$L=[0,\Tstar)$ and $L^\circ=(0,\Tstar)$:
+\begin{enumerate}
+\item $u(0)=u_0$; $u(t)$ and $p(t)$ are $1$-periodic and $C^\infty$ for $t\in L$
+(Mathlib's \lean{ContDiff ℝ ∞}, i.e.\ smooth, not analytic);
+\item $(t,x)\mapsto u(t,x)$ and $(t,x)\mapsto p(t,x)$ are jointly $C^\infty$ on
+$L^\circ\times\R^3$; $u$ and $\nabla_x u$ are jointly continuous on $L\times\R^3$;
+\item $\operatorname{div} u(t) = \sum_i \partial_i u_i(t) = 0$ for $t\in L$;
+\item for $t\in L^\circ$, all $x$ and $j$: $t\mapsto u_j(t,x)$ has derivative
+$\nu\sum_i\partial_i\partial_i u_j - \sum_i u_i\partial_i u_j - \partial_j p$ at $t$.
+\end{enumerate}
+An \lean{NSSolution ν u0} packages $\nu>0$, $\Tstar$, $u$, $p$, a proof of
+\lean{IsClassicalNS}, and \textbf{maximality}: for every $T'>\Tstar$ and every classical
+solution $(v,q)$ on $[0,T')$ with the same data, $v$ does not agree with $u$ on $L$.
+The gradient norm is a definition, not a parameter:
+$\|\nabla f\|_\infty := \sup_{x\in[0,1]^3}\|Df(x)\|$ (operator norm; for periodic $f$ the
+cell supremum is the global supremum).
+
+\begin{proposition}[non-vacuity; all proved in Lean]\leavevmode
+\begin{enumerate}
+\item \lean{const\_isClassicalNS}, \lean{nonempty\_NSSolution\_zero}: for every
+$c\in\R^3$, $u\equiv c$, $p\equiv 0$ is a classical solution with $\Tstar=\top$;
+in particular \lean{NSSolution ν 0} is inhabited for $\nu>0$.
+\item \lean{zero\_field\_is\_global}: a solution with zero data that vanishes on its
+lifespan has $\Tstar=\top$. Hence \lean{old\_counterexample\_invalid}: there is no
+\lean{NSSolution} with $u_0=0$, $u\equiv 0$ and $\Tstar=1$.
+\item \lean{linear\_in\_time\_not\_NS}: for any $\Tstar>0$, $u(t,x)=t\,e_0$, $p\equiv 0$
+is \emph{not} a classical solution. (At any $r\in(0,\Tstar)$ the time derivative of the
+first component is $1$, while every spatial derivative of the $x$-independent field
+vanishes, so the right-hand side is $0$; uniqueness of derivatives gives $1=0$.)
+\end{enumerate}
+\end{proposition}
+\begin{proof}[Proof of (2)]
+If $\Tstar\neq\top$ then $\Tstar<\top$, and $(0,0)$ is a classical solution on
+$[0,\top)$ by (1) agreeing with $u$ on $L$, contradicting maximality.
+\end{proof}
+
+\subsection{Proved, not assumed: integrability for global solutions}
+\begin{lemma}[\lean{gradLinf\_continuousOn}]
+If $0\le T$ and $T<\Tstar$, then $t\mapsto\|\nabla u(t)\|_\infty$ is continuous on
+$[0,T]$.
+\end{lemma}
+\begin{proof}
+$G(t,x)=\|Du(t)(x)\|$ is continuous on $L\times\R^3$. Let $\pi_T$ be the projection of
+$\R$ onto $[0,T]$; then $(t,x)\mapsto G(\pi_T t, x)$ is continuous on all of
+$\R\times\R^3$ because $[0,T]\subseteq L$. For a jointly continuous function and a
+compact set $K=[0,1]^3$, $t\mapsto\sup_{x\in K}$ is continuous (Mathlib
+\lean{IsCompact.continuous\_sSup}). On $[0,T]$, $\pi_T t = t$.
+\end{proof}
+\begin{theorem}[\lean{global\_implies\_gradIntegral\_finite}]
+If $\Tstar=\top$ then $\int_{[0,T)}\|\nabla u(t)\|_\infty\,dt<\infty$ for every $T$.
+\end{theorem}
+\begin{proof}
+For $T\le 0$ the domain is empty. For $T>0$ the integrand is continuous on $[0,T]$ by
+the lemma, hence bounded by some $C$; the lower Lebesgue integral over
+$[0,T)\subseteq[0,T]$ is at most $C\cdot T<\infty$.
+\end{proof}
+
+\subsection{BKM as a satisfiable cited hypothesis}
+\begin{definition}[\lean{BKMCriterion}, cited]
+For every maximal classical solution with $\Tstar\neq\top$:
+$\int_{[0,\Tstar)}\|\nabla u(t)\|_\infty\,dt = \infty$.
+\end{definition}
+This is the Beale--Kato--Majda criterion in the form controlled by the full gradient
+(BKM 1984; Kato's local theory and uniqueness of classical solutions are used to pass
+between ``cannot be continued'' and ``maximal in this class''). It is \emph{not}
+proved in Lean. Unlike the legacy version it is not refuted by any object we can
+construct: its only quantified objects are genuine maximal solutions, and the legacy
+witness is excluded by \lean{old\_counterexample\_invalid}. We cannot prove in Lean that
+it is consistent, since that would amount to formalizing BKM; we state this limitation
+explicitly.
+
+\begin{theorem}[conditional; proved in Lean]\leavevmode
+\begin{enumerate}
+\item \lean{gradIntegral\_finite\_implies\_global}: BKM and finiteness of
+$\int_{[0,T)\cap L}\|\nabla u\|_\infty$ for all $T>0$ imply $\Tstar=\top$.
+\item \lean{clayB\_iff\_gradIntegral\_finite}: under BKM, $\Tstar=\top$ iff those
+integrals are finite for all $T>0$.
+\item \lean{formB\_implies\_clayB}, \lean{analyticBridge\_of\_formB}: Hypothesis~B
+(a uniform bound $\int_{[0,T)\cap L}\|\nabla u\|_\infty\le C_\star(T)$ over all
+solutions) and BKM imply every maximal solution is global.
+\item \lean{formB\_Hs\_bound}: adding the cited Kato--Ponce inequality
+$\|u(t)\|_{H^s}\le\|u_0\|_{H^s}+\int_0^t C_s\|\nabla u\|_\infty\|u\|_{H^s}$
+gives $\|u(t)\|_{H^s}\le\|u_0\|_{H^s}\exp(C_s\max(C_\star(T),0))$ on $[0,T]$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}[Proof of (1)]
+Suppose $\Tstar\ne\top$ and put $T_0=\Tstar$ as a real number. BKM gives
+$\int_{[0,T_0)}=\infty$. Every $t\in[0,T_0)$ lies in $[0,T_0+1)\cap L$, so by
+monotonicity of the integral in the domain the hypothesis at $T=T_0+1$ is violated.
+\end{proof}
+\begin{proof}[Proof of (4)]
+(3) gives $\Tstar=\top$, so every $t$ is in the lifespan. The integral Grönwall lemma
+(proved) applied with $\beta=C_s\|\nabla u\|_\infty$, continuous by the lemma above,
+gives $y(t)\le y(0)\exp\int_0^t\beta$. Since the integrand is continuous and
+nonnegative, $\int_0^t\|\nabla u\| = \int_{(0,t)}\|\nabla u\|$ and its
+$\mathrm{ofReal}$ equals the lower Lebesgue integral over $(0,t)\subseteq[0,T)$, which is
+$\le C_\star(T)\le\max(C_\star(T),0)$; monotonicity of $\exp$ finishes. (The $\max$ is
+needed: a negative $C_\star(T)$ is only meaningful through $\mathrm{ofReal}$, which
+clips it at $0$.)
+\end{proof}
+The $H^s$ norm is not defined in Mathlib on $\T$; it appears only as a documented
+parameter \lean{HsR} inside the cited hypothesis \lean{KatoPonceEnergy}. That structure
+is consistent (\lean{kp\_trivial}: $\mathrm{HsR}\equiv 0$, $C_s=0$ is an instance), but
+for that trivial instance the bound is trivially true; its content is for the true
+$H^s$ norm.
+
+\subsection{Lifespan-corrected abstract data}
+In \lean{FrohmanianTripleArchitectureLifespan.lean} the data carry
+$\Tstar\in[0,\infty]$; every regularity requirement and the vorticity sign hold only for
+$T<\Tstar$; the BKM field quantifies only over lifespan times; and
+\lean{clayStatementB} is \emph{defined} as $\Tstar=\top$.
+\lean{hypothesisB\_implies\_clayStatementB} (Grönwall on each $[0,t]$ with $t<\Tstar$,
+then the BKM field) and \lean{three\_way\_equivalence} are re-proved.
+\begin{proposition}[\lean{blowupModel}; proved]
+$\Tstar=1$, $\|\omega\|_\infty(t)=\|S\|_\infty(t)=(1-t)^{-1}$ satisfies every field, and
+\lean{clayStatementB} fails. Hence \lean{clayStatementB\_not\_automatic},
+\lean{hypothesisB\_not\_automatic} and \lean{old\_trivialization\_fails}.
+\end{proposition}
+\begin{proof}
+For $0\le t\le T<1$: $(1-t)^{-1}\ge0$; it is differentiable with derivative
+$(1-t)^{-2}=S\cdot M$, so $M'\le SM$ holds with equality; both functions are continuous
+on $[0,T]$. For the BKM field we must show its premise fails. Given any $C$, put
+$a=e^{-(|C|+1)}\in(0,1)$ and $t=1-a\in[0,1)$. By the substitution $x=1-\tau$,
+$\int_0^t(1-\tau)^{-1}d\tau=\int_{a}^{1}x^{-1}dx=\log(1/a)=|C|+1>C$. So no $C$ bounds
+the vorticity integrals on $[0,1)$, the premise is false and the implication holds.
+Finally $1\ne\top$. If Hypothesis~B held for this model, the re-proved theorem would give
+$\Tstar=\top$; so it fails.
+\end{proof}
+These are abstract scalar models (as was the original structure), not Navier--Stokes
+solutions; they show only that the implications are no longer contentless.
+
+\subsection{Legacy material}
+Nothing was deleted. \lean{FrohmanianTripleArchitecture.lean} is byte-identical. In
+\lean{AnalyticBridgeTarget.lean} the header now marks the file LEGACY, and the former
+theorem-with-placeholder (a false statement) is kept verbatim as the proposition
+\lean{analytic\_bridge\_unconditional\_statement}, which the refutation file negates.
+
+\section{What remains open}
+The honest target, \lean{ClassicalNS.analytic\_bridge\_unconditional :
+AnalyticBridgeStatement}, says: for every $\nu>0$ and every smooth, periodic,
+divergence-free $u_0$, every maximal classical solution is global with
+$\int_0^T\|\nabla u\|_\infty<\infty$ for all $T$. Combined with local existence and
+uniqueness of classical solutions (standard, not formalized), this is Clay Statement~(B)
+for the periodic problem. Its single \lean{sorry} is labelled OPEN, it is excluded from
+the forbidden-token scan and from every axiom audit, and \lean{\#print axioms} on it
+reports \lean{sorryAx}. The mathematical gap is unchanged: no known argument controls
+the critical quantity $\int_0^T\|\nabla u\|_\infty$ (or
+$\int_0^T\|\omega\|_\infty$) for large data from the energy-class bounds
+$L^\infty_tL^2_x\cap L^2_t\dot H^1_x$. \textbf{Nothing in this note or the repository
+proves global regularity, blow-up, or any new fact about Navier--Stokes.}
+
+Other limitations: the solution class is classical (pointwise equations, joint
+smoothness on the open lifespan); the BKM and Kato--Ponce statements are cited, not
+proved; Hypothesis~B is of Clay strength and its truth is open, so theorems conditional on
+it are conditional on an open assumption.
+
+\section{Reproducibility}
+\begin{itemize}
+\item Repository: \url{https://github.com/BenFrohman/frohmanian-tether-conditional-regularity},
+branch \lean{analytic-bridge-refutation}; Lean sources at commit
+\lean{cb927bd302b144982bc2b277423e1aeb9a8b7527}. The first refutation (against the
+literal \lean{type\_of\%} of the legacy declaration) is commit \lean{1a89946}.
+\item Toolchain \lean{leanprover/lean4:v4.30.0-rc1}; Mathlib \lean{v4.30.0-rc1} (pinned
+in \lean{lean-toolchain}, \lean{lakefile.toml}, \lean{lake-manifest.json}).
+\item One-command rebuild and audit:
+\begin{lstlisting}
+lake exe cache get && lake build && ./scripts/kernel_check.sh
+\end{lstlisting}
+\item Audit result: 52 declarations (14 in \lean{scripts/PrintAxioms.lean}, 38 in
+\lean{scripts/PrintAxiomsBridge.lean}), each reported as
+\begin{lstlisting}
+depends on axioms: [propext, Classical.choice, Quot.sound]
+\end{lstlisting}
+The only build warning is the intentional placeholder in
+\lean{ClassicalNSOpenTarget.lean}.
+\end{itemize}
+
+\section*{References}
+\begin{itemize}
+\item J.~T. Beale, T.~Kato, A.~Majda, Remarks on the breakdown of smooth solutions for
+the 3-D Euler equations, Comm.\ Math.\ Phys.\ 94 (1984), 61--66.
+\item T.~Kato, G.~Ponce, Commutator estimates and the Euler and Navier--Stokes equations,
+Comm.\ Pure Appl.\ Math.\ 41 (1988), 891--907.
+\item C.~L. Fefferman, Existence and smoothness of the Navier--Stokes equation, Clay
+Mathematics Institute Millennium Problem description (2000).
+\item B.~S. Frohman, Frohmanian Tether draft, \href{https://doi.org/10.5281/zenodo.24079623}{10.5281/zenodo.24079623};
+Three Pillars draft, \href{https://doi.org/10.5281/zenodo.24080310}{10.5281/zenodo.24080310}.
+\item The Mathlib Community, The Lean mathematical library, CPP 2020.
+\end{itemize}
+\end{document}

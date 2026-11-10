@@ -1,6 +1,6 @@
 name = "frohmanian_tether"
 version = "0.1.0"
-defaultTargets = ["FrohmanianTetherConditional", "AnalyticBridgeAudit"]
+defaultTargets = ["FrohmanianTetherConditional", "AnalyticBridgeAudit", "ClassicalNSOpen"]
 
 [[require]]
 name = "mathlib"
@@ -16,4 +16,15 @@ name = "FrohmanianTetherConditional"
 # that would make the main audit's unqualified `#print axioms` ambiguous.
 [[lean_lib]]
 name = "AnalyticBridgeAudit"
-roots = ["FrohmanianTetherConditional.AnalyticBridgeRefutation"]
+roots = [
+  "FrohmanianTetherConditional.AnalyticBridgeRefutation",
+  "FrohmanianTetherConditional.ClassicalNS",
+  "FrohmanianTetherConditional.FrohmanianTripleArchitectureLifespan",
+]
+
+# The single honest OPEN target (Clay (B) with genuine definitions). Built so that it
+# type-checks; it carries one marked placeholder proof and is excluded from the
+# forbidden-token scan and from every axiom audit.
+[[lean_lib]]
+name = "ClassicalNSOpen"
+roots = ["FrohmanianTetherConditional.ClassicalNSOpenTarget"]

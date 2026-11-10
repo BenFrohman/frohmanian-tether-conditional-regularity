@@ -4,19 +4,31 @@ import Mathlib
 open Real Set MeasureTheory intervalIntegral Filter Topology
 
 /-!
-# Analytic bridge target (OPEN)
+# LEGACY analytic bridge target — REFUTED AS ENCODED, superseded
 
-Statement of Clay Millennium Problem (B) on the periodic 3-torus, stated as a target.
+**Status (Nov 2026): LEGACY.** Superseded by `ClassicalNS.lean` (genuine Navier–Stokes
+solutions, maximal lifespan, real `‖∇u‖_∞`) and `ClassicalNSOpenTarget.lean`
+(the honest OPEN target). Kept unchanged except for this header and the conversion of
+the former placeholder-proof theorem into the statement `analytic_bridge_unconditional_statement`.
 
-* Exactly one `sorry`: `analytic_bridge_unconditional` (the open problem).
-* Form~B / Hypothesis~B is the **full-gradient** integrability
-  `∫₀ᵀ ‖∇u‖_{L^∞} dt ≤ C_*(T)`, which with the cited Kato–Ponce energy
-  inequality yields the **direct** bound
-  `‖u(t)‖_{Hˢ} ≤ ‖u₀‖_{Hˢ} exp(C_s C_*(T))` (proved, no `sorry`).
-  A strain-only (`S`) version does **not** give this direct constant (log loss).
-* Nothing in this file is claimed to resolve Clay (B). Because `solves_NS` and
-  `maximal` are placeholders, a proof of `analytic_bridge_unconditional` would
-  **not** yet constitute a proof of Clay (B).
+Defects found by attempting a proof (see `AnalyticBridgeRefutation.lean`):
+* `NSSolution` here does **not** encode Navier–Stokes: `solves_NS` and `maximal` are
+  unconstrained `Prop` fields and `Tstar` is arbitrary. The zero field with `Tstar = 1`
+  is a valid `NSSolution`, so the statement is **false**
+  (`AnalyticBridgeRefutation.analytic_bridge_target_statement_false`). A false
+  statement cannot be an honest open target, so it is no longer stated as a theorem with a placeholder proof.
+* `BKMCriterion N` is uninhabited for every `N`
+  (`AnalyticBridgeRefutation.not_nonempty_BKMCriterion`), hence
+  `clayB_iff_bkm_integrable`, `formB_implies_clayB`, `hypothesisB_implies_clayB` and
+  `formB_Hs_bound` below are **vacuously true**. Their genuine replacements (same
+  names) are in namespace `ClassicalNS`.
+* `clayB_implies_bkm_integrable`, `gronwall_differential_bound` and
+  `integral_gronwall_bound` are sound and non-vacuous as stated.
+
+Original description (historical):
+Form~B / Hypothesis~B is the full-gradient integrability `∫₀ᵀ ‖∇u‖_{L^∞} dt ≤ C_*(T)`,
+which with the cited Kato–Ponce energy inequality yields the direct bound
+`‖u(t)‖_{Hˢ} ≤ ‖u₀‖_{Hˢ} exp(C_s C_*(T))`. Nothing in this file resolves Clay (B).
 -/
 
 abbrev R3 := EuclideanSpace ℝ (Fin 3)
@@ -303,12 +315,13 @@ theorem formB_Hs_bound
   have ha0 : 0 ≤ N.HsR s u0 := N.HsR_nonneg s u0
   exact le_trans hpt (mul_le_mul_of_nonneg_left hExp ha0)
 
-/-- Clay (B) target (OPEN). Placeholders mean a proof would not yet be Clay (B). -/
-theorem analytic_bridge_unconditional
-    (N : NormData) (ν : ℝ) (hν : 0 < ν) (s : ℝ) (hs : 5 / 2 < s)
-    (u0 : R3 → Vec3) (hper : IsPeriodic u0) (hu0 : N.Hs s u0 < ⊤) :
+/-- LEGACY statement of the former "Clay (B) target". It is **false** for this
+placeholder encoding (`AnalyticBridgeRefutation.analytic_bridge_target_statement_false`);
+the honest OPEN target is `ClassicalNS.analytic_bridge_unconditional`. -/
+def analytic_bridge_unconditional_statement : Prop :=
+  ∀ (N : NormData) (ν : ℝ) (_hν : 0 < ν) (s : ℝ) (_hs : 5 / 2 < s)
+    (u0 : R3 → Vec3) (_hper : IsPeriodic u0) (_hu0 : N.Hs s u0 < ⊤),
     ∀ sol : NSSolution N ν u0,
       sol.Tstar = ⊤ ∧
       ∀ T : ℝ, 0 < T →
-        IntervalIntegrable (fun t => N.gradLinf (sol.u t)) volume 0 T := by
-  sorry  -- OPEN: this is Clay Millennium Problem Statement (B)
+        IntervalIntegrable (fun t => N.gradLinf (sol.u t)) volume 0 T

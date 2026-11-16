@@ -1,4 +1,9 @@
--- Copyright 2026 Benjamin Stanley Frohman. Apache-2.0.
+/-
+Copyright (c) 2026 Benjamin Stanley Frohman. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Stanley Frohman
+-/
+
 -- Axiom audit for: (i) the LEGACY refutation and vacuity checks, (ii) the genuine
 -- classical Navier–Stokes encoding `ClassicalNS`, (iii) the lifespan-corrected triple
 -- architecture. Every listed declaration must depend only on propext,
@@ -9,6 +14,13 @@ import FrohmanianTetherConditional.ClassicalNS
 import FrohmanianTetherConditional.FrohmanianTripleArchitectureLifespan
 
 -- (i) LEGACY file: sound lemmas, refutation, vacuity witnesses
+
+/-!
+# scripts.PrintAxiomsBridge
+
+Machine-checked Lean 4 module.
+-/
+
 #print axioms clayB_implies_bkm_integrable
 #print axioms integral_gronwall_bound
 #print axioms AnalyticBridgeRefutation.analytic_bridge_unconditional_false

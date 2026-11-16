@@ -1,5 +1,16 @@
--- Copyright 2026 Benjamin Stanley Frohman. Apache-2.0.
+/-
+Copyright (c) 2026 Benjamin Stanley Frohman. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Stanley Frohman
+-/
+
 import Mathlib
+
+/-!
+# FrohmanianTetherConditional.AnalyticBridgeTarget
+
+Machine-checked Lean 4 module.
+-/
 
 open Real Set MeasureTheory intervalIntegral Filter Topology
 

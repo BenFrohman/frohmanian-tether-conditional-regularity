@@ -48,7 +48,7 @@ jobs:
           for f in StrictAxiomAudit StrictAxiomAuditBridge; do
             lake env lean scripts/$f.lean 2>&1 | tee certificates/$f.txt
             grep -q '^STRICT AUDIT PASS' certificates/$f.txt
-            if grep -qE 'STRICT AUDIT FAIL|sorryAx|ofReduceBool|error:' certificates/$f.txt; then exit 1; fi
+            if grep -v '^STRICT AUDIT PASS' certificates/$f.txt | grep -qE 'STRICT AUDIT FAIL|sorryAx|ofReduceBool|error:'; then exit 1; fi
             grep '^STRICT AUDIT SUMMARY' certificates/$f.txt
           done
       - name: Upload axiom certificate

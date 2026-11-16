@@ -1,9 +1,10 @@
 /-
-Copyright (c) 2026 Benjamin Stanley Frohman. Apache-2.0.
-Author: Benjamin Stanley Frohman.
+Copyright (c) 2026 Benjamin Stanley Frohman. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Benjamin Stanley Frohman
 -/
+
 import FrohmanianTetherConditional
-open Lean Elab Command
 
 /-!
 # Strict whole-library axiom audit
@@ -23,6 +24,8 @@ A pass means only that the Lean kernel accepts these definitions and proofs from
 three standard axioms. It says nothing about whether the definitions match the
 mathematics or physics they are named after.
 -/
+
+open Lean Elab Command
 
 elab "#strict_library_audit" : command => do
   let env ← getEnv

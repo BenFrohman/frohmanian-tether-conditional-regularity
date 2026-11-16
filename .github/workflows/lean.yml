@@ -35,6 +35,22 @@ jobs:
           use-mathlib-cache: true
       - name: Forbidden tokens and #print axioms
         run: ./scripts/kernel_check.sh
+      - name: Forbidden tokens, comment-aware, with audit coverage check
+        run: |
+          python3 scripts/check_forbidden_tokens.py \
+            --exclude FrohmanianTetherConditional/ClassicalNSOpenTarget.lean \
+            --require-imported-by scripts/StrictAxiomAudit.lean \
+            --require-imported-by scripts/StrictAxiomAuditBridge.lean \
+            FrohmanianTetherConditional.lean FrohmanianTetherConditional
+      - name: Strict whole-library axiom audit (every declaration, not only listed ones)
+        run: |
+          set -o pipefail
+          for f in StrictAxiomAudit StrictAxiomAuditBridge; do
+            lake env lean scripts/$f.lean 2>&1 | tee certificates/$f.txt
+            grep -q '^STRICT AUDIT PASS' certificates/$f.txt
+            if grep -qE 'STRICT AUDIT FAIL|sorryAx|ofReduceBool|error:' certificates/$f.txt; then exit 1; fi
+            grep '^STRICT AUDIT SUMMARY' certificates/$f.txt
+          done
       - name: Upload axiom certificate
         if: always()
         uses: actions/upload-artifact@v4
@@ -44,4 +60,6 @@ jobs:
             certificates/axioms.log
             certificates/axioms-bridge.log
             certificates/SUMMARY.txt
+            certificates/StrictAxiomAudit.txt
+            certificates/StrictAxiomAuditBridge.txt
           if-no-files-found: warn

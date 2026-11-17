@@ -157,7 +157,7 @@ For~(B-grad): the cited Kato--Ponce differential inequality integrates to
 \]
 Integral Gronwall with~\eqref{eq:FormBgrad} yields~\eqref{eq:directHs}; the cited \(\nabla\uvec\)-continuation criterion then forces \(T^*=+\infty\).
 
-For~(B-strain): decomposing \(\nabla\uvec=S+\Omega\) gives \((\wvec\cdot\nabla)\uvec=S\wvec\). Testing~\eqref{eq:NSE_vort} against \(|\wvec|^{p-2}\wvec\) and letting \(p\to\infty\) produces \(\frac{d}{dt}\log M(t)\le\|S(t)\|_{L^\infty}\) for \(M=\|\wvec\|_{L^\infty}\). Integrating and applying~\eqref{eq:FormBstrain} bounds \(M\) exponentially. The log-Sobolev bound
+For~(B-strain): decomposing \(\nabla\uvec=S+\Omega\) with \(\Omega=\frac12(\nabla\uvec-(\nabla\uvec)^T)\) gives \((\wvec\cdot\nabla)\uvec=S\wvec\). Testing~\eqref{eq:NSE_vort} against \(|\wvec|^{p-2}\wvec\) and letting \(p\to\infty\) produces \(\frac{d}{dt}\log\|\wvec(t)\|_{L^\infty}\le\|S(t)\|_{L^\infty}\). Integrating and applying~\eqref{eq:FormBstrain} bounds \(\|\wvec\|_{L^\infty}\) exponentially. The log-Sobolev bound
 \[
 \|\nabla\uvec(t)\|_{L^\infty}\le C\Bigl(1+\|\wvec(t)\|_{L^\infty}\log\bigl(e+\|\uvec(t)\|_{H^s}\bigr)+\|\wvec(t)\|_{L^2}\Bigr)
 \]

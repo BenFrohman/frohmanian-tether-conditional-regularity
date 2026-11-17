@@ -31,7 +31,6 @@ elab "#strict_library_audit" : command => do
   let env ← getEnv
   let std : List Name := [``propext, ``Classical.choice, ``Quot.sound]
   let prefixes : List Name := [`FrohmanianTetherConditional]
-  let excluded : List Name := [`FrohmanianTetherConditional.ClassicalNSOpenTarget]
   let mut nThm := 0
   let mut nDecl := 0
   let mut mods : Array Name := #[]
@@ -40,7 +39,6 @@ elab "#strict_library_audit" : command => do
     let some idx := env.getModuleIdxFor? c | continue
     let mod := env.header.moduleNames[idx.toNat]!
     unless prefixes.any (fun p => p.isPrefixOf mod) do continue
-    if excluded.contains mod then continue
     if c.isInternal then continue
     unless mods.contains mod do mods := mods.push mod
     nDecl := nDecl + 1
@@ -54,8 +52,6 @@ elab "#strict_library_audit" : command => do
         bad := bad.push s!"{c} ({mod}) depends on nonstandard axiom {a}"
   for m in (mods.map toString).qsort (· < ·) do
     IO.println s!"STRICT AUDIT MODULE: {m}"
-  for m in excluded do
-    IO.println s!"STRICT AUDIT EXCLUDED MODULE: {m}"
   IO.println s!"STRICT AUDIT SUMMARY: modules: {mods.size}; declarations: {nDecl}; theorems: {nThm}; violations: {bad.size}"
   if nDecl == 0 then
     throwError "strict axiom audit found no declarations (vacuous audit)"

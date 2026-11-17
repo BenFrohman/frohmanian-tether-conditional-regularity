@@ -522,4 +522,11 @@ theorem formB_Hs_bound {HsR : ℝ → (E3 → E3) → ℝ} {s C_s : ℝ} (kp : K
   exact le_trans (hG t ht)
     (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hβ_int_le) (kp.HsR_nonneg u0))
 
+
+/-- The conditional analytic-bridge theorem with all arguments explicit.
+This is the statement locked by the Truth Gate against the Unified paper. -/
+theorem analyticBridge_of_formB_forall :
+    ∀ (C_star : ℝ → ℝ), HypothesisB C_star → BKMCriterion → AnalyticBridgeStatement :=
+  fun _ hB bkm => analyticBridge_of_formB hB bkm
+
 end ClassicalNS

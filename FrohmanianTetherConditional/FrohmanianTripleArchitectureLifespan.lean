@@ -47,7 +47,7 @@ structure NavierStokesUnifiedData where
   bkm_vorticity_criterion :
     (∀ T > 0, ∃ C_ω : ℝ, ∀ t ∈ Icc 0 T, ENNReal.ofReal t < Tstar →
       (∫ τ in (0 : ℝ)..t, vorticitySup τ) ≤ C_ω) → Tstar = ⊤
-  /-- Regularity and `M' ≤ S·M` only on compact subintervals of the lifespan. -/
+  /-- Regularity and `d/dt ‖ω‖_{L∞} ≤ ‖S‖_{L∞}·‖ω‖_{L∞}` only on compact subintervals of the lifespan. -/
   differential_bounds : ∀ T > 0, ENNReal.ofReal T < Tstar →
     (∀ t ∈ Icc 0 T, DifferentiableAt ℝ vorticitySup t) ∧
     (ContinuousOn vorticitySup (Icc 0 T)) ∧
@@ -90,9 +90,9 @@ theorem hypothesisB_implies_clayStatementB (sol : NavierStokesUnifiedData)
   apply sol.bkm_vorticity_criterion
   intro T hT
   obtain ⟨C, hC⟩ := hB T hT
-  set M := |sol.vorticitySup 0| * Real.exp C
-  have hM : 0 ≤ M := mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
-  refine ⟨M * T, fun t ht hlife => ?_⟩
+  set vorticitySupBound := |sol.vorticitySup 0| * Real.exp C
+  have hM : 0 ≤ vorticitySupBound := mul_nonneg (abs_nonneg _) (Real.exp_pos _).le
+  refine ⟨vorticitySupBound * T, fun t ht hlife => ?_⟩
   rcases eq_or_lt_of_le ht.1 with h0 | htpos
   · subst h0
     simp only [integral_same]
@@ -101,7 +101,7 @@ theorem hypothesisB_implies_clayStatementB (sol : NavierStokesUnifiedData)
     have h0life : ENNReal.ofReal 0 < sol.Tstar :=
       lt_of_le_of_lt (ENNReal.ofReal_le_ofReal ht.1) hlife
     have hM0 : 0 ≤ sol.vorticitySup 0 := sol.vorticity_nonneg 0 le_rfl h0life
-    have hptw : ∀ τ ∈ Icc 0 t, sol.vorticitySup τ ≤ M := by
+    have hptw : ∀ τ ∈ Icc 0 t, sol.vorticitySup τ ≤ vorticitySupBound := by
       intro τ hτ
       have hG := FrohmanianTripleArchitecture.gronwall_differential_bound htpos.le hDiff hSC hR τ hτ
       have hτlife : ENNReal.ofReal τ < sol.Tstar :=
@@ -111,16 +111,16 @@ theorem hypothesisB_implies_clayStatementB (sol : NavierStokesUnifiedData)
           ≤ sol.vorticitySup 0 * Real.exp (∫ r in (0 : ℝ)..τ, sol.strainSup r) := hG
         _ ≤ sol.vorticitySup 0 * Real.exp C :=
             mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hCτ) hM0
-        _ ≤ M := mul_le_mul_of_nonneg_right (le_abs_self _) (Real.exp_pos _).le
+        _ ≤ vorticitySupBound := mul_le_mul_of_nonneg_right (le_abs_self _) (Real.exp_pos _).le
     have hInt : IntervalIntegrable sol.vorticitySup volume 0 t := by
       have hc : ContinuousOn sol.vorticitySup (uIcc 0 t) := by
         simpa [uIcc_of_le ht.1] using hVC
       exact hc.intervalIntegrable
     calc ∫ τ in (0 : ℝ)..t, sol.vorticitySup τ
-        ≤ ∫ _ in (0 : ℝ)..t, M :=
+        ≤ ∫ _ in (0 : ℝ)..t, vorticitySupBound :=
           integral_mono_on ht.1 hInt intervalIntegral.intervalIntegrable_const hptw
-      _ = M * t := by simp [mul_comm]
-      _ ≤ M * T := mul_le_mul_of_nonneg_left ht.2 hM
+      _ = vorticitySupBound * t := by simp [mul_comm]
+      _ ≤ vorticitySupBound * T := mul_le_mul_of_nonneg_left ht.2 hM
 
 /-- CONDITIONAL (on the cited BKM field): the three statements are equivalent. -/
 theorem three_way_equivalence (sol : NavierStokesUnifiedData) :
@@ -164,7 +164,7 @@ lemma integral_inv_one_sub {t : ℝ} (ht : t < 1) :
   simp only at h
   rw [h, sub_zero, integral_inv_of_pos (by linarith) one_pos]
 
-/-- Blow-up model: `T⋆ = 1`, `‖ω‖_∞ = ‖S‖_∞ = (1 - t)⁻¹` (so `M' = S·M`). -/
+/-- Blow-up model: `T⋆ = 1`, `‖ω‖_∞ = ‖S‖_∞ = (1 - t)⁻¹` (so `d/dt ‖ω‖_{L∞} = ‖S‖_{L∞}·‖ω‖_{L∞}`). -/
 def blowupModel : NavierStokesUnifiedData where
   Tstar := 1
   vorticitySup := fun t => (1 - t)⁻¹

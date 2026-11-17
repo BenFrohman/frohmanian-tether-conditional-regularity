@@ -1,0 +1,43 @@
+warning: mathlib: repository '/workspace/tetherrate-verify-2026-11-16/frohmanian-tether-conditional-regularity/.lake/packages/mathlib' has local changes
+'FrohmanianTripleArchitecture.projPerp_self' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.inner_projPerp_self' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.tether_degenerate_H' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.tether_symmetric' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.tether_nonpos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.totalMetriplectic_symm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.totalMetriplectic_flow_equals_unmodified_NS' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FrohmanianTripleArchitecture.abs_dot3_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.triple_product_cycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.abs_alignmentKernel_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.constantin_fefferman_desingularization' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FrohmanianTripleArchitecture.gronwall_differential_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.hypothesisB_implies_clayStatementB' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FrohmanianTripleArchitecture.three_way_equivalence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.sym_part_frobenius_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.sym_part_frobenius_le_sqrt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.antisym_mul_curl_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.grad_mul_curl_eq_sym_mul_curl' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.quadform_le_frobenius_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.gronwall_linear' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.cutoff_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.cutoff_le_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.hasFDerivAt_cutoff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.norm_fderiv_cutoff_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.comoving_cutoff_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.holder_triple_pasted_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.holder_pair' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.interp_theta' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.young_pair' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.serrin_scaling' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.amplitude_refutes_rate_sup' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.amplitude_refutes_rate_enstrophy' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.amplitude_refutes_rate_enstrophy_U' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.deriv_le_of_touch' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.rate_false_of_touch' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.not_uniform_rate_sup' depends on axioms: [propext, Classical.choice, Quot.sound]

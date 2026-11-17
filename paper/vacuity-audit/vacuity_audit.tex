@@ -286,7 +286,7 @@ $\Tstar=1$, $\|\omega\|_\infty(t)=\|S\|_\infty(t)=(1-t)^{-1}$ satisfies every fi
 \end{proposition}
 \begin{proof}
 For $0\le t\le T<1$: $(1-t)^{-1}\ge0$; it is differentiable with derivative
-$(1-t)^{-2}=S\cdot M$, so $M'\le SM$ holds with equality; both functions are continuous
+$(1-t)^{-2}=\|S\|_\infty(t)\,\|\omega\|_\infty(t)$, so $\frac{d}{dt}\|\omega\|_\infty\le\|S\|_\infty\|\omega\|_\infty$ holds with equality; both functions are continuous
 on $[0,T]$. For the BKM field we must show its premise fails. Given any $C$, put
 $a=e^{-(|C|+1)}\in(0,1)$ and $t=1-a\in[0,1)$. By the substitution $x=1-\tau$,
 $\int_0^t(1-\tau)^{-1}d\tau=\int_{a}^{1}x^{-1}dx=\log(1/a)=|C|+1>C$. So no $C$ bounds

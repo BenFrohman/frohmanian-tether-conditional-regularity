@@ -124,9 +124,9 @@ Inserting this bound into the Kato energy inequality
 \[
 \frac{d}{dt}\|\mathbf{u}\|_{H^s}^2\le C_s\|\nabla\mathbf{u}\|_{L^\infty}\|\mathbf{u}\|_{H^s}^2
 \]
-and setting \(Y(t):=\log(e+\|\mathbf{u}\|_{H^s}^2)\) produces
+produces
 \[
-\frac{d}{dt}Y(t)\le C'\bigl(1+\|\boldsymbol{\omega}(t)\|_{L^2}+\|\boldsymbol{\omega}(t)\|_{L^\infty}\bigr)Y(t).
+\frac{d}{dt}\log\bigl(e+\|\mathbf{u}(t)\|_{H^s}^2\bigr)\le C'\bigl(1+\|\boldsymbol{\omega}(t)\|_{L^2}+\|\boldsymbol{\omega}(t)\|_{L^\infty}\bigr)\log\bigl(e+\|\mathbf{u}(t)\|_{H^s}^2\bigr).
 \]
 Gronwall's lemma, together with the unconditional \(L^2_t L^2_x\) enstrophy bound from the energy inequality, shows that finiteness of \(\int_0^T\|\boldsymbol{\omega}\|_{L^\infty}\,dt\) keeps \(\|\mathbf{u}(T)\|_{H^s}\) finite. By the local existence theory of Pillar~I the solution can be continued past \(T\). (We state only this one-directional implication; the converse ``blow-up forces the integral to diverge'' for smooth solutions is classical but is not needed for the continuation applications recorded here.)
 \end{proof}

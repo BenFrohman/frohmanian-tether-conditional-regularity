@@ -1,0 +1,6 @@
+warning: mathlib: repository '/workspace/tetherrate-verify-2026-11-16/frohmanian-tether-conditional-regularity/.lake/packages/mathlib' has local changes
+⚠ [8270/8274] Replayed FrohmanianTetherConditional.ClassicalNSOpenTarget
+warning: FrohmanianTetherConditional/ClassicalNSOpenTarget.lean:31:8: declaration uses `sorry`
+✔ [8272/8274] Built FrohmanianTetherConditional.ClassicalEstimatePieces (178s)
+✔ [8273/8274] Built FrohmanianTetherConditional (21s)
+Build completed successfully (8274 jobs).

@@ -1,0 +1,110 @@
+== forbidden-token scan ==
+OK: no sorry/admit/axiom/native_decide/opaque/unsafe (ClassicalNSOpenTarget.lean open-target excluded)
+== #print axioms (all declarations listed in scripts/PrintAxioms.lean) ==
+warning: mathlib: repository '/workspace/tetherrate-verify-2026-11-16/frohmanian-tether-conditional-regularity/.lake/packages/mathlib' has local changes
+'FrohmanianTripleArchitecture.projPerp_self' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.inner_projPerp_self' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.tether_degenerate_H' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.tether_symmetric' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.tether_nonpos' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.totalMetriplectic_symm' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.totalMetriplectic_flow_equals_unmodified_NS' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FrohmanianTripleArchitecture.abs_dot3_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.triple_product_cycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.abs_alignmentKernel_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.constantin_fefferman_desingularization' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FrohmanianTripleArchitecture.gronwall_differential_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitecture.hypothesisB_implies_clayStatementB' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FrohmanianTripleArchitecture.three_way_equivalence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.sym_part_frobenius_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.sym_part_frobenius_le_sqrt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.antisym_mul_curl_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.grad_mul_curl_eq_sym_mul_curl' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.quadform_le_frobenius_mul_sq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.gronwall_linear' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.cutoff_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.cutoff_le_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.hasFDerivAt_cutoff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.norm_fderiv_cutoff_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.comoving_cutoff_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.holder_triple_pasted_sum' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.holder_pair' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.interp_theta' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.young_pair' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.serrin_scaling' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.amplitude_refutes_rate_sup' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.amplitude_refutes_rate_enstrophy' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.amplitude_refutes_rate_enstrophy_U' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.deriv_le_of_touch' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.rate_false_of_touch' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalEstimatePieces.not_uniform_rate_sup' depends on axioms: [propext, Classical.choice, Quot.sound]
+== #print axioms (all declarations listed in scripts/PrintAxiomsBridge.lean) ==
+warning: mathlib: repository '/workspace/tetherrate-verify-2026-11-16/frohmanian-tether-conditional-regularity/.lake/packages/mathlib' has local changes
+'clayB_implies_bkm_integrable' depends on axioms: [propext, Classical.choice, Quot.sound]
+'integral_gronwall_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticBridgeRefutation.analytic_bridge_unconditional_false' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'AnalyticBridgeRefutation.analytic_bridge_target_statement_false' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'AnalyticBridgeRefutation.analytic_bridge_fails_at_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticBridgeRefutation.not_nonempty_BKMCriterion' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticBridgeRefutation.BKMCriterion_elim' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticBridgeRefutation.hypothesisB_holds' depends on axioms: [propext, Classical.choice, Quot.sound]
+'AnalyticBridgeRefutation.clayStatementB_holds' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.isCompact_cube' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.gradLinf_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.const_isClassicalNS' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.zeroSolution_global' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.nonempty_NSSolution_zero' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.zero_field_is_global' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.old_counterexample_invalid' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.linear_in_time_not_NS' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.gradLinf_continuousOn' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.bkm_conclusion_of_global' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.kp_trivial' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.analyticBridge_conclusion_zeroSolution' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.global_implies_gradIntegral_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.gradIntegral_finite_implies_global' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.clayB_iff_gradIntegral_finite' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.formB_implies_clayB' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.analyticBridge_of_formB' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.gronwall_differential_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.integral_gronwall_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ClassicalNS.formB_Hs_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitectureLifespan.primitive_bounded' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitectureLifespan.hypothesisB_implies_clayStatementB' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FrohmanianTripleArchitectureLifespan.three_way_equivalence' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitectureLifespan.clayStatementB_zeroModel' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FrohmanianTripleArchitectureLifespan.integral_inv_one_sub' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitectureLifespan.blowupModel_not_clay' depends on axioms: [propext, Classical.choice, Quot.sound]
+'FrohmanianTripleArchitectureLifespan.clayStatementB_not_automatic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FrohmanianTripleArchitectureLifespan.hypothesisB_not_automatic' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'FrohmanianTripleArchitectureLifespan.old_trivialization_fails' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+FrohmanianTetherConditional axiom certificate
+date_utc=2026-11-17T03:29:51Z
+toolchain=leanprover/lean4:v4.30.0-rc1
+mathlib_inputRev=v4.30.0-rc1
+declarations_audited=74
+allowed_axioms=propext,Classical.choice,Quot.sound
+result=PASS
+scope=conditional abstract algebra/Grönwall over assumed PDE structure fields; not Clay Statement B
+bridge_audit=LEGACY placeholder target refuted; ClassicalNS genuine NS encoding with non-vacuity lemmas; lifespan-corrected triple architecture; OPEN target ClassicalNS.analytic_bridge_unconditional (Clay B) NOT audited, NOT claimed
+OK: all 74 declarations use only propext, Classical.choice, Quot.sound

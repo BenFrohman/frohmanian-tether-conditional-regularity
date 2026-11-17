@@ -133,6 +133,52 @@ files:
 None of this proves anything about Navier–Stokes regularity. A write-up of how these
 defects were found is in `paper/vacuity-audit/`.
 
+## Classical estimate pieces and the cubic rate (Nov 16 2026)
+
+`FrohmanianTetherConditional/ClassicalEstimatePieces.lean` (namespace
+`ClassicalEstimatePieces`) proves the parts of the standard vorticity/strain toolkit
+that are within Mathlib's reach. All 22 declarations use only `propext`,
+`Classical.choice` and `Quot.sound`.
+
+- **Pointwise linear algebra.** `sym_part_frobenius_le`: ‖S‖_F ≤ ‖∇u‖_F.
+  `antisym_mul_curl_eq_zero`: Ωω = 0 for Ω = (∇u − ∇uᵀ)/2 and ω = curl u, so
+  `grad_mul_curl_eq_sym_mul_curl` gives (ω·∇)u = Sω.
+  `quadform_le_frobenius_mul_sq`: ⟨Sω, ω⟩ ≤ ‖S‖_F |ω|².
+- **Grönwall.** `gronwall_linear`: y′ ≤ a(t)y on [0, T] gives
+  y(T) ≤ y(0)·exp ∫₀ᵀ a.
+- **Cutoff φ = χ((x − x₀)/R).** `cutoff_nonneg` and `cutoff_le_one` give 0 ≤ φ ≤ 1.
+  `norm_fderiv_cutoff_le` gives ‖∇φ‖ ≤ ‖∇χ‖_∞/R. `comoving_cutoff_bound` gives
+  |(u(x) − u(x₀))·∇φ| ≤ 2C₁L on B(x₀, 2R), using the mean-value inequality.
+- **Exponents for the Lᵖ bootstrap.** `holder_pair` and `interp_theta`
+  (θ = 3/(2r)) cover ∫|S||ω|ᵖ ≤ ‖S‖_r ‖f‖²_{2r′} with f = |ω|^{p/2} and
+  L^{2r′} ⊂ [L², L⁶]. `young_pair` and `serrin_scaling` give s = 2r/(2r − 3), so
+  2/s + 3/r = 2 for 3/2 < r ≤ ∞. `holder_triple_pasted_sum` checks that the triple
+  (r/p, 2r/(r − 2p), 2r/r) does have reciprocals summing to 1.
+- **The cubic rate M′ ≤ C M² − κ M³ with constants not depending on the
+  amplitude.** `amplitude_refutes_rate_sup`, `amplitude_refutes_rate_enstrophy`,
+  `amplitude_refutes_rate_enstrophy_U`, `deriv_le_of_touch`, `rate_false_of_touch`
+  and `not_uniform_rate_sup` hold for the trigonometric family u₀ = A·U (see the
+  `ns-tether-key-estimate-refutation` repository). There M(0) = 6A and the touching
+  component has M′(0⁺) ≥ 6A(A − ν). For the enstrophy, E(0) = 80π³A² and
+  E′(0) = −176π³νA². So for every ν > 0, C and κ > 0, some amplitude A violates the
+  rate at t = 0. The vorticity-equation value at t = 0 and smoothness at t = 0 are
+  classical facts that enter as explicit hypotheses. If the constants may depend on
+  the datum, the rate is not refuted here. It implies the BKM ceiling, so for all
+  smooth data it would give Clay (B). It remains **OPEN**.
+
+**Cited, not formalized.** These classical results enter only as explicit
+hypotheses or docstring citations, never as axioms:
+
+- Calderón–Zygmund on T³: for mean-zero, divergence-free u,
+  ‖∇u‖_{Lᵖ(T³)} ≤ C_p‖ω‖_{Lᵖ(T³)} for 1 < p < ∞. This uses the multipliers
+  ξₖξₗ/|ξ|² on ℤ³∖{0} with the Marcinkiewicz multiplier theorem or transference
+  (Grafakos; Stein; Majda–Bertozzi).
+- The periodic Biot–Savart law u = curl(−Δ)⁻¹ω on mean-zero fields.
+- d/dt‖ω‖_∞ ≤ ‖S‖_∞‖ω‖_∞.
+- The BKM log-Sobolev inequality (Beale–Kato–Majda 1984; Kozono–Taniuchi 2000).
+- The Sobolev inequality ‖f‖₆ ≤ C(‖∇f‖₂ + ‖f‖₂) on T³.
+- Moser iteration.
+
 ## Build and check
 
 ```bash
@@ -155,6 +201,7 @@ on every push and pull request.
 | `FrohmanianTetherConditional/ClassicalNS.lean` | Genuine classical periodic NS solutions, maximal lifespan, BKM/Kato–Ponce as named cited hypotheses, non-vacuity lemmas |
 | `FrohmanianTetherConditional/ClassicalNSOpenTarget.lean` | The single OPEN Clay (B) target (one intentional `sorry`; excluded from scan and audits) |
 | `FrohmanianTetherConditional/FrohmanianTripleArchitectureLifespan.lean` | Lifespan-corrected `NavierStokesUnifiedData` with non-vacuity models |
+| `FrohmanianTetherConditional/ClassicalEstimatePieces.lean` | Strain/vorticity linear algebra, Grönwall, cutoff bounds, Lᵖ-bootstrap exponents, amplitude refutation of the cubic rate with amplitude-independent constants |
 | `paper/vacuity-audit/` | Side note (LaTeX + PDF + draft Zenodo metadata) on these findings |
 | `FrohmanianTetherConditional.lean` | Library root |
 | `scripts/PrintAxioms.lean`, `scripts/PrintAxiomsBridge.lean`, `scripts/kernel_check.sh` | Axiom audits used by CI |

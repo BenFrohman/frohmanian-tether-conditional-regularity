@@ -5,6 +5,7 @@ Authors: Benjamin Stanley Frohman
 -/
 
 import FrohmanianTetherConditional.FrohmanianTripleArchitecture
+import FrohmanianTetherConditional.ClassicalEstimatePieces
 
 /-!
 # FrohmanianTetherConditional

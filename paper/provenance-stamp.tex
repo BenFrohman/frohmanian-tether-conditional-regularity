@@ -1,0 +1,14 @@
+% Copyright (c) 2026 Benjamin Stanley Frohman.
+% Stable Lean certificate identifiers from the committed lake-manifest.json
+% and lean-toolchain in this repository.
+% \CertCommit and \CertRunId are filled when the official PDF is compiled
+% against a certifying GitHub Actions run. Until then they remain the
+% placeholders below; values are never invented.
+\newcommand{\CertRepo}{https://github.com/BenFrohman/frohmanian-tether-conditional-regularity}
+\newcommand{\CertCommit}{PENDING-CERTIFYING-COMMIT}
+\newcommand{\CertRunId}{PENDING-CERTIFYING-CI-RUN}
+\newcommand{\CertManifestSha}{0024851d12fc7f5986ced05ff51d014f0b8b4df728bb8f9cef2812126a21ebb2}
+\newcommand{\CertToolchain}{leanprover/lean4:v4.30.0-rc1}
+\newcommand{\CertMathlibRev}{0c154d67103f74be3a0f2c509f72ccbf5be9f2a7}
+\newcommand{\CertMathlibInputRev}{v4.30.0-rc1}
+\newcommand{\CertRebuild}{lake exe cache get \&\& lake build \&\& ./scripts/kernel\_check.sh}

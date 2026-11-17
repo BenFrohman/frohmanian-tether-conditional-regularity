@@ -1,0 +1,23 @@
+% Copyright (c) 2026 Benjamin Stanley Frohman. Shared Lean kernel certificate block.
+\noindent\textbf{Lean kernel certificate.}
+This paper is accompanied by a Lean~4 kernel certificate produced from this
+repository's own committed \texttt{lake-manifest.json}.
+The certificate is the Lean kernel's own check, together with
+\texttt{\#print axioms}. A hand-written CI summary is not a certificate.
+This work is strictly conditional and does not resolve the Clay Millennium Problem.
+{\small\raggedright
+\begin{itemize}
+\item Repository: \url{\CertRepo}
+\item Git commit:\\
+\texttt{\CertCommit}
+\item GitHub Actions run (lake build and kernel check):\\
+\texttt{\CertRunId}
+\item \texttt{lake-manifest.json} SHA-256:\\
+\texttt{\CertManifestSha}
+\item Toolchain: \texttt{\CertToolchain}
+\item Mathlib revision:\\
+\texttt{\CertMathlibRev} (\texttt{\CertMathlibInputRev})
+\item Rebuild command:\\
+\texttt{\CertRebuild}
+\end{itemize}
+\par}

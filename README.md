@@ -243,6 +243,8 @@ on every push and pull request.
 
 Copyright 2026 Benjamin Stanley Frohman.
 
+Any use, reproduction, or redistribution, in whole or in part, must retain the [NOTICE](NOTICE) file and credit Benjamin Stanley Frohman (ORCID 0009-0006-7068-3718) as the author. If you use this work in a publication, please cite it (see [CITATION.cff](CITATION.cff) and the Zenodo DOI).
+
 ## Citation
 
 See `CITATION.cff`. Author: Frohman, Benjamin Stanley

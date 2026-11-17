@@ -1,4 +1,4 @@
-% Copyright 2026 Benjamin Stanley Frohman. CC BY 4.0 (see LICENSE-paper).
+% Copyright (c) 2026 Benjamin Stanley Frohman. The paper is licensed under CC BY 4.0 (see LICENSE-paper). Lean code is Apache-2.0.
 \documentclass[11pt]{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{amsmath,amssymb,amsthm}
@@ -28,15 +28,19 @@ Navier--Stokes regularity}
 \href{mailto:frohmanbenjamin@gmail.com}{frohmanbenjamin@gmail.com}}
 \date{November 2026}
 
+\input{../provenance-stamp.tex}
+
 \begin{document}
 \maketitle
+\noindent{\small Copyright (c) 2026 Benjamin Stanley Frohman. The paper (this PDF and its \LaTeX\ source) is licensed under CC BY~4.0. Lean code in the companion repository is licensed under the Apache License~2.0.}\par\medskip
+
 
 \begin{abstract}
 We report defects found in the Lean~4 companion formalization of two preprints on
 conditional regularity for the three-dimensional incompressible Navier--Stokes
 equations on the torus $\T$
-(\href{https://doi.org/10.5281/zenodo.24079623}{10.5281/zenodo.24079623},
-\href{https://doi.org/10.5281/zenodo.24080310}{10.5281/zenodo.24080310}).
+(\href{https://doi.org/10.5281/zenodo.24079622}{10.5281/zenodo.24079622},
+\href{https://doi.org/10.5281/zenodo.24080309}{10.5281/zenodo.24080309}).
 An attempt to prove the stated ``analytic bridge'' target led instead to a
 kernel-checked proof of its \emph{negation}: the solution object did not encode the
 equations, so a zero velocity field with lifespan $1$ counted as a solution. The same
@@ -323,17 +327,15 @@ proved; Hypothesis~B is of Clay strength and its truth is open, so theorems cond
 it are conditional on an open assumption.
 
 \section{Reproducibility}
-\begin{itemize}
-\item Repository: \url{https://github.com/BenFrohman/frohmanian-tether-conditional-regularity},
-branch \lean{analytic-bridge-refutation}; Lean sources at commit
-\lean{cb927bd302b144982bc2b277423e1aeb9a8b7527}. The first refutation (against the
+The historical source commits of the original refutation remain recorded here:
+Lean sources were first fixed at commit
+\lean{cb927bd302b144982bc2b277423e1aeb9a8b7527}; the first refutation (against the
 literal \lean{type\_of\%} of the legacy declaration) is commit \lean{1a89946}.
-\item Toolchain \lean{leanprover/lean4:v4.30.0-rc1}; Mathlib \lean{v4.30.0-rc1} (pinned
-in \lean{lean-toolchain}, \lean{lakefile.toml}, \lean{lake-manifest.json}).
-\item One-command rebuild and audit:
-\begin{lstlisting}
-lake exe cache get && lake build && ./scripts/kernel_check.sh
-\end{lstlisting}
+The Lean kernel certificate for \emph{this} version of the note is the one below.
+
+\input{../certificate-block.tex}
+
+\begin{itemize}
 \item Audit result: 52 declarations (14 in \lean{scripts/PrintAxioms.lean}, 38 in
 \lean{scripts/PrintAxiomsBridge.lean}), each reported as
 \begin{lstlisting}
@@ -351,8 +353,8 @@ the 3-D Euler equations, Comm.\ Math.\ Phys.\ 94 (1984), 61--66.
 Comm.\ Pure Appl.\ Math.\ 41 (1988), 891--907.
 \item C.~L. Fefferman, Existence and smoothness of the Navier--Stokes equation, Clay
 Mathematics Institute Millennium Problem description (2000).
-\item B.~S. Frohman, Frohmanian Tether draft, \href{https://doi.org/10.5281/zenodo.24079623}{10.5281/zenodo.24079623};
-Three Pillars draft, \href{https://doi.org/10.5281/zenodo.24080310}{10.5281/zenodo.24080310}.
+\item B.~S. Frohman, Geometric Phase-Space Completion and Conditional Global Regularity for the 3D Incompressible Navier--Stokes Equations, \href{https://doi.org/10.5281/zenodo.24079622}{10.5281/zenodo.24079622};
+Three Pillars of 3D Incompressible Navier--Stokes Theory, \href{https://doi.org/10.5281/zenodo.24080309}{10.5281/zenodo.24080309}.
 \item The Mathlib Community, The Lean mathematical library, CPP 2020.
 \end{itemize}
 \end{document}

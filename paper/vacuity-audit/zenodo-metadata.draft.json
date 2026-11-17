@@ -1,6 +1,5 @@
 {
-  "_status": "DRAFT ONLY - not uploaded. No Zenodo deposit has been created or published. Pending author approval.",
-  "title": "Vacuity and model-adequacy findings in a Lean formalization of conditional Navier–Stokes regularity",
+  "title": "Vacuity and model-adequacy findings in a Lean formalization of conditional Navier\u2013Stokes regularity",
   "upload_type": "publication",
   "publication_type": "other",
   "creators": [
@@ -23,16 +22,16 @@
     "Beale-Kato-Majda",
     "erratum"
   ],
-  "description": "<p>Side note reporting defects found in the Lean 4 companion formalization of two preprints on conditional Navier–Stokes regularity on the 3-torus (10.5281/zenodo.24079623, 10.5281/zenodo.24080310). An attempted proof of the stated analytic-bridge target produced a kernel-checked proof of its negation: the legacy solution object did not encode the equations (zero field with lifespan 1). The same object makes the legacy cited Beale–Kato–Majda hypothesis uninhabitable, so four conditional theorems were vacuously true; separately, the abstract data structure behind the three-way equivalence presupposed global regularity. The note gives the exact Lean theorems, the corrected encoding (genuine classical solutions on a maximal lifespan, BKM and Kato–Ponce as named cited hypotheses, non-vacuity lemmas) and a reproducibility section.</p><p><strong>This is not a solution of the Clay Millennium Problem and proves nothing new about Navier–Stokes regularity.</strong> Clay Statement (B) remains open and is a single explicitly labelled open target in the repository.</p><p>Lean 4 v4.30.0-rc1, Mathlib v4.30.0-rc1; 52 audited declarations, axioms propext, Classical.choice, Quot.sound only.</p>",
+  "description": "<p>Copyright (c) 2026 Benjamin Stanley Frohman (ORCID 0009-0006-7068-3718). The paper is licensed under CC BY 4.0. Lean code is licensed under Apache-2.0.</p><p>Side note reporting defects found in the Lean 4 companion formalization of two preprints on conditional Navier\u2013Stokes regularity on the 3-torus (10.5281/zenodo.24079622, 10.5281/zenodo.24080309). An attempted proof of the stated analytic-bridge target produced a kernel-checked proof of its negation: the legacy solution object did not encode the equations (zero field with lifespan 1). The same object makes the legacy cited Beale\u2013Kato\u2013Majda hypothesis uninhabitable, so four conditional theorems were vacuously true; separately, the abstract data structure behind the three-way equivalence presupposed global regularity. The note gives the exact Lean theorems, the corrected encoding (genuine classical solutions on a maximal lifespan, BKM and Kato\u2013Ponce as named cited hypotheses, non-vacuity lemmas) and a reproducibility section.</p><p><strong>This is not a solution of the Clay Millennium Problem and proves nothing new about Navier\u2013Stokes regularity.</strong> Clay Statement (B) remains open and is a single explicitly labelled open target in the repository.</p><p>Lean 4 v4.30.0-rc1, Mathlib v4.30.0-rc1; 52 audited declarations, axioms propext, Classical.choice, Quot.sound only.</p>",
   "related_identifiers": [
     {
-      "identifier": "10.5281/zenodo.24079623",
+      "identifier": "10.5281/zenodo.24079622",
       "relation": "isSupplementTo",
       "scheme": "doi",
       "resource_type": "publication-preprint"
     },
     {
-      "identifier": "10.5281/zenodo.24080310",
+      "identifier": "10.5281/zenodo.24080309",
       "relation": "isSupplementTo",
       "scheme": "doi",
       "resource_type": "publication-preprint"
@@ -44,5 +43,5 @@
       "resource_type": "software"
     }
   ],
-  "notes": "Lean sources: commit cb927bd302b144982bc2b277423e1aeb9a8b7527 on branch analytic-bridge-refutation (PR #3, unmerged at drafting time). Paper licensed CC BY 4.0 (LICENSE-paper); code Apache-2.0."
+  "notes": "Copyright (c) 2026 Benjamin Stanley Frohman (ORCID 0009-0006-7068-3718). The paper (LaTeX source and PDF) is licensed under CC BY 4.0; Lean code is licensed under Apache-2.0. This work is an audit of formalization defects and does not resolve the Clay Millennium Problem."
 }

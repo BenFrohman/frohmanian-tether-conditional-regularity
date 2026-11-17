@@ -14,12 +14,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
+      - name: Install elan (toolchain pinned by lean-toolchain)
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Collect lake certificate environment
+        if: always()
+        run: bash scripts/collect_lake_certificate.sh cert-bundle
+      - name: Get Mathlib cache
+        run: lake exe cache get
+      - name: lake build
+        run: |
+          set -o pipefail
+          mkdir -p cert-bundle
+          lake build 2>&1 | tee cert-bundle/lake-build.log
+      - name: Finalize certificate bundle
+        if: always()
+        run: bash scripts/finalize_lake_certificate.sh cert-bundle
+      - name: Upload lake certificate bundle
+        if: always()
+        uses: actions/upload-artifact@v4
         with:
-          build: true
-          test: false
-          lint: false
-          use-mathlib-cache: true
+          name: lake-certificate-build-${{ github.event_name }}-${{ github.run_id }}
+          path: cert-bundle/
+          if-no-files-found: warn
 
   kernel-check:
     name: kernel and axiom check
@@ -27,12 +45,20 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v4
-      - uses: leanprover/lean-action@v1
-        with:
-          build: true
-          test: false
-          lint: false
-          use-mathlib-cache: true
+      - name: Install elan (toolchain pinned by lean-toolchain)
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: Collect lake certificate environment
+        if: always()
+        run: bash scripts/collect_lake_certificate.sh cert-bundle
+      - name: Get Mathlib cache
+        run: lake exe cache get
+      - name: lake build
+        run: |
+          set -o pipefail
+          mkdir -p cert-bundle
+          lake build 2>&1 | tee cert-bundle/lake-build.log
       - name: Forbidden tokens and #print axioms
         run: ./scripts/kernel_check.sh
       - name: Forbidden tokens, comment-aware, with audit coverage check
@@ -45,12 +71,34 @@ jobs:
       - name: Strict whole-library axiom audit (every declaration, not only listed ones)
         run: |
           set -o pipefail
+          mkdir -p certificates
           for f in StrictAxiomAudit StrictAxiomAuditBridge; do
             lake env lean scripts/$f.lean 2>&1 | tee certificates/$f.txt
             grep -q '^STRICT AUDIT PASS' certificates/$f.txt
             if grep -v '^STRICT AUDIT PASS' certificates/$f.txt | grep -qE 'STRICT AUDIT FAIL|sorryAx|ofReduceBool|error:'; then exit 1; fi
             grep '^STRICT AUDIT SUMMARY' certificates/$f.txt
           done
+      - name: Copy axiom outputs into the certificate bundle
+        if: always()
+        run: |
+          mkdir -p cert-bundle
+          for f in \
+            certificates/axioms.log \
+            certificates/axioms-bridge.log \
+            certificates/SUMMARY.txt \
+            certificates/StrictAxiomAudit.txt \
+            certificates/StrictAxiomAuditBridge.txt
+          do
+            if [ -f "$f" ]; then cp -a "$f" cert-bundle/; fi
+          done
+          bash scripts/finalize_lake_certificate.sh cert-bundle
+      - name: Upload lake certificate bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lake-certificate-kernel-${{ github.event_name }}-${{ github.run_id }}
+          path: cert-bundle/
+          if-no-files-found: warn
       - name: Upload axiom certificate
         if: always()
         uses: actions/upload-artifact@v4

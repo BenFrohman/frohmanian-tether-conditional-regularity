@@ -28,8 +28,11 @@
 \title[Metriplectic Phase-Space Completion for 3D Navier--Stokes]{Geometric Phase-Space Completion and Conditional Global Regularity for the 3D Incompressible Navier--Stokes Equations}
 
 \author{Benjamin Stanley Frohman}
-\thanks{\textcopyright\ 2026 Benjamin Stanley Frohman. All rights reserved except as granted by the Apache-2.0 license under which this work is distributed.}
+\address{Independent Researcher, Texas, United States}
+\thanks{Independent Researcher, Texas, United States. ORCID \href{https://orcid.org/0009-0006-7068-3718}{0009-0006-7068-3718}. Copyright (c) 2026 Benjamin Stanley Frohman. The paper (this PDF and its \LaTeX\ source) is licensed under CC BY~4.0. Lean code in the companion repository is licensed under the Apache License~2.0.}
 \date{\today}
+
+\input{provenance-stamp.tex}
 
 \begin{document}
 
@@ -38,6 +41,8 @@ Let \(\uvec_0\in C^\infty(\T^3;\R^3)\) be a smooth, divergence-free initial velo
 \end{abstract}
 
 \maketitle
+\noindent{\small Copyright (c) 2026 Benjamin Stanley Frohman. The paper (this PDF and its \LaTeX\ source) is licensed under CC BY~4.0. Lean code in the companion repository is licensed under the Apache License~2.0.}\par\medskip
+
 
 \section{Statement of the Problem: The Clay Millennium Problem and the Supercriticality Barrier}
 
@@ -260,6 +265,8 @@ As demonstrated by Theorems~\ref{thm:A}--\ref{thm:C}, the large-data global regu
 
 \subsection{Directions for Geometric-Coherence Analysis}
 While the current degenerate bracket \(B(F,G)\) preserves the unmodified flow without injecting artificial damping, its projected structure \(\Pi_{\uvec}\) points toward geometric regularity criteria. Expressing the strain via the Constantin--Fefferman singular integral kernel~\cite{ConstantinFefferman1993} shows that vortex stretching cancels when the vorticity direction \(\boldsymbol{\xi}=\wvec/|\wvec|\) remains Lipschitz-coherent in intense regions. Whether localized coherence bounds on \(\boldsymbol{\xi}\) can be coupled to \([F,G]_{\mathrm{diss}}\) to bridge the scaling gap for arbitrary large data remains open.
+
+\input{certificate-block.tex}
 
 \bibliographystyle{amsplain}
 \bibliography{references}

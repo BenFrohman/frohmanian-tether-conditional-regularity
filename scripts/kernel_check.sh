@@ -13,15 +13,16 @@ echo "== forbidden-token scan (every tracked .lean file; no exclusions) =="
 python3 scripts/check_forbidden_tokens.py --from-git
 
 audit() {
-  # $1 = audit .lean file, $2 = log file
-  local file="$1" log="$2" out expected got bad
+  # $1 = audit .lean file, $2 = log file (also written as certificates/<stem>.log)
+  local file="$1" log="$2" out expected got bad stem
+  stem="$(basename "$file" .lean)"
   echo "== #print axioms (all declarations listed in $file) =="
   out="$(lake env lean "$file" 2>&1)" || {
-    printf '%s\n' "$out" | tee "$log"
+    { echo "ELABORATED $file"; printf '%s\n' "$out"; } | tee "$log" "certificates/${stem}.log"
     echo "FAIL: lake env lean $file"
     exit 1
   }
-  printf '%s\n' "$out" | tee "$log"
+  { echo "ELABORATED $file"; printf '%s\n' "$out"; } | tee "$log" "certificates/${stem}.log"
 
   # Fail on sorry warnings / sorryAx / lean errors in the audit output
   if printf '%s\n' "$out" | grep -qiE 'sorryAx|\bsorry\b|error:'; then
@@ -64,11 +65,21 @@ echo "OK: all $expected declarations use only propext, Classical.choice, Quot.so
 
 echo "== Truth Gate kernel audits =="
 for f in TruthGateAudit TruthGateAuditVacuity TruthGateAuditPillars TruthGateAuditUnifiedHs; do
-  lake env lean "scripts/$f.lean" 2>&1 | tee "certificates/$f.txt"
+  { echo "ELABORATED scripts/$f.lean"; lake env lean "scripts/$f.lean" 2>&1; } | tee "certificates/$f.txt"
   grep -q 'TRUTH GATE AUDIT PASS' "certificates/$f.txt"
   if grep -qE 'TRUTH GATE FAIL|error:|sorryAx' "certificates/$f.txt"; then
     echo "FAIL: Truth Gate audit $f"; exit 1
   fi
+done
+
+echo "== Strict whole-library axiom audit (every declaration, not only listed ones) =="
+for f in StrictAxiomAudit StrictAxiomAuditBridge; do
+  { echo "ELABORATED scripts/$f.lean"; lake env lean "scripts/$f.lean" 2>&1; } | tee "certificates/$f.txt"
+  grep -q '^STRICT AUDIT PASS' "certificates/$f.txt"
+  if grep -v '^STRICT AUDIT PASS' "certificates/$f.txt" | grep -qE 'STRICT AUDIT FAIL|sorryAx|ofReduceBool|error:'; then
+    echo "FAIL: strict axiom audit $f"; exit 1
+  fi
+  grep '^STRICT AUDIT SUMMARY' "certificates/$f.txt" || true
 done
 
 echo "== coverage: every tracked .lean file must be built and scanned =="

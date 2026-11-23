@@ -98,6 +98,13 @@ def main() -> int:
             # leftover carve-out wording
             fail(f"{rel} still describes a sorry exemption outside draft dirs")
 
+        # A source-only scan of scripts/*.lean is a skip: those files must be elaborated.
+        if "--scripts-source-scan-ok" in body:
+            if rel == "scripts/check_lean_coverage.py" and "is a skip" in body and "FAIL:" in body:
+                pass  # hard-failure message that rejects the flag
+            else:
+                fail(f"{rel} uses --scripts-source-scan-ok (scripts must be elaborated, not only scanned)")
+
     if FAIL:
         print(f"NO-SKIP FAIL ({len(FAIL)} problems)")
         return 1

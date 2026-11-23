@@ -48,7 +48,13 @@ jobs:
           set -o pipefail
           python3 certificates/tools/sorry_scan.py 2>&1 | tee cert-out/sorry-scan.txt
           python3 scripts/check_forbidden_tokens.py --from-git
-          python3 scripts/check_lean_coverage.py --build-log cert-out/build.log --scripts-source-scan-ok
+      - name: Elaborate every scripts/*.lean file and confirm coverage
+        run: |
+          set -o pipefail
+          mkdir -p cert-bundle certificates
+          cp -a cert-out/build.log cert-bundle/lake-build.log
+          BUILD_LOG=cert-out/build.log ./scripts/kernel_check.sh
+          cp -a certificates/*.log certificates/*.txt cert-out/ 2>/dev/null || true
       - name: '#print axioms (collectAxioms) for every theorem in the built modules'
         run: |
           set -o pipefail

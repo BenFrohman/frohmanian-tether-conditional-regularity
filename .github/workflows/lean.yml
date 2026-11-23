@@ -91,6 +91,8 @@ jobs:
           for f in \
             certificates/axioms.log \
             certificates/axioms-bridge.log \
+            certificates/PrintAxioms.log \
+            certificates/PrintAxiomsBridge.log \
             certificates/SUMMARY.txt \
             certificates/StrictAxiomAudit.txt \
             certificates/StrictAxiomAuditBridge.txt \
@@ -117,6 +119,8 @@ jobs:
           path: |
             certificates/axioms.log
             certificates/axioms-bridge.log
+            certificates/PrintAxioms.log
+            certificates/PrintAxiomsBridge.log
             certificates/SUMMARY.txt
             certificates/StrictAxiomAudit.txt
             certificates/StrictAxiomAuditBridge.txt

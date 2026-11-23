@@ -32,14 +32,15 @@ def git_lean_files() -> list[Path]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--build-log", default="", help="lake build log (tee'd official log)")
-    ap.add_argument("--scripts-source-scan-ok", action="store_true",
-                    help="for scripts/*.lean, a source scan (scanned-list) is enough; no certificate elaboration required")
     ap.add_argument(
         "--scanned-list",
         default="certificates/scanned-lean-files.txt",
         help="list written by check_forbidden_tokens.py",
     )
     args = ap.parse_args()
+    if "--scripts-source-scan-ok" in sys.argv:
+        print("FAIL: --scripts-source-scan-ok is a skip; every scripts/*.lean file must be elaborated")
+        return 1
     expected = git_lean_files()
     if not expected:
         print("FAIL: git ls-files '*.lean' returned no files")
@@ -76,15 +77,27 @@ def main() -> int:
     for f in expected:
         rel = f.as_posix()
         if rel.startswith("scripts/"):
-            if args.scripts_source_scan_ok and f in scanned:
-                continue
-            # Script files are elaborated by lake env lean in the kernel-check job.
-            # Accept a log in certificates/ whose name mentions the stem, or any
-            # axioms/StrictAxiom output produced from that file.
+            # Script files must be elaborated by `lake env lean` in this job.
+            # Evidence is a certificates/<stem>.log or .txt, or a log that starts
+            # with the line ELABORATED scripts/<stem>.lean. A source-only scan is
+            # not enough.
             stem = f.stem
-            certs = list((ROOT / "certificates").glob("*")) if (ROOT / "certificates").is_dir() else []
-            ok = any(stem in c.name or stem in c.read_text(encoding="utf-8", errors="replace")[:400]
-                     for c in certs if c.is_file())
+            ok = False
+            cert_root = ROOT / "certificates"
+            if cert_root.is_dir():
+                for c in cert_root.rglob("*"):
+                    if not c.is_file():
+                        continue
+                    if c.name in {f"{stem}.log", f"{stem}.txt"}:
+                        ok = True
+                        break
+                    try:
+                        head = c.read_text(encoding="utf-8", errors="replace")[:8000]
+                    except OSError:
+                        continue
+                    if f"ELABORATED {rel}" in head:
+                        ok = True
+                        break
             if not ok:
                 missing_build.append(rel)
             continue

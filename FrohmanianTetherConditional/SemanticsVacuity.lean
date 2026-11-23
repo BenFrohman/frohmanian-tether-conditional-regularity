@@ -323,10 +323,9 @@ theorem intended_correspondence_fin_glob :
     formal_claim_fin_glob ↔ paper_claim_fin_glob := by
   constructor
   · intro h hBKM' ν u0 sol hf
-    have bkm : ClassicalNS.BKMCriterion := by
-      intro sol' hne
+    have bkm : ClassicalNS.BKMCriterion := fun {ν} {u0} sol' hne => by
       by_contra hfin
-      exact hne (hBKM' _ _ sol' hfin)
+      exact hne (hBKM' ν u0 sol' hfin)
     exact h bkm sol hf
   · intro h bkm ν u0 sol hf
     refine h ?_ ν u0 sol hf
@@ -353,10 +352,9 @@ theorem intended_correspondence_clay_iff :
     formal_claim_clay_iff ↔ paper_claim_clay_iff := by
   constructor
   · intro h hBKM' ν u0 sol
-    have bkm : ClassicalNS.BKMCriterion := by
-      intro sol' hne
+    have bkm : ClassicalNS.BKMCriterion := fun {ν} {u0} sol' hne => by
       by_contra hfin
-      exact hne (hBKM' _ _ sol' hfin)
+      exact hne (hBKM' ν u0 sol' hfin)
     exact (h bkm sol).symm
   · intro h bkm ν u0 sol
     have hBKM' : ∀ (ν : ℝ) (u0 : ClassicalNS.E3 → ClassicalNS.E3)
@@ -390,9 +388,11 @@ theorem intended_correspondence_formB_clay :
   constructor
   · intro h C_star hB' hBKM' ν u0 sol
     have hB : ClassicalNS.HypothesisB C_star := by
-      intro sol' T' hT'; exact hB' _ _ sol' T' hT'
+      exact fun {ν} {u0} sol' T' hT' => hB' ν u0 sol' T' hT'
     have bkm : ClassicalNS.BKMCriterion := by
-      intro sol' hne; by_contra hfin; exact hne (hBKM' _ _ sol' hfin)
+      exact fun {ν} {u0} sol' hne => by
+        by_contra hfin
+        exact hne (hBKM' ν u0 sol' hfin)
     exact h hB bkm sol
   · intro h C_star hB bkm ν u0 sol
     refine h C_star ?_ ?_ ν u0 sol
@@ -422,9 +422,11 @@ theorem intended_correspondence_formB_bridge :
   constructor
   · intro h C_star hB' hBKM'
     have hB : ClassicalNS.HypothesisB C_star := by
-      intro sol' T' hT'; exact hB' _ _ sol' T' hT'
+      exact fun {ν} {u0} sol' T' hT' => hB' ν u0 sol' T' hT'
     have bkm : ClassicalNS.BKMCriterion := by
-      intro sol' hne; by_contra hfin; exact hne (hBKM' _ _ sol' hfin)
+      exact fun {ν} {u0} sol' hne => by
+        by_contra hfin
+        exact hne (hBKM' ν u0 sol' hfin)
     exact h hB bkm
   · intro h C_star hB bkm
     refine h C_star ?_ ?_
@@ -473,9 +475,11 @@ theorem intended_correspondence_formB_Hs :
     have kp : ClassicalNS.KatoPonceEnergy HsR s C_s :=
       { HsR_nonneg := hnn, C_s_nonneg := hC, HsR_cont := hcont, energy := hE }
     have hB : ClassicalNS.HypothesisB C_star := by
-      intro sol' T' hT'; exact hB' _ _ sol' T' hT'
+      exact fun {ν} {u0} sol' T' hT' => hB' ν u0 sol' T' hT'
     have bkm : ClassicalNS.BKMCriterion := by
-      intro sol' hne; by_contra hfin; exact hne (hBKM' _ _ sol' hfin)
+      exact fun {ν} {u0} sol' hne => by
+        by_contra hfin
+        exact hne (hBKM' ν u0 sol' hfin)
     exact hf kp hB bkm sol T hTpos t ⟨ht.1, ht.2⟩
   · intro hp HsR s C_s kp C_star hB bkm ν u0 sol T hTpos t ht
     refine hp HsR s C_s kp.HsR_nonneg kp.C_s_nonneg kp.HsR_cont kp.energy C_star ?_ ?_

@@ -11,6 +11,7 @@ Authors: Benjamin Stanley Frohman
 -- `ClassicalNS.analytic_bridge_unconditional_Statement` (a Prop, no proof); it IS listed.
 import FrohmanianTetherConditional.AnalyticBridgeRefutation
 import FrohmanianTetherConditional.ClassicalNS
+import FrohmanianTetherConditional.ClassicalNSOpenTarget
 import FrohmanianTetherConditional.FrohmanianTripleArchitectureLifespan
 
 -- (i) LEGACY file: sound lemmas, refutation, vacuity witnesses

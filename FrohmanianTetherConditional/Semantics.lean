@@ -89,13 +89,11 @@ def paper_claim : Prop :=
 theorem intended_correspondence : formal_claim ↔ paper_claim := by
   constructor
   · intro hf C_star hB' hBKM'
-    have hB : HypothesisB C_star := by
-      intro sol T hT
-      exact hB' _ _ sol T hT
-    have bkm : BKMCriterion := by
-      intro sol hne
+    have hB : HypothesisB C_star := fun {ν} {u0} sol T hT =>
+      hB' ν u0 sol T hT
+    have bkm : BKMCriterion := fun {ν} {u0} sol hne => by
       by_contra hfin
-      exact hne (hBKM' _ _ sol hfin)
+      exact hne (hBKM' ν u0 sol hfin)
     exact hf C_star hB bkm
   · intro hp C_star hB bkm
     refine hp C_star ?_ ?_

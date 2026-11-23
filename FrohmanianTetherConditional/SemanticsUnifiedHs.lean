@@ -68,13 +68,11 @@ theorem intended_correspondence_hsbound :
         C_s_nonneg := hC
         HsR_cont := hcont
         energy := hE }
-    have hB : HypothesisB C_star := by
-      intro sol' T' hT'
-      exact hB' _ _ sol' T' hT'
-    have bkm : BKMCriterion := by
-      intro sol' hne
+    have hB : HypothesisB C_star := fun {ν} {u0} sol' T' hT' =>
+      hB' ν u0 sol' T' hT'
+    have bkm : BKMCriterion := fun {ν} {u0} sol' hne => by
       by_contra hfin
-      exact hne (hBKM' _ _ sol' hfin)
+      exact hne (hBKM' ν u0 sol' hfin)
     exact hf kp hB bkm sol T hTpos t ⟨ht.1, ht.2⟩
   · intro hp HsR s C_s kp C_star hB bkm ν u0 sol T hTpos t ht
     refine hp HsR s C_s kp.HsR_nonneg kp.C_s_nonneg kp.HsR_cont kp.energy C_star ?_ ?_

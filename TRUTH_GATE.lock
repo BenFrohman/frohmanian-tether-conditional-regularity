@@ -6,7 +6,7 @@
   "main_theorems": [
     "ClassicalNS.analyticBridge_of_formB_forall"
   ],
-  "lock_region_sha256": "2947937c3de33cb025bd9888ced0d2c1015e53ea568f94cbb252e6a4f2eaf7bb",
+  "lock_region_sha256": "59ca039a78cba7804002b26e71f9ef0c7994813c10be47b8192f481d312a26a3",
   "draft_dirs": [],
   "lean_roots": [
     "FrohmanianTetherConditional"
@@ -89,7 +89,7 @@
         "old_trivialization_fails",
         "analyticBridge_of_formB_forall"
       ],
-      "lock_region_sha256": "a9d61e29830568cdcac8bf3a030af157a8309b95fdcb8ba85cbe8cb5eae883b1",
+      "lock_region_sha256": "00a53817bed7312a13a807e24e6b42a1bb086affe39815cdad651b7b2813b592",
       "certifying": true
     },
     {
@@ -112,7 +112,7 @@
         "analyticBridge_of_formB_forall",
         "analyticBridge_of_formB"
       ],
-      "lock_region_sha256": "a5ed8d307ff00a2294da365416c008bcc027e2e994b4efd88afa62bc4f954c25",
+      "lock_region_sha256": "0e3842c7bd76ed9689ef805276ed296016164d93ecb810b67829d2204fcba581",
       "certifying": true
     },
     {
@@ -135,7 +135,7 @@
         "KatoPonceEnergy",
         "formB_Hs_bound"
       ],
-      "lock_region_sha256": "55953f197d8bd6ad1c56826a7f8e53b185bd7fd6e02d5647c038325e99c06c7b",
+      "lock_region_sha256": "07c303a2180c9d9019adb35f7b0ecb1302caf9924896a291a02a566e30c5a0c9",
       "certifying": true
     }
   ]

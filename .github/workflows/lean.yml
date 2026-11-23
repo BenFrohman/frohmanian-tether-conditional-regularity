@@ -69,6 +69,8 @@ jobs:
           fi
       - name: Forbidden tokens and #print axioms
         run: ./scripts/kernel_check.sh
+      - name: No-skip guard
+        run: python3 scripts/check_no_skips.py
       - name: Forbidden tokens, comment-aware, every tracked .lean file
         run: |
           python3 scripts/check_forbidden_tokens.py --from-git

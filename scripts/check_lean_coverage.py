@@ -32,6 +32,8 @@ def git_lean_files() -> list[Path]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--build-log", default="", help="lake build log (tee'd official log)")
+    ap.add_argument("--scripts-source-scan-ok", action="store_true",
+                    help="for scripts/*.lean, a source scan (scanned-list) is enough; no certificate elaboration required")
     ap.add_argument(
         "--scanned-list",
         default="certificates/scanned-lean-files.txt",
@@ -74,6 +76,8 @@ def main() -> int:
     for f in expected:
         rel = f.as_posix()
         if rel.startswith("scripts/"):
+            if args.scripts_source_scan_ok and f in scanned:
+                continue
             # Script files are elaborated by lake env lean in the kernel-check job.
             # Accept a log in certificates/ whose name mentions the stem, or any
             # axioms/StrictAxiom output produced from that file.

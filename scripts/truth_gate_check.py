@@ -54,6 +54,9 @@ for k in ["semantics_file", "semantics_module", "paper_path", "paper_sha256",
     if k not in lock: fail(f"TRUTH_GATE.lock lacks key {k}")
 if FAIL: sys.exit(1)
 
+if lock.get("draft_dirs"):
+    fail("draft_dirs must be empty: no Lean file is exempt from the forbidden-token scan")
+
 # 0. Re-audit status: a lock marked non-certifying keeps the gate red (see TRUTH_GATE.md).
 if lock.get("certifying", True) is not True:
     fail("this lock is NOT certifying (reopened by the re-audit of 2026-11-16): "
@@ -202,8 +205,7 @@ for ex in lock.get("additional_locks", []):
             fail(f"{tag}: TRUTH_GATE.md does not carry the verbatim paper quote: " + norm(q)[:80])
     print(f"TRUTH GATE STATIC: additional lock {tag}: claims {ex['claims']} checked")
 
-# 5. forbidden tokens outside draft directories
-drafts = [d.strip("/") for d in lock["draft_dirs"]]
+# 5. forbidden tokens in every Lean file under the locked roots. No directory is exempt.
 tok = re.compile(r"(?<![\w.'])(sorry|admit|native_decide)(?![\w'])|^\s*(?:@\[[^\]]*\]\s*)?(?:private\s+|protected\s+|public\s+)*axiom\s", re.M)
 bad = 0
 for r in list(lock["lean_roots"]) + extra_roots:
@@ -212,13 +214,11 @@ for r in list(lock["lean_roots"]) + extra_roots:
         os.path.join(dp, f) for dp, dn, fs in os.walk(base) if ".lake" not in dp for f in fs if f.endswith(".lean")]
     for p in sorted(paths):
         rel = os.path.relpath(p, ROOT)
-        if any(rel == d or rel.startswith(d + "/") for d in drafts):
-            continue
         code = strip_comments_strings(open(p, encoding="utf-8").read())
         for mm in tok.finditer(code):
             line = code.count("\n", 0, mm.start()) + 1
             fail(f"forbidden token `{(mm.group(1) or 'axiom')}` at {rel}:{line}"); bad += 1
-print(f"TRUTH GATE STATIC: scanned roots {lock['lean_roots']} (draft dirs exempt: {drafts}); {bad} forbidden tokens")
+print(f"TRUTH GATE STATIC: scanned roots {lock['lean_roots']} (no file is exempt); {bad} forbidden tokens")
 
 if FAIL:
     print(f"TRUTH GATE STATIC FAIL ({len(FAIL)} problems)"); sys.exit(1)

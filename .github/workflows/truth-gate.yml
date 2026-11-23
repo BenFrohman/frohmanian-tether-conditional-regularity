@@ -36,6 +36,8 @@ jobs:
             echo "FAIL: certified build log contains sorry or sorryAx"
             exit 1
           fi
+      - name: No-skip guard
+        run: python3 scripts/check_no_skips.py
       - name: verify-lock
         run: bash scripts/verify-lock.sh
       - name: Finalize certificate bundle

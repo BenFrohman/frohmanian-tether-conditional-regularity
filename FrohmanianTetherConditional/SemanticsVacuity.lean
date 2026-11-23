@@ -238,7 +238,7 @@ theorem intended_correspondence_zero_global :
   constructor
   · intro h ν sol hu hne
     exact hne (h sol hu)
-  · intro h {ν} sol hu
+  · intro h ν sol hu
     by_contra hne
     exact h ν sol hu hne
 
@@ -292,7 +292,7 @@ theorem intended_correspondence_grad_cont :
   constructor
   · intro h ν u0 sol T hT hlt
     simpa [Set.Icc, Set.mem_setOf] using h (sol := sol) hT hlt
-  · intro h {ν} {u0} sol {T} hT hlt
+  · intro h ν u0 sol T hT hlt
     have := h ν u0 sol T hT hlt
     simpa [Set.Icc, Set.mem_setOf] using this
 
@@ -310,7 +310,7 @@ theorem intended_correspondence_glob_fin :
     formal_claim_glob_fin ↔ paper_claim_glob_fin := by
   constructor
   · intro h T ν u0 sol hg; exact h sol hg T
-  · intro h {ν} {u0} sol hg T; exact h T ν u0 sol hg
+  · intro h ν u0 sol hg T; exact h T ν u0 sol hg
 
 def formal_claim_fin_glob : Prop :=
   ClassicalNS.BKMCriterion →

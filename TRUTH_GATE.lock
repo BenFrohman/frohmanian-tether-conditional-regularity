@@ -89,7 +89,7 @@
         "old_trivialization_fails",
         "analyticBridge_of_formB_forall"
       ],
-      "lock_region_sha256": "33a31dac8717209142000ca655120198991ecc483d3fb5bbfedf1584a38e4c96",
+      "lock_region_sha256": "f60b2422fc09e2bd1a21884d4ca871329953f923a20c53e763a9356466dcf683",
       "certifying": true
     },
     {

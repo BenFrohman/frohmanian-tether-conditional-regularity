@@ -168,18 +168,18 @@ def formal_claim_hypB_holds : Prop :=
     FrohmanianTripleArchitecture.HypothesisB sol
 
 def paper_claim_hypB_holds : Prop :=
-  ∀ sol : FrohmanianTripleArchitecture.NavierStokesUnifiedData,
-    ∀ T : ℝ, 0 < T →
+  ∀ (T : ℝ), 0 < T →
+    ∀ sol : FrohmanianTripleArchitecture.NavierStokesUnifiedData,
       ∃ C_star : ℝ, ∀ t ∈ Icc 0 T,
         (∫ τ in (0 : ℝ)..t, sol.strainSup τ) ≤ C_star
 
 theorem intended_correspondence_hypB_holds :
     formal_claim_hypB_holds ↔ paper_claim_hypB_holds := by
   constructor
-  · intro h sol T hT
+  · intro h T hT sol
     exact h sol T hT
   · intro h sol T hT
-    exact h sol T hT
+    exact h T hT sol
 
 def formal_claim_clayB_holds : Prop :=
   ∀ sol : FrohmanianTripleArchitecture.NavierStokesUnifiedData, sol.clayStatementB
@@ -282,19 +282,18 @@ def formal_claim_grad_cont : Prop :=
       ContinuousOn (fun t => ClassicalNS.gradLinf (sol.u t)) (Icc 0 T)
 
 def paper_claim_grad_cont : Prop :=
-  ∀ (ν : ℝ) (u0 : ClassicalNS.E3 → ClassicalNS.E3)
-    (sol : ClassicalNS.NSSolution ν u0) (T : ℝ),
+  ∀ (T : ℝ) (ν : ℝ) (u0 : ClassicalNS.E3 → ClassicalNS.E3)
+    (sol : ClassicalNS.NSSolution ν u0),
     0 ≤ T → ENNReal.ofReal T < sol.Tstar →
-      ContinuousOn (fun t => ClassicalNS.gradLinf (sol.u t)) {t | 0 ≤ t ∧ t ≤ T}
+      ContinuousOn (fun t => ClassicalNS.gradLinf (sol.u t)) (Icc 0 T)
 
 theorem intended_correspondence_grad_cont :
     formal_claim_grad_cont ↔ paper_claim_grad_cont := by
   constructor
   · intro h ν u0 sol T hT hlt
-    simpa [Set.Icc, Set.mem_setOf] using h (sol := sol) hT hlt
+    exact h T ν u0 sol hT hlt
   · intro h ν u0 sol T hT hlt
-    have := h ν u0 sol T hT hlt
-    simpa [Set.Icc, Set.mem_setOf] using this
+    exact h ν u0 sol T hT hlt
 
 def formal_claim_glob_fin : Prop :=
   ∀ {ν : ℝ} {u0 : ClassicalNS.E3 → ClassicalNS.E3}
@@ -500,26 +499,28 @@ def formal_claim_clay_not_auto : Prop :=
     ¬ FrohmanianTripleArchitectureLifespan.clayStatementB sol
 
 def paper_claim_clay_not_auto : Prop :=
-  ∃ sol : FrohmanianTripleArchitectureLifespan.NavierStokesUnifiedData,
-    sol.Tstar ≠ ⊤
+  ¬ ∀ sol : FrohmanianTripleArchitectureLifespan.NavierStokesUnifiedData,
+    sol.Tstar = ⊤
 
 theorem intended_correspondence_clay_not_auto :
     formal_claim_clay_not_auto ↔ paper_claim_clay_not_auto := by
   constructor
   · intro ⟨sol, h⟩
+    apply not_forall.mpr
     refine ⟨sol, ?_⟩
     simpa [FrohmanianTripleArchitectureLifespan.clayStatementB] using h
-  · intro ⟨sol, h⟩
+  · intro h
+    obtain ⟨sol, hs⟩ := not_forall.mp h
     refine ⟨sol, ?_⟩
-    simpa [FrohmanianTripleArchitectureLifespan.clayStatementB] using h
+    simpa [FrohmanianTripleArchitectureLifespan.clayStatementB] using hs
 
 def formal_claim_hyp_not_auto : Prop :=
   ∃ sol : FrohmanianTripleArchitectureLifespan.NavierStokesUnifiedData,
     ¬ FrohmanianTripleArchitectureLifespan.HypothesisB sol
 
 def paper_claim_hyp_not_auto : Prop :=
-  ∃ sol : FrohmanianTripleArchitectureLifespan.NavierStokesUnifiedData,
-    ¬ ∀ T : ℝ, 0 < T →
+  ¬ ∀ sol : FrohmanianTripleArchitectureLifespan.NavierStokesUnifiedData,
+    ∀ T : ℝ, 0 < T →
       ∃ C_star : ℝ, ∀ t ∈ Icc 0 T, ENNReal.ofReal t < sol.Tstar →
         (∫ τ in (0 : ℝ)..t, sol.strainSup τ) ≤ C_star
 
@@ -527,11 +528,13 @@ theorem intended_correspondence_hyp_not_auto :
     formal_claim_hyp_not_auto ↔ paper_claim_hyp_not_auto := by
   constructor
   · intro ⟨sol, h⟩
+    apply not_forall.mpr
     refine ⟨sol, ?_⟩
     simpa [FrohmanianTripleArchitectureLifespan.HypothesisB] using h
-  · intro ⟨sol, h⟩
+  · intro h
+    obtain ⟨sol, hs⟩ := not_forall.mp h
     refine ⟨sol, ?_⟩
-    simpa [FrohmanianTripleArchitectureLifespan.HypothesisB] using h
+    simpa [FrohmanianTripleArchitectureLifespan.HypothesisB] using hs
 
 def formal_claim_old_triv_fails : Prop :=
   ¬ ∀ sol : FrohmanianTripleArchitectureLifespan.NavierStokesUnifiedData,

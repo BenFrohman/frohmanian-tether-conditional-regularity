@@ -30,25 +30,25 @@ namespace TruthGateAuditVacuity
 def standard : List Name := [``propext, ``Classical.choice, ``Quot.sound]
 
 def locks : List (String × Name) :=
-  [("target_false", `AnalyticBridgeRefutation.analytic_bridge_target_statement_false`),
-   ("bkm_empty", `AnalyticBridgeRefutation.not_nonempty_BKMCriterion`),
-   ("hypB_holds", `AnalyticBridgeRefutation.hypothesisB_holds`),
-   ("clayB_holds", `AnalyticBridgeRefutation.clayStatementB_holds`),
-   ("const_ns", `ClassicalNS.const_isClassicalNS`),
-   ("nonempty_zero", `ClassicalNS.nonempty_NSSolution_zero`),
-   ("zero_global", `ClassicalNS.zero_field_is_global`),
-   ("old_invalid", `ClassicalNS.old_counterexample_invalid`),
-   ("linear_not", `ClassicalNS.linear_in_time_not_NS`),
-   ("grad_cont", `ClassicalNS.gradLinf_continuousOn`),
-   ("glob_fin", `ClassicalNS.global_implies_gradIntegral_finite`),
-   ("fin_glob", `ClassicalNS.gradIntegral_finite_implies_global`),
-   ("clay_iff", `ClassicalNS.clayB_iff_gradIntegral_finite`),
-   ("formB_clay", `ClassicalNS.formB_implies_clayB`),
-   ("formB_bridge", `ClassicalNS.analyticBridge_of_formB`),
-   ("formB_Hs", `ClassicalNS.formB_Hs_bound`),
-   ("clay_not_auto", `FrohmanianTripleArchitectureLifespan.clayStatementB_not_automatic`),
-   ("hyp_not_auto", `FrohmanianTripleArchitectureLifespan.hypothesisB_not_automatic`),
-   ("old_triv_fails", `FrohmanianTripleArchitectureLifespan.old_trivialization_fails`)]
+  [("target_false", `AnalyticBridgeRefutation.analytic_bridge_target_statement_false),
+   ("bkm_empty", `AnalyticBridgeRefutation.not_nonempty_BKMCriterion),
+   ("hypB_holds", `AnalyticBridgeRefutation.hypothesisB_holds),
+   ("clayB_holds", `AnalyticBridgeRefutation.clayStatementB_holds),
+   ("const_ns", `ClassicalNS.const_isClassicalNS),
+   ("nonempty_zero", `ClassicalNS.nonempty_NSSolution_zero),
+   ("zero_global", `ClassicalNS.zero_field_is_global),
+   ("old_invalid", `ClassicalNS.old_counterexample_invalid),
+   ("linear_not", `ClassicalNS.linear_in_time_not_NS),
+   ("grad_cont", `ClassicalNS.gradLinf_continuousOn),
+   ("glob_fin", `ClassicalNS.global_implies_gradIntegral_finite),
+   ("fin_glob", `ClassicalNS.gradIntegral_finite_implies_global),
+   ("clay_iff", `ClassicalNS.clayB_iff_gradIntegral_finite),
+   ("formB_clay", `ClassicalNS.formB_implies_clayB),
+   ("formB_bridge", `ClassicalNS.analyticBridge_of_formB),
+   ("formB_Hs", `ClassicalNS.formB_Hs_bound),
+   ("clay_not_auto", `FrohmanianTripleArchitectureLifespan.clayStatementB_not_automatic),
+   ("hyp_not_auto", `FrohmanianTripleArchitectureLifespan.hypothesisB_not_automatic),
+   ("old_triv_fails", `FrohmanianTripleArchitectureLifespan.old_trivialization_fails)]
 
 def nm (s : String) : Name := Name.mkStr `TruthGateVacuity s
 

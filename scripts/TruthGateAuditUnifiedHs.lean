@@ -30,7 +30,7 @@ namespace TruthGateAuditUnifiedHs
 def standard : List Name := [``propext, ``Classical.choice, ``Quot.sound]
 
 def locks : List (String × Name) :=
-  [("hsbound", `ClassicalNS.formB_Hs_bound`)]
+  [("hsbound", `ClassicalNS.formB_Hs_bound)]
 
 def nm (s : String) : Name := Name.mkStr `TruthGateUnifiedHs s
 

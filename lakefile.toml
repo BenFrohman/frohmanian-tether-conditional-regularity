@@ -14,12 +14,19 @@ name = "FrohmanianTetherConditional"
 # checks. Separate library because the target file and the triple-architecture file
 # both declare root-level/namespace names (`HypothesisB`, `gronwall_differential_bound`)
 # that would make the main audit's unqualified `#print axioms` ambiguous.
+# The open-target Prop and the Truth Gate Semantics modules live here too, so the
+# default `lake build` compiles every library file without polluting the main audit.
 [[lean_lib]]
 name = "AnalyticBridgeAudit"
 roots = [
   "FrohmanianTetherConditional.AnalyticBridgeRefutation",
   "FrohmanianTetherConditional.ClassicalNS",
+  "FrohmanianTetherConditional.ClassicalNSOpenTarget",
   "FrohmanianTetherConditional.FrohmanianTripleArchitectureLifespan",
+  "FrohmanianTetherConditional.Semantics",
+  "FrohmanianTetherConditional.SemanticsPillars",
+  "FrohmanianTetherConditional.SemanticsUnifiedHs",
+  "FrohmanianTetherConditional.SemanticsVacuity",
 ]
 
 # The OPEN Clay (B) statement lives in FrohmanianTetherConditional/ClassicalNSOpenTarget.lean

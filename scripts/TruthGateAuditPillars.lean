@@ -30,7 +30,7 @@ namespace TruthGateAuditPillars
 def standard : List Name := [``propext, ``Classical.choice, ``Quot.sound]
 
 def locks : List (String × Name) :=
-  [("conditional", `ClassicalNS.analyticBridge_of_formB_forall`)]
+  [("conditional", `ClassicalNS.analyticBridge_of_formB_forall)]
 
 def nm (s : String) : Name := Name.mkStr `TruthGatePillars s
 

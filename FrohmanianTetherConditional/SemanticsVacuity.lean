@@ -290,10 +290,10 @@ def paper_claim_grad_cont : Prop :=
 theorem intended_correspondence_grad_cont :
     formal_claim_grad_cont ↔ paper_claim_grad_cont := by
   constructor
+  · intro h T ν u0 sol hT hlt
+    exact h (sol := sol) (T := T) hT hlt
   · intro h ν u0 sol T hT hlt
     exact h T ν u0 sol hT hlt
-  · intro h ν u0 sol T hT hlt
-    exact h ν u0 sol T hT hlt
 
 def formal_claim_glob_fin : Prop :=
   ∀ {ν : ℝ} {u0 : ClassicalNS.E3 → ClassicalNS.E3}

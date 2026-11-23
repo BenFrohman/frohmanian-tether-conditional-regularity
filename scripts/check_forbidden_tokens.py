@@ -7,13 +7,16 @@ declaration in code (text inside `--` and `/- ... -/` comments and inside string
 literals is ignored).
 
 Usage:
-  python3 scripts/check_forbidden_tokens.py [--exclude FILE ...] [--require-imported-by AUDIT.lean] PATH [PATH ...]
+  python3 scripts/check_forbidden_tokens.py --from-git
+  python3 scripts/check_forbidden_tokens.py [--require-imported-by AUDIT.lean] PATH [PATH ...]
 
-Each PATH is a .lean file or a directory scanned recursively (`.lake` is skipped).
-Run from the Lake package root.  `--exclude FILE` skips one file (it is listed in the
-output so the exclusion is visible).  `--require-imported-by AUDIT.lean` (repeatable)
-additionally fails if some scanned file is not in the import closure of the AUDIT files, so the axiom
-audit cannot silently miss a module.
+The file list is never a skip list. Prefer `--from-git`, which scans every path
+from `git ls-files '*.lean'` (the only omitted paths are those under `.lake/`).
+There is no `--exclude` option: passing one is a hard failure.
+
+`--require-imported-by AUDIT.lean` (repeatable) additionally fails if some
+scanned library file is not in the import closure of the AUDIT files.
+A list of scanned files is written to certificates/scanned-lean-files.txt.
 """
 import re
 import sys
@@ -87,47 +90,71 @@ def closure(audit: Path) -> set:
     return {module_of(f) for f in seen if f != audit}
 
 
+
+def git_lean_files():
+    import subprocess
+    out = subprocess.check_output(["git", "ls-files", "-z", "*.lean"], text=True)
+    files_ = []
+    for rel in out.split("\0"):
+        if not rel:
+            continue
+        if ".lake/" in rel.split("/") or rel.startswith(".lake/"):
+            continue
+        files_.append(Path(rel))
+    return files_
+
+
 def main(argv):
-    excludes, audits, paths = set(), [], []
+    if "--exclude" in argv:
+        sys.exit("FAIL: --exclude is not allowed. Scan every tracked .lean file; never skip one.")
+    audits, paths, from_git = [], [], False
     it = iter(argv)
     for a in it:
-        if a == '--exclude':
-            excludes.add(Path(next(it)))
-        elif a == '--require-imported-by':
+        if a == "--from-git":
+            from_git = True
+        elif a == "--require-imported-by":
             audits.append(Path(next(it)))
         else:
             paths.append(a)
-    if not paths:
-        sys.exit(__doc__)
+    if from_git:
+        if paths:
+            sys.exit("FAIL: --from-git does not take PATH arguments")
+        to_scan = git_lean_files()
+        source = "git ls-files '*.lean' (excluding only .lake/)"
+    else:
+        if not paths:
+            sys.exit(__doc__)
+        to_scan = list(files(paths))
+        source = " ".join(paths)
     for audit in audits:
         if not audit.exists():
-            sys.exit(f'audit file not found: {audit}')
+            sys.exit(f"audit file not found: {audit}")
     reach = set().union(*(closure(a) for a in audits)) if audits else None
-    audit = ' + '.join(map(str, audits))
-    bad, missing, count = [], [], 0
-    for f in files(paths):
-        if f in excludes:
-            print(f'EXCLUDED (not scanned): {f}')
-            continue
-        if reach is not None and module_of(f) not in reach:
+    audit = " + ".join(map(str, audits))
+    bad, missing, count, scanned = [], [], 0, []
+    for f in to_scan:
+        if reach is not None and module_of(f) not in reach and not str(f).startswith("scripts/"):
             missing.append(str(f))
         count += 1
-        code = strip(f.read_text(encoding='utf-8'))
+        scanned.append(f.as_posix())
+        code = strip(f.read_text(encoding="utf-8"))
         for k, line in enumerate(code.splitlines(), 1):
             if BAD.search(line):
-                bad.append(f'{f}:{k}: {line.strip()}')
-    print(f'scanned {count} Lean files under: {" ".join(paths)}')
+                bad.append(f"{f}:{k}: {line.strip()}")
+    print(f"scanned {count} Lean files from {source}")
+    Path("certificates").mkdir(exist_ok=True)
+    Path("certificates/scanned-lean-files.txt").write_text("\n".join(scanned) + "\n")
     if count == 0:
-        sys.exit('FAIL: no Lean files scanned')
+        sys.exit("FAIL: no Lean files scanned")
     if missing:
-        print('\n'.join(f'NOT IMPORTED by {audit}: {m}' for m in missing))
-        sys.exit(f'FAIL: {len(missing)} scanned module(s) are outside the axiom audit')
+        print("\n".join(f"NOT IMPORTED by {audit}: {m}" for m in missing))
+        sys.exit(f"FAIL: {len(missing)} scanned module(s) are outside the axiom audit")
     if audits:
-        print(f'coverage: every scanned module is imported (transitively) by {audit}')
+        print(f"coverage: every scanned library module is imported (transitively) by {audit}")
     if bad:
-        print('\n'.join(bad))
-        sys.exit(f'FAIL: {len(bad)} forbidden token(s) in code')
-    print('PASS: no sorry / admit / native_decide / axiom declarations (comments excluded)')
+        print("\n".join(bad))
+        sys.exit(f"FAIL: {len(bad)} forbidden token(s) in code")
+    print("PASS: no sorry / admit / native_decide / axiom declarations (comments excluded)")
 
 
 if __name__ == '__main__':

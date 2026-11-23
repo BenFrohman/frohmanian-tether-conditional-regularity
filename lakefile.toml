@@ -1,6 +1,6 @@
 name = "frohmanian_tether"
 version = "0.1.0"
-defaultTargets = ["FrohmanianTetherConditional", "AnalyticBridgeAudit", "ClassicalNSOpen"]
+defaultTargets = ["FrohmanianTetherConditional", "AnalyticBridgeAudit"]
 
 [[require]]
 name = "mathlib"
@@ -14,17 +14,21 @@ name = "FrohmanianTetherConditional"
 # checks. Separate library because the target file and the triple-architecture file
 # both declare root-level/namespace names (`HypothesisB`, `gronwall_differential_bound`)
 # that would make the main audit's unqualified `#print axioms` ambiguous.
+# The open-target Prop and the Truth Gate Semantics modules live here too, so the
+# default `lake build` compiles every library file without polluting the main audit.
 [[lean_lib]]
 name = "AnalyticBridgeAudit"
 roots = [
   "FrohmanianTetherConditional.AnalyticBridgeRefutation",
   "FrohmanianTetherConditional.ClassicalNS",
+  "FrohmanianTetherConditional.ClassicalNSOpenTarget",
   "FrohmanianTetherConditional.FrohmanianTripleArchitectureLifespan",
+  "FrohmanianTetherConditional.Semantics",
+  "FrohmanianTetherConditional.SemanticsPillars",
+  "FrohmanianTetherConditional.SemanticsUnifiedHs",
+  "FrohmanianTetherConditional.SemanticsVacuity",
 ]
 
-# The single honest OPEN target (Clay (B) with genuine definitions). Built so that it
-# type-checks; it carries one marked placeholder proof and is excluded from the
-# forbidden-token scan and from every axiom audit.
-[[lean_lib]]
-name = "ClassicalNSOpen"
-roots = ["FrohmanianTetherConditional.ClassicalNSOpenTarget"]
+# The OPEN Clay (B) statement lives in FrohmanianTetherConditional/ClassicalNSOpenTarget.lean
+# as a `def …Statement : Prop` with no proof. It is part of the main library and of
+# every scan; it is not a separate default target and it is never excluded.

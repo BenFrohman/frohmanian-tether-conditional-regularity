@@ -62,9 +62,11 @@ The repository
 accompanies the two preprints above. Its \lean{README} and the file
 \lean{AnalyticBridgeTarget.lean} stated:
 \begin{enumerate}
-\item an \emph{open target} \lean{analytic\_bridge\_unconditional}, described as
-``Clay Millennium Problem Statement~(B) on the periodic 3-torus'', with one intentional
-\lean{sorry}, and explicitly flagged as using placeholder fields;
+\item an \emph{open target}, originally a theorem \lean{analytic\_bridge\_unconditional}
+with a placeholder proof, described as
+``Clay Millennium Problem Statement~(B) on the periodic 3-torus''. In the present
+repository the open target is the statement
+\lean{analytic\_bridge\_unconditional\_Statement : Prop}, with no proof;
 \item proved conditional results \lean{clayB\_iff\_bkm\_integrable},
 \lean{formB\_implies\_clayB}, \lean{hypothesisB\_implies\_clayB} and
 \lean{formB\_Hs\_bound}, each taking a cited Beale--Kato--Majda (BKM) continuation
@@ -73,15 +75,15 @@ hypothesis \lean{BKMCriterion N} as an argument;
 record), \lean{hypothesisB\_implies\_clayStatementB} and \lean{three\_way\_equivalence}
 over an abstract structure \lean{NavierStokesUnifiedData}.
 \end{enumerate}
-All proved declarations passed a kernel audit (\lean{\#print axioms} reporting only
-\lean{propext}, \lean{Classical.choice}, \lean{Quot.sound}). That audit establishes that
-proofs are correct \emph{relative to the definitions}; it says nothing about whether the
-definitions model Navier--Stokes, nor whether hypotheses can ever be supplied. The
-findings below are of exactly that second kind.
+The official kernel certificate, and not any other summary, is the source for
+\lean{\#print axioms} output on the declarations this paper describes. A kernel audit
+establishes that a proof is correct \emph{relative to the definitions}; it says nothing
+about whether the definitions model Navier--Stokes, nor whether hypotheses can ever be
+supplied. The findings below are of exactly that second kind.
 
 \section{How the defects were caught}
 
-The user asked for a full proof of the open target. The procedure was:
+The defects were found by the following procedure:
 \begin{enumerate}
 \item Read the exact statement and every definition it depends on.
 \item Ask which objects inhabit the hypothesis types. The structure \lean{NSSolution}
@@ -308,14 +310,16 @@ theorem-with-placeholder (a false statement) is kept verbatim as the proposition
 \lean{analytic\_bridge\_unconditional\_statement}, which the refutation file negates.
 
 \section{What remains open}
-The honest target, \lean{ClassicalNS.analytic\_bridge\_unconditional :
-AnalyticBridgeStatement}, says: for every $\nu>0$ and every smooth, periodic,
+The honest target is recorded only as the proposition
+\lean{ClassicalNS.analytic\_bridge\_unconditional\_Statement : Prop}, defined to be
+\lean{AnalyticBridgeStatement}. It says: for every $\nu>0$ and every smooth, periodic,
 divergence-free $u_0$, every maximal classical solution is global with
 $\int_0^T\|\nabla u\|_\infty<\infty$ for all $T$. Combined with local existence and
 uniqueness of classical solutions (standard, not formalized), this is Clay Statement~(B)
-for the periodic problem. Its single \lean{sorry} is labelled OPEN, it is excluded from
-the forbidden-token scan and from every axiom audit, and \lean{\#print axioms} on it
-reports \lean{sorryAx}. The mathematical gap is unchanged: no known argument controls
+for the periodic problem. It is a statement only: it is not a theorem and it has no
+proof. The official kernel certificate runs \lean{\#print axioms} on this declaration,
+and this paper quotes only that official CI output (see the certificate block).
+The mathematical gap is unchanged: no known argument controls
 the critical quantity $\int_0^T\|\nabla u\|_\infty$ (or
 $\int_0^T\|\omega\|_\infty$) for large data from the energy-class bounds
 $L^\infty_tL^2_x\cap L^2_t\dot H^1_x$. \textbf{Nothing in this note or the repository
@@ -327,23 +331,23 @@ proved; Hypothesis~B is of Clay strength and its truth is open, so theorems cond
 it are conditional on an open assumption.
 
 \section{Reproducibility}
-The historical source commits of the original refutation remain recorded here:
-Lean sources were first fixed at commit
+The following earlier commits are recorded here as history only; they are not
+certified evidence for this version of the note: Lean sources of the corrected
+encoding were first written at commit
 \lean{cb927bd302b144982bc2b277423e1aeb9a8b7527}; the first refutation (against the
 literal \lean{type\_of\%} of the legacy declaration) is commit \lean{1a89946}.
-The Lean kernel certificate for \emph{this} version of the note is the one below.
+The Lean kernel certificate for \emph{this} version of the note is the official
+GitHub Actions artifact for the commit and run below. This paper quotes
+\lean{\#print axioms} output only from that artifact. The official CI runs
+\lean{\#print axioms} on every declaration this paper describes, including the
+open-target proposition \lean{ClassicalNS.analytic\_bridge\_unconditional\_Statement}.
+The official line for that proposition, filled only from the certifying run and
+never invented, is:
+\begin{quote}
+\texttt{\CertPrintAxiomsOpenTarget}
+\end{quote}
 
 \input{../certificate-block.tex}
-
-\begin{itemize}
-\item Audit result: 52 declarations (14 in \lean{scripts/PrintAxioms.lean}, 38 in
-\lean{scripts/PrintAxiomsBridge.lean}), each reported as
-\begin{lstlisting}
-depends on axioms: [propext, Classical.choice, Quot.sound]
-\end{lstlisting}
-The only build warning is the intentional placeholder in
-\lean{ClassicalNSOpenTarget.lean}.
-\end{itemize}
 
 \section*{References}
 \begin{itemize}

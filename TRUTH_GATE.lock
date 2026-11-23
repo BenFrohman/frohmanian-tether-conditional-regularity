@@ -1,0 +1,142 @@
+{
+  "semantics_file": "FrohmanianTetherConditional/Semantics.lean",
+  "semantics_module": "FrohmanianTetherConditional.Semantics",
+  "paper_path": "paper/Frohmanian_Tether_Unified.tex",
+  "paper_sha256": "e8723c81b7d94f595b053e8e260c8037f349960951a6612f18b98b73f46703f4",
+  "main_theorems": [
+    "ClassicalNS.analyticBridge_of_formB_forall"
+  ],
+  "lock_region_sha256": "59ca039a78cba7804002b26e71f9ef0c7994813c10be47b8192f481d312a26a3",
+  "draft_dirs": [],
+  "lean_roots": [
+    "FrohmanianTetherConditional"
+  ],
+  "certifying": true,
+  "additional_locks": [
+    {
+      "name": "vacuity-audit",
+      "semantics_file": "FrohmanianTetherConditional/SemanticsVacuity.lean",
+      "semantics_module": "FrohmanianTetherConditional.SemanticsVacuity",
+      "audit_file": "scripts/TruthGateAuditVacuity.lean",
+      "paper_path": "paper/vacuity-audit/vacuity_audit.tex",
+      "paper_sha256": "257ae064898a8451dc7fad4fd1fa558aaa51320e8ca54358c4e6c02e4df1e1a2",
+      "claims": [
+        "target_false",
+        "bkm_empty",
+        "hypB_holds",
+        "clayB_holds",
+        "const_ns",
+        "nonempty_zero",
+        "zero_global",
+        "old_invalid",
+        "linear_not",
+        "grad_cont",
+        "glob_fin",
+        "fin_glob",
+        "clay_iff",
+        "formB_clay",
+        "formB_bridge",
+        "formB_Hs",
+        "clay_not_auto",
+        "hyp_not_auto",
+        "old_triv_fails"
+      ],
+      "main_theorems": [
+        "AnalyticBridgeRefutation.analytic_bridge_target_statement_false",
+        "AnalyticBridgeRefutation.not_nonempty_BKMCriterion",
+        "AnalyticBridgeRefutation.hypothesisB_holds",
+        "AnalyticBridgeRefutation.clayStatementB_holds",
+        "ClassicalNS.const_isClassicalNS",
+        "ClassicalNS.nonempty_NSSolution_zero",
+        "ClassicalNS.zero_field_is_global",
+        "ClassicalNS.old_counterexample_invalid",
+        "ClassicalNS.linear_in_time_not_NS",
+        "ClassicalNS.gradLinf_continuousOn",
+        "ClassicalNS.global_implies_gradIntegral_finite",
+        "ClassicalNS.gradIntegral_finite_implies_global",
+        "ClassicalNS.clayB_iff_gradIntegral_finite",
+        "ClassicalNS.formB_implies_clayB",
+        "ClassicalNS.analyticBridge_of_formB",
+        "ClassicalNS.formB_Hs_bound",
+        "FrohmanianTripleArchitectureLifespan.clayStatementB_not_automatic",
+        "FrohmanianTripleArchitectureLifespan.hypothesisB_not_automatic",
+        "FrohmanianTripleArchitectureLifespan.old_trivialization_fails"
+      ],
+      "paper_forbidden_names": [
+        "HypothesisB",
+        "BKMCriterion",
+        "AnalyticBridgeStatement",
+        "analytic_bridge_unconditional_statement",
+        "KatoPonceEnergy",
+        "analytic_bridge_target_statement_false",
+        "not_nonempty_BKMCriterion",
+        "hypothesisB_holds",
+        "clayStatementB_holds",
+        "const_isClassicalNS",
+        "nonempty_NSSolution_zero",
+        "zero_field_is_global",
+        "old_counterexample_invalid",
+        "linear_in_time_not_NS",
+        "gradLinf_continuousOn",
+        "global_implies_gradIntegral_finite",
+        "gradIntegral_finite_implies_global",
+        "clayB_iff_gradIntegral_finite",
+        "formB_implies_clayB",
+        "analyticBridge_of_formB",
+        "formB_Hs_bound",
+        "clayStatementB_not_automatic",
+        "hypothesisB_not_automatic",
+        "old_trivialization_fails",
+        "analyticBridge_of_formB_forall"
+      ],
+      "lock_region_sha256": "d5ee5e5f527fc0541d7d76d7c932a2e7f1bf92adb61841fa019b8d9f85e25933",
+      "certifying": true
+    },
+    {
+      "name": "three-pillars",
+      "semantics_file": "FrohmanianTetherConditional/SemanticsPillars.lean",
+      "semantics_module": "FrohmanianTetherConditional.SemanticsPillars",
+      "audit_file": "scripts/TruthGateAuditPillars.lean",
+      "paper_path": "paper/Three_Pillars_NS.tex",
+      "paper_sha256": "6d3d04b27fddb11547df6a72a08473eb281618957258ec06f8ac01705fb7d8b4",
+      "claims": [
+        "conditional"
+      ],
+      "main_theorems": [
+        "ClassicalNS.analyticBridge_of_formB_forall"
+      ],
+      "paper_forbidden_names": [
+        "HypothesisB",
+        "BKMCriterion",
+        "AnalyticBridgeStatement",
+        "analyticBridge_of_formB_forall",
+        "analyticBridge_of_formB"
+      ],
+      "lock_region_sha256": "0e3842c7bd76ed9689ef805276ed296016164d93ecb810b67829d2204fcba581",
+      "certifying": true
+    },
+    {
+      "name": "unified-formB-Hs",
+      "semantics_file": "FrohmanianTetherConditional/SemanticsUnifiedHs.lean",
+      "semantics_module": "FrohmanianTetherConditional.SemanticsUnifiedHs",
+      "audit_file": "scripts/TruthGateAuditUnifiedHs.lean",
+      "paper_path": "paper/Frohmanian_Tether_Unified.tex",
+      "paper_sha256": "e8723c81b7d94f595b053e8e260c8037f349960951a6612f18b98b73f46703f4",
+      "claims": [
+        "hsbound"
+      ],
+      "main_theorems": [
+        "ClassicalNS.formB_Hs_bound"
+      ],
+      "paper_forbidden_names": [
+        "HypothesisB",
+        "BKMCriterion",
+        "AnalyticBridgeStatement",
+        "KatoPonceEnergy",
+        "formB_Hs_bound"
+      ],
+      "lock_region_sha256": "07c303a2180c9d9019adb35f7b0ecb1302caf9924896a291a02a566e30c5a0c9",
+      "certifying": true
+    }
+  ]
+}

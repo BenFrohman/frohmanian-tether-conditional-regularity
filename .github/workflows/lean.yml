@@ -28,6 +28,10 @@ jobs:
           set -o pipefail
           mkdir -p cert-bundle
           lake build 2>&1 | tee cert-bundle/lake-build.log
+          if grep -E "declaration uses .sorry.|sorryAx" cert-bundle/lake-build.log; then
+            echo "FAIL: certified build log contains sorry or sorryAx"
+            exit 1
+          fi
       - name: Finalize certificate bundle
         if: always()
         run: bash scripts/finalize_lake_certificate.sh cert-bundle
@@ -59,15 +63,17 @@ jobs:
           set -o pipefail
           mkdir -p cert-bundle
           lake build 2>&1 | tee cert-bundle/lake-build.log
+          if grep -E "declaration uses .sorry.|sorryAx" cert-bundle/lake-build.log; then
+            echo "FAIL: certified build log contains sorry or sorryAx"
+            exit 1
+          fi
       - name: Forbidden tokens and #print axioms
         run: ./scripts/kernel_check.sh
-      - name: Forbidden tokens, comment-aware, with audit coverage check
+      - name: No-skip guard
+        run: python3 scripts/check_no_skips.py
+      - name: Forbidden tokens, comment-aware, every tracked .lean file
         run: |
-          python3 scripts/check_forbidden_tokens.py \
-            --exclude FrohmanianTetherConditional/ClassicalNSOpenTarget.lean \
-            --require-imported-by scripts/StrictAxiomAudit.lean \
-            --require-imported-by scripts/StrictAxiomAuditBridge.lean \
-            FrohmanianTetherConditional.lean FrohmanianTetherConditional
+          python3 scripts/check_forbidden_tokens.py --from-git
       - name: Strict whole-library axiom audit (every declaration, not only listed ones)
         run: |
           set -o pipefail
@@ -85,9 +91,15 @@ jobs:
           for f in \
             certificates/axioms.log \
             certificates/axioms-bridge.log \
+            certificates/PrintAxioms.log \
+            certificates/PrintAxiomsBridge.log \
             certificates/SUMMARY.txt \
             certificates/StrictAxiomAudit.txt \
-            certificates/StrictAxiomAuditBridge.txt
+            certificates/StrictAxiomAuditBridge.txt \
+            certificates/TruthGateAudit.txt \
+            certificates/TruthGateAuditVacuity.txt \
+            certificates/TruthGateAuditPillars.txt \
+            certificates/TruthGateAuditUnifiedHs.txt
           do
             if [ -f "$f" ]; then cp -a "$f" cert-bundle/; fi
           done
@@ -107,7 +119,13 @@ jobs:
           path: |
             certificates/axioms.log
             certificates/axioms-bridge.log
+            certificates/PrintAxioms.log
+            certificates/PrintAxiomsBridge.log
             certificates/SUMMARY.txt
             certificates/StrictAxiomAudit.txt
             certificates/StrictAxiomAuditBridge.txt
+            certificates/TruthGateAudit.txt
+            certificates/TruthGateAuditVacuity.txt
+            certificates/TruthGateAuditPillars.txt
+            certificates/TruthGateAuditUnifiedHs.txt
           if-no-files-found: warn

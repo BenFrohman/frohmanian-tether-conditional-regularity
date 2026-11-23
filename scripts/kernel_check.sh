@@ -9,28 +9,20 @@ cd "$(dirname "$0")/.."
 
 mkdir -p certificates
 
-echo "== forbidden-token scan =="
-# ClassicalNSOpenTarget.lean is the single OPEN Clay (B) target (genuine definitions)
-# with exactly one intentional placeholder proof; it is excluded from this scan and
-# from the axiom audits. (The LEGACY AnalyticBridgeTarget.lean is now scanned.)
-if grep -rnE '\b(sorry|admit|native_decide|implemented_by)\b|^\s*(axiom|unsafe|opaque)\b' \
-     --include='*.lean' FrohmanianTetherConditional FrohmanianTetherConditional.lean \
-   | grep -v 'Zero-sorry' \
-   | grep -v 'ClassicalNSOpenTarget\.lean'; then
-  echo "FAIL: forbidden token found"; exit 1
-fi
-echo "OK: no sorry/admit/axiom/native_decide/opaque/unsafe (ClassicalNSOpenTarget.lean open-target excluded)"
+echo "== forbidden-token scan (every tracked .lean file; no exclusions) =="
+python3 scripts/check_forbidden_tokens.py --from-git
 
 audit() {
-  # $1 = audit .lean file, $2 = log file
-  local file="$1" log="$2" out expected got bad
+  # $1 = audit .lean file, $2 = log file (also written as certificates/<stem>.log)
+  local file="$1" log="$2" out expected got bad stem
+  stem="$(basename "$file" .lean)"
   echo "== #print axioms (all declarations listed in $file) =="
   out="$(lake env lean "$file" 2>&1)" || {
-    printf '%s\n' "$out" | tee "$log"
+    { echo "ELABORATED $file"; printf '%s\n' "$out"; } | tee "$log" "certificates/${stem}.log"
     echo "FAIL: lake env lean $file"
     exit 1
   }
-  printf '%s\n' "$out" | tee "$log"
+  { echo "ELABORATED $file"; printf '%s\n' "$out"; } | tee "$log" "certificates/${stem}.log"
 
   # Fail on sorry warnings / sorryAx / lean errors in the audit output
   if printf '%s\n' "$out" | grep -qiE 'sorryAx|\bsorry\b|error:'; then
@@ -66,7 +58,30 @@ expected=$AUDITED
   echo "allowed_axioms=propext,Classical.choice,Quot.sound"
   echo "result=PASS"
   echo "scope=conditional abstract algebra/Grönwall over assumed PDE structure fields; not Clay Statement B"
-  echo "bridge_audit=LEGACY placeholder target refuted; ClassicalNS genuine NS encoding with non-vacuity lemmas; lifespan-corrected triple architecture; OPEN target ClassicalNS.analytic_bridge_unconditional (Clay B) NOT audited, NOT claimed"
+  echo "bridge_audit=LEGACY placeholder target refuted; ClassicalNS genuine NS encoding with non-vacuity lemmas; lifespan-corrected triple architecture; OPEN target recorded as ClassicalNS.analytic_bridge_unconditional_Statement (a Prop, no proof, not claimed); every tracked .lean file is scanned and axiom-audited, including the open-target module"
 } | tee certificates/SUMMARY.txt
 
 echo "OK: all $expected declarations use only propext, Classical.choice, Quot.sound"
+
+echo "== Truth Gate kernel audits =="
+for f in TruthGateAudit TruthGateAuditVacuity TruthGateAuditPillars TruthGateAuditUnifiedHs; do
+  { echo "ELABORATED scripts/$f.lean"; lake env lean "scripts/$f.lean" 2>&1; } | tee "certificates/$f.txt"
+  grep -q 'TRUTH GATE AUDIT PASS' "certificates/$f.txt"
+  if grep -qE 'TRUTH GATE FAIL|error:|sorryAx' "certificates/$f.txt"; then
+    echo "FAIL: Truth Gate audit $f"; exit 1
+  fi
+done
+
+echo "== Strict whole-library axiom audit (every declaration, not only listed ones) =="
+for f in StrictAxiomAudit StrictAxiomAuditBridge; do
+  { echo "ELABORATED scripts/$f.lean"; lake env lean "scripts/$f.lean" 2>&1; } | tee "certificates/$f.txt"
+  grep -q '^STRICT AUDIT PASS' "certificates/$f.txt"
+  if grep -v '^STRICT AUDIT PASS' "certificates/$f.txt" | grep -qE 'STRICT AUDIT FAIL|sorryAx|ofReduceBool|error:'; then
+    echo "FAIL: strict axiom audit $f"; exit 1
+  fi
+  grep '^STRICT AUDIT SUMMARY' "certificates/$f.txt" || true
+done
+
+echo "== coverage: every tracked .lean file must be built and scanned =="
+python3 scripts/check_lean_coverage.py --build-log "${BUILD_LOG:-cert-bundle/lake-build.log}"
+

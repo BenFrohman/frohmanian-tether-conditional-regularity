@@ -7,10 +7,11 @@ Authors: Benjamin Stanley Frohman
 -- Axiom audit for: (i) the LEGACY refutation and vacuity checks, (ii) the genuine
 -- classical Navier–Stokes encoding `ClassicalNS`, (iii) the lifespan-corrected triple
 -- architecture. Every listed declaration must depend only on propext,
--- Classical.choice, Quot.sound. The OPEN target
--- `ClassicalNS.analytic_bridge_unconditional` is intentionally NOT listed.
+-- Classical.choice, Quot.sound. The OPEN target is the statement definition
+-- `ClassicalNS.analytic_bridge_unconditional_Statement` (a Prop, no proof); it IS listed.
 import FrohmanianTetherConditional.AnalyticBridgeRefutation
 import FrohmanianTetherConditional.ClassicalNS
+import FrohmanianTetherConditional.ClassicalNSOpenTarget
 import FrohmanianTetherConditional.FrohmanianTripleArchitectureLifespan
 
 -- (i) LEGACY file: sound lemmas, refutation, vacuity witnesses
@@ -50,9 +51,11 @@ Machine-checked Lean 4 module.
 #print axioms ClassicalNS.clayB_iff_gradIntegral_finite
 #print axioms ClassicalNS.formB_implies_clayB
 #print axioms ClassicalNS.analyticBridge_of_formB
+#print axioms ClassicalNS.analyticBridge_of_formB_forall
 #print axioms ClassicalNS.gronwall_differential_bound
 #print axioms ClassicalNS.integral_gronwall_bound
 #print axioms ClassicalNS.formB_Hs_bound
+#print axioms ClassicalNS.analytic_bridge_unconditional_Statement
 
 -- (iii) Lifespan-corrected triple architecture
 #print axioms FrohmanianTripleArchitectureLifespan.primitive_bounded

@@ -131,7 +131,15 @@ theorem intended_correspondence_target_false :
     push_neg at h
     obtain ⟨N, ν, hν, s, hs, u0, hper, hu0, sol, hconc⟩ := h
     refine ⟨N, ν, hν, s, hs, u0, hper, hu0, sol, ?_⟩
-    exact not_and_or.mp hconc
+    -- hconc : Tstar = ⊤ → ∃ T, 0 < T ∧ ¬ IntervalIntegrable ...
+    -- paper  : Tstar ≠ ⊤ ∨ ¬ ∀ T, 0 < T → IntervalIntegrable ...
+    by_cases hT : sol.Tstar = ⊤
+    · right
+      intro hall
+      obtain ⟨T, hpos, hni⟩ := hconc hT
+      exact hni (hall T hpos)
+    · left
+      exact hT
   · intro ⟨N, ν, hν, s, hs, u0, hper, hu0, sol, hdisj⟩
     intro hall
     have hconc := hall N ν hν s hs u0 hper hu0 sol
@@ -185,7 +193,7 @@ theorem intended_correspondence_clayB_holds :
   · intro h sol
     exact iff_true_intro (h sol)
   · intro h sol
-    exact (h sol).mp trivial
+    exact (h sol).mpr trivial
 
 def formal_claim_const_ns : Prop :=
   ∀ (ν : ℝ) (c : ClassicalNS.E3),
@@ -230,9 +238,9 @@ theorem intended_correspondence_zero_global :
   constructor
   · intro h ν sol hu hne
     exact hne (h sol hu)
-  · intro h sol hu
+  · intro h {ν} sol hu
     by_contra hne
-    exact h _ sol hu hne
+    exact h ν sol hu hne
 
 def formal_claim_old_invalid : Prop :=
   ∀ ν : ℝ,
@@ -284,8 +292,8 @@ theorem intended_correspondence_grad_cont :
   constructor
   · intro h ν u0 sol T hT hlt
     simpa [Set.Icc, Set.mem_setOf] using h (sol := sol) hT hlt
-  · intro h sol T hT hlt
-    have := h _ _ sol T hT hlt
+  · intro h {ν} {u0} sol {T} hT hlt
+    have := h ν u0 sol T hT hlt
     simpa [Set.Icc, Set.mem_setOf] using this
 
 def formal_claim_glob_fin : Prop :=
@@ -302,7 +310,7 @@ theorem intended_correspondence_glob_fin :
     formal_claim_glob_fin ↔ paper_claim_glob_fin := by
   constructor
   · intro h T ν u0 sol hg; exact h sol hg T
-  · intro h sol hg T; exact h T _ _ sol hg
+  · intro h {ν} {u0} sol hg T; exact h T ν u0 sol hg
 
 def formal_claim_fin_glob : Prop :=
   ClassicalNS.BKMCriterion →

@@ -26,7 +26,7 @@ Navier--Stokes regularity}
 \small Independent Researcher, Texas, United States\\
 \small ORCID \href{https://orcid.org/0009-0006-7068-3718}{0009-0006-7068-3718}\quad
 \href{mailto:frohmanbenjamin@gmail.com}{frohmanbenjamin@gmail.com}}
-\date{November 2026}
+\date{November 24, 2026}
 
 \input{../provenance-stamp.tex}
 
@@ -229,36 +229,67 @@ the lemma, hence bounded by some $C$; the lower Lebesgue integral over
 $[0,T)\subseteq[0,T]$ is at most $C\cdot T<\infty$.
 \end{proof}
 
-\subsection{BKM as a satisfiable cited hypothesis}
-\begin{definition}[\lean{BKMCriterion}, cited]
+\subsection{BKM over all data is false; the smooth-data form is cited}
+\begin{definition}[\lean{BKMCriterion}]
 For every maximal classical solution with $\Tstar\neq\top$:
 $\int_{[0,\Tstar)}\|\nabla u(t)\|_\infty\,dt = \infty$.
+\end{definition}
+\begin{theorem}[\lean{not\_BKMCriterion}]
+\lean{BKMCriterion} is false.
+\end{theorem}
+\begin{proof}
+\lean{NSSolution} places no smoothness or periodicity requirement on $u_0$. Take $\nu=1$,
+the non-periodic datum $u_0(x)=x_1e_1$ and $\Tstar=0$. Every lifespan condition is empty,
+and maximality holds because a classical solution on a longer interval would make $u_0$
+periodic (\lean{rampSolution}). Then $\Tstar\ne\top$, while the integral over $[0,0)$ is
+$0\ne\infty$.
+\end{proof}
+\begin{definition}[\lean{BKMCriterionSmooth}, cited]
+For every smooth, periodic, divergence-free $u_0$ and every maximal classical solution
+with $\Tstar\neq\top$: $\int_{[0,\Tstar)}\|\nabla u(t)\|_\infty\,dt = \infty$.
 \end{definition}
 This is the Beale--Kato--Majda criterion in the form controlled by the full gradient
 (BKM 1984; Kato's local theory and uniqueness of classical solutions are used to pass
 between ``cannot be continued'' and ``maximal in this class''). It is \emph{not}
-proved in Lean. Unlike the legacy version it is not refuted by any object we can
-construct: its only quantified objects are genuine maximal solutions, and the legacy
-witness is excluded by \lean{old\_counterexample\_invalid}. We cannot prove in Lean that
-it is consistent, since that would amount to formalizing BKM; we state this limitation
-explicitly.
+proved in Lean. We cannot prove in Lean that it is consistent, since that would amount
+to formalizing BKM; we state this limitation explicitly.
+
+\begin{theorem}[\lean{not\_hypothesisB}]
+For every $C_\star$, Hypothesis~B (a uniform bound
+$\int_{[0,T)\cap L}\|\nabla u\|_\infty\le C_\star(T)$ over all solutions and all $T>0$)
+fails.
+\end{theorem}
+\begin{proof}
+On the unit-period cell, $u(t,x)=A e^{-4\pi^2\nu t}\sin(2\pi x_2)\,e_1$, $p\equiv 0$ is a
+global classical solution, and its integral on $[0,T)$ is at least
+$2\pi A e^{-4\pi^2\nu T}T$, which exceeds any real bound for large $A$
+(\lean{gradIntegral\_unbounded}).
+\end{proof}
+\begin{definition}[\lean{FormBPerSolution}]
+For every $\nu>0$, every smooth, periodic, divergence-free $u_0$, every maximal classical
+solution and every $T>0$ there is a real $C$ with
+$\int_{[0,T)\cap L}\|\nabla u\|_\infty\le C$.
+\end{definition}
 
 \begin{theorem}[conditional; proved in Lean]\leavevmode
 \begin{enumerate}
-\item \lean{gradIntegral\_finite\_implies\_global}: BKM and finiteness of
+\item \lean{gradIntegral\_finite\_implies\_global}: \lean{BKMCriterionSmooth}, a smooth,
+periodic, divergence-free $u_0$ and finiteness of
 $\int_{[0,T)\cap L}\|\nabla u\|_\infty$ for all $T>0$ imply $\Tstar=\top$.
-\item \lean{clayB\_iff\_gradIntegral\_finite}: under BKM, $\Tstar=\top$ iff those
-integrals are finite for all $T>0$.
-\item \lean{formB\_implies\_clayB}, \lean{analyticBridge\_of\_formB}: Hypothesis~B
-(a uniform bound $\int_{[0,T)\cap L}\|\nabla u\|_\infty\le C_\star(T)$ over all
-solutions) and BKM imply every maximal solution is global.
+\item \lean{clayB\_iff\_gradIntegral\_finite}: under \lean{BKMCriterionSmooth}, for a
+smooth, periodic, divergence-free $u_0$, $\Tstar=\top$ iff those integrals are finite
+for all $T>0$.
+\item \lean{formB\_implies\_clayB}, \lean{analyticBridge\_of\_formB}: Form~B per solution
+and \lean{BKMCriterionSmooth} imply that every maximal solution with smooth, periodic,
+divergence-free data is global.
 \item \lean{formB\_Hs\_bound}: adding the cited Kato--Ponce inequality
 $\|u(t)\|_{H^s}\le\|u_0\|_{H^s}+\int_0^t C_s\|\nabla u\|_\infty\|u\|_{H^s}$
-gives $\|u(t)\|_{H^s}\le\|u_0\|_{H^s}\exp(C_s\max(C_\star(T),0))$ on $[0,T]$.
+gives, for smooth, periodic, divergence-free $u_0$ and every $T>0$, a real $C$ with
+$\|u(t)\|_{H^s}\le\|u_0\|_{H^s}\exp(C_s\max(C,0))$ on $[0,T]$.
 \end{enumerate}
 \end{theorem}
 \begin{proof}[Proof of (1)]
-Suppose $\Tstar\ne\top$ and put $T_0=\Tstar$ as a real number. BKM gives
+Suppose $\Tstar\ne\top$ and put $T_0=\Tstar$ as a real number. \lean{BKMCriterionSmooth} gives
 $\int_{[0,T_0)}=\infty$. Every $t\in[0,T_0)$ lies in $[0,T_0+1)\cap L$, so by
 monotonicity of the integral in the domain the hypothesis at $T=T_0+1$ is violated.
 \end{proof}
@@ -268,9 +299,9 @@ monotonicity of the integral in the domain the hypothesis at $T=T_0+1$ is violat
 gives $y(t)\le y(0)\exp\int_0^t\beta$. Since the integrand is continuous and
 nonnegative, $\int_0^t\|\nabla u\| = \int_{(0,t)}\|\nabla u\|$ and its
 $\mathrm{ofReal}$ equals the lower Lebesgue integral over $(0,t)\subseteq[0,T)$, which is
-$\le C_\star(T)\le\max(C_\star(T),0)$; monotonicity of $\exp$ finishes. (The $\max$ is
-needed: a negative $C_\star(T)$ is only meaningful through $\mathrm{ofReal}$, which
-clips it at $0$.)
+$\le C\le\max(C,0)$, where $C$ is the real bound from Form~B per solution;
+monotonicity of $\exp$ finishes. (The $\max$ is needed: a negative $C$ is only
+meaningful through $\mathrm{ofReal}$, which clips it at $0$.)
 \end{proof}
 The $H^s$ norm is not defined in Mathlib on $\T$; it appears only as a documented
 parameter \lean{HsR} inside the cited hypothesis \lean{KatoPonceEnergy}. That structure
@@ -327,8 +358,9 @@ proves global regularity, blow-up, or any new fact about Navier--Stokes.}
 
 Other limitations: the solution class is classical (pointwise equations, joint
 smoothness on the open lifespan); the BKM and Kato--Ponce statements are cited, not
-proved; Hypothesis~B is of Clay strength and its truth is open, so theorems conditional on
-it are conditional on an open assumption.
+proved; the uniform Hypothesis~B is false (\lean{not\_hypothesisB}), and the theorems
+above are conditional on Form~B per solution, which under \lean{BKMCriterionSmooth} is
+equivalent to the open target (\lean{analyticBridge\_iff\_formB}).
 
 \section{Reproducibility}
 The following earlier commits are recorded here as history only; they are not

@@ -22,19 +22,19 @@
 
 \numberwithin{equation}{section}
 
-\title[Lean-certified conditional implication for 3D Navier--Stokes]{A Lean-certified conditional implication for the 3D incompressible Navier--Stokes equations: Hypothesis~B and the Beale--Kato--Majda criterion imply global regularity of maximal classical solutions}
+\title[Lean-certified conditional equivalence for 3D Navier--Stokes]{A Lean-certified conditional equivalence for the 3D incompressible Navier--Stokes equations: under the Beale--Kato--Majda criterion, a per-solution gradient bound is equivalent to global regularity of maximal classical solutions}
 
 \author{Benjamin Stanley Frohman}
 \address{Independent Researcher, Texas, United States}
 \thanks{Independent Researcher, Texas, United States. ORCID \href{https://orcid.org/0009-0006-7068-3718}{0009-0006-7068-3718}. Copyright (c) 2026 Benjamin Stanley Frohman. The paper (this PDF and its \LaTeX\ source) is licensed under CC BY~4.0. Lean code in the companion repository is licensed under the Apache License~2.0.}
-\date{November 17, 2026}
+\date{November 24, 2026}
 
 \input{provenance-stamp.tex}
 
 \begin{document}
 
 \begin{abstract}
-This paper states only what a Lean~4 kernel certificate proves in the companion repository. Let \(\nu>0\) and let \(\uvec_0\) be a smooth, periodic, divergence-free initial velocity on \(\R^3\) (the period cell models \(\T^3\)). In the Lean development, a maximal classical solution of periodic incompressible Navier--Stokes is an object of type \texttt{NSSolution}. Lean proves: if Hypothesis~B holds for some bound \(C_\star\), and if the named Beale--Kato--Majda hypothesis \texttt{BKMCriterion} holds, then every such maximal classical solution is global (\(T^\star=\top\)) and \(\int_0^T\|\nabla\uvec(t)\|_{L^\infty}\,dt<\infty\) for every finite \(T>0\). Those two hypotheses are recorded below exactly as they are written in Lean. They are assumptions, not theorems of this development. Clay Millennium Problem Statement~(B) remains open~\cite{Fefferman2000}: the unconditioned statement is recorded in Lean only as the proposition \texttt{analytic\_bridge\_unconditional\_Statement}, which has no proof. Kato local existence, Fujita--Kato small-data global regularity, a strain-only continuation criterion, logarithmic Sobolev bounds, and a parabolic bootstrap are not formalized here and are not claimed.
+This paper states only what a Lean~4 kernel certificate proves in the companion repository. Let \(\nu>0\) and let \(\uvec_0\) be a smooth, periodic, divergence-free initial velocity on \(\R^3\) (the period cell models \(\T^3\)). In the Lean development, a maximal classical solution of periodic incompressible Navier--Stokes is an object of type \texttt{NSSolution}. Lean proves: if the named Beale--Kato--Majda hypothesis \texttt{BKMCriterionSmooth} holds for smooth, periodic, divergence-free data, then Form~B per solution (for every such maximal classical solution and every finite \(T>0\), \(\int_0^T\|\nabla\uvec(t)\|_{L^\infty}\,dt\) is bounded by a real number) holds if and only if every such maximal classical solution is global (\(T^\star=\top\)) with \(\int_0^T\|\nabla\uvec(t)\|_{L^\infty}\,dt<\infty\) for every finite \(T>0\). Lean also proves that the uniform Hypothesis~B is false for every bound \(C_\star\), and that the continuation statement \texttt{BKMCriterion} over all initial data is false. \texttt{BKMCriterionSmooth} is recorded below exactly as it is written in Lean. It is an assumption, not a theorem of this development. Clay Millennium Problem Statement~(B) remains open~\cite{Fefferman2000}: the unconditioned statement is recorded in Lean only as the proposition \texttt{analytic\_bridge\_unconditional\_Statement}, which has no proof. Kato local existence, Fujita--Kato small-data global regularity, a strain-only continuation criterion, logarithmic Sobolev bounds, and a parabolic bootstrap are not formalized here and are not claimed.
 \end{abstract}
 
 \maketitle
@@ -44,9 +44,9 @@ This paper states only what a Lean~4 kernel certificate proves in the companion 
 
 The companion repository
 \url{https://github.com/BenFrohman/frohmanian-tether-conditional-regularity}
-contains a Lean~4 formalization. The only regularity theorem claimed in this paper is the one Lean proves under two named hypotheses. The kernel certificate is the official GitHub Actions artifact for the commit and run recorded in the certificate block below. That artifact includes the repository's own \texttt{lake-manifest.json}, its SHA-256, the toolchain, \texttt{elan}/\texttt{lake}/\texttt{lean} versions, the full teed \texttt{lake build} log, and \texttt{\#print axioms} output. A hand-written summary is not a certificate.
+contains a Lean~4 formalization. The only regularity theorem claimed in this paper is the one Lean proves under the named hypothesis \texttt{BKMCriterionSmooth}. The kernel certificate is the official GitHub Actions artifact for the commit and run recorded in the certificate block below. That artifact includes the repository's own \texttt{lake-manifest.json}, its SHA-256, the toolchain, \texttt{elan}/\texttt{lake}/\texttt{lean} versions, the full teed \texttt{lake build} log, and \texttt{\#print axioms} output. A hand-written summary is not a certificate.
 
-An independent review of whether the Lean encodings of \texttt{BKMCriterion} and \texttt{HypothesisB} are faithful to the textbook Beale--Kato--Majda criterion, and whether they are vacuous, is in progress. This paper transcribes the Lean hypotheses as they stand. If that review requires a rewrite of either hypothesis, the paper and the Truth Gate lock will be updated to match, and nothing built on a rewritten hypothesis will be treated as already passed.
+Earlier versions of this paper assumed \texttt{HypothesisB} and \texttt{BKMCriterion}. Both are false in Lean (Proposition~\ref{prop:false}). The certified regularity result is Theorem~\ref{thm:A}, whose only hypothesis is \texttt{BKMCriterionSmooth}.
 
 \section{The Lean hypotheses and the certified implication}
 
@@ -59,29 +59,52 @@ For a bound \(C_\star:\R\to\R\), Hypothesis~B says: for every viscosity \(\nu\),
 \]
 \end{definition}
 
-\begin{definition}[Named BKM hypothesis, Lean \texttt{BKMCriterion}]\label{def:bkm}
-\texttt{BKMCriterion} says: for every maximal classical solution with \(T^\star\neq\top\),
+\begin{definition}[Lean \texttt{BKMCriterion}]\label{def:bkmAll}
+\texttt{BKMCriterion} says: for every viscosity \(\nu\), every initial datum \(\uvec_0\), and every maximal classical solution with \(T^\star\neq\top\),
+\[
+\int_{[0,T^\star)}^\texttt{-}\texttt{ENNReal.ofReal}(\texttt{gradLinf}(\uvec(t)))\,dt=\top.
+\]
+\end{definition}
+
+\begin{definition}[Named BKM hypothesis, Lean \texttt{BKMCriterionSmooth}]\label{def:bkm}
+\texttt{BKMCriterionSmooth} says: for every viscosity \(\nu\), every smooth, periodic, divergence-free initial datum \(\uvec_0\), and every maximal classical solution with \(T^\star\neq\top\),
 \[
 \int_{[0,T^\star)}^\texttt{-}\texttt{ENNReal.ofReal}(\texttt{gradLinf}(\uvec(t)))\,dt=\top.
 \]
 This is a named hypothesis in the Lean development, written after the Beale--Kato--Majda continuation criterion~\cite{BKM1984}. It is not proved in Lean.
 \end{definition}
 
+\begin{definition}[Form~B per solution, Lean \texttt{FormBPerSolution}]\label{def:formB}
+Form~B per solution says: for every \(\nu>0\), every smooth, periodic, divergence-free initial datum \(\uvec_0\), every maximal classical solution \(\mathrm{sol}\), and every \(T>0\), there is a real number \(C\) with
+\[
+\texttt{gradIntegral}(\mathrm{sol},T)\le \texttt{ENNReal.ofReal}(C).
+\]
+\end{definition}
+
 \begin{definition}[Analytic bridge statement, Lean \texttt{AnalyticBridgeStatement}]\label{def:bridge}
 The analytic bridge statement says: for every \(\nu>0\) and every smooth, periodic, divergence-free initial datum \(\uvec_0\), every maximal classical solution satisfies \(T^\star=\top\) and \(\texttt{gradIntegral}(\mathrm{sol},T)<\top\) for every \(T>0\).
 \end{definition}
 
-\begin{theorem}[Conditional implication, Lean \texttt{analyticBridge\_of\_formB} / \texttt{analyticBridge\_of\_formB\_forall}]\label{thm:A}
-For every bound \(C_\star:\R\to\R\), if Hypothesis~B holds for \(C_\star\) and if \texttt{BKMCriterion} holds, then the analytic bridge statement holds.
+\begin{proposition}[Lean \texttt{not\_hypothesisB}, \texttt{not\_BKMCriterion}]\label{prop:false}
+(i) For every bound \(C_\star:\R\to\R\) there are a viscosity \(\nu\), an initial datum \(\uvec_0\), a maximal classical solution \(\mathrm{sol}\) and a time \(T>0\) with \(\texttt{ENNReal.ofReal}(C_\star(T))<\texttt{gradIntegral}(\mathrm{sol},T)\). Hence Hypothesis~B fails for every \(C_\star\).
+(ii) There are a viscosity \(\nu\), an initial datum \(\uvec_0\) and a maximal classical solution with \(T^\star\neq\top\) and \(\int_{[0,T^\star)}^\texttt{-}\texttt{ENNReal.ofReal}(\texttt{gradLinf}(\uvec(t)))\,dt\neq\top\). Hence \texttt{BKMCriterion} is false.
+\end{proposition}
+
+\begin{proof}[Lean proof]
+(i) On the unit-period cell, \(\uvec(t,x)=A e^{-4\pi^2\nu t}\sin(2\pi x_2)\,e_1\), \(p\equiv 0\) is a global classical solution, and its \(\texttt{gradIntegral}\) on \([0,T)\) is at least \(2\pi A e^{-4\pi^2\nu T}T\), which exceeds any real bound for large \(A\) (\texttt{gradIntegral\_unbounded}). (ii) With \(\nu=1\) and the non-periodic datum \(\uvec_0(x)=x_1e_1\), the object with \(T^\star=0\) is an \texttt{NSSolution} (\texttt{rampSolution}): its lifespan conditions are empty, and no classical solution on a longer interval exists, because such a solution would make \(\uvec_0\) periodic. Its lower integral over \([0,0)\) is \(0\).
+\end{proof}
+
+\begin{theorem}[Conditional equivalence, Lean \texttt{analyticBridge\_iff\_formB}]\label{thm:A}
+If \texttt{BKMCriterionSmooth} holds, then Form~B per solution holds if and only if the analytic bridge statement holds.
 \end{theorem}
 
-A companion Lean theorem, \texttt{formB\_Hs\_bound}, gives a direct \(H^s\)-style bound under the additional named hypothesis \texttt{KatoPonceEnergy} (a cited Kato--Ponce energy inequality on genuine solutions, not proved in Lean): on \([0,T]\),
+A companion Lean theorem, \texttt{formB\_Hs\_bound}, gives a direct \(H^s\)-style bound under the additional named hypothesis \texttt{KatoPonceEnergy} (a cited Kato--Ponce energy inequality on genuine solutions, not proved in Lean): if Form~B per solution and \texttt{BKMCriterionSmooth} hold, then for every smooth, periodic, divergence-free initial datum \(\uvec_0\), every maximal classical solution and every \(T>0\) there is a real number \(C\) such that on \([0,T]\),
 \[
-\texttt{HsR}(s,\uvec(t))\le \texttt{HsR}(s,\uvec_0)\exp\bigl(C_s\max(C_\star(T),0)\bigr).
+\texttt{HsR}(s,\uvec(t))\le \texttt{HsR}(s,\uvec_0)\exp\bigl(C_s\max(C,0)\bigr).
 \]
 The content of that bound for a zero dummy norm is trivial (\texttt{kp\_trivial}); its intended content is for a true \(H^s\) norm, which Mathlib does not yet supply on \(\T^3\).
 
-The unconditioned statement (Definition~\ref{def:bridge} with no Hypothesis~B and no \texttt{BKMCriterion}) is recorded only as
+The unconditioned statement (Definition~\ref{def:bridge} with no hypotheses) is recorded only as
 \[
 \texttt{ClassicalNS.analytic\_bridge\_unconditional\_Statement}
 :\ \texttt{Prop}
@@ -108,8 +131,9 @@ Formalizing any of these in Lean, with only the standard axioms and no \texttt{s
 \toprule
 \textbf{Item} & \textbf{Status} & \textbf{Content} \\
 \midrule
-Theorem~\ref{thm:A} & Lean-certified, conditional & \(\texttt{HypothesisB}\,C_\star\to\texttt{BKMCriterion}\to\texttt{AnalyticBridgeStatement}\) \\
-\texttt{formB\_Hs\_bound} & Lean-certified, conditional & the same hypotheses plus \texttt{KatoPonceEnergy} give the exponential \(H^s\)-style bound \\
+Theorem~\ref{thm:A} & Lean-certified, conditional & \(\texttt{BKMCriterionSmooth}\to(\texttt{FormBPerSolution}\leftrightarrow\texttt{AnalyticBridgeStatement})\) \\
+Proposition~\ref{prop:false} & Lean-certified & \(\forall C_\star,\ \neg\,\texttt{HypothesisB}\,C_\star\) and \(\neg\,\texttt{BKMCriterion}\) \\
+\texttt{formB\_Hs\_bound} & Lean-certified, conditional & \texttt{FormBPerSolution}, \texttt{BKMCriterionSmooth} and \texttt{KatoPonceEnergy} give the exponential \(H^s\)-style bound \\
 Open target & Statement only, not proved & \texttt{analytic\_bridge\_unconditional\_Statement} \\
 Kato local existence & Open, not formalized & not claimed \\
 Fujita--Kato small-data & Open, not formalized & not claimed \\

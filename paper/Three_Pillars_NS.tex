@@ -10,11 +10,11 @@
 \newtheorem{definition}[theorem]{Definition}
 \newtheorem{remark}[theorem]{Remark}
 
-\title{A Lean-certified conditional implication, and three open formalizations,\\in the classical theory of 3D incompressible Navier--Stokes}
+\title{A Lean-certified conditional equivalence, and three open formalizations,\\in the classical theory of 3D incompressible Navier--Stokes}
 \author{Benjamin Stanley Frohman\\
 \small Independent Researcher, Texas, United States\\
 \small ORCID \href{https://orcid.org/0009-0006-7068-3718}{0009-0006-7068-3718}}
-\date{November 17, 2026}
+\date{November 24, 2026}
 
 \input{provenance-stamp.tex}
 
@@ -23,20 +23,20 @@
 \noindent{\small Copyright (c) 2026 Benjamin Stanley Frohman. The paper (this PDF and its \LaTeX\ source) is licensed under CC BY~4.0. Lean code in the companion repository is licensed under the Apache License~2.0.}\par\medskip
 
 \begin{abstract}
-This note states only what a Lean~4 kernel certificate proves in the companion repository, and lists three classical theorems that are not formalized there. Lean proves a conditional implication: if the named hypotheses \texttt{HypothesisB} and \texttt{BKMCriterion} hold, then every maximal classical solution of periodic incompressible Navier--Stokes is global. Kato local existence, Fujita--Kato small-data global regularity, and the Beale--Kato--Majda continuation criterion itself are not formalized in this repository and are not claimed as proved or as kernel-certified. Clay Millennium Problem Statement~(B) remains open.
+This note states only what a Lean~4 kernel certificate proves in the companion repository, and lists three classical theorems that are not formalized there. Lean proves a conditional equivalence: if the named hypothesis \texttt{BKMCriterionSmooth} holds, then a per-solution bound on \(\int_0^T\|\nabla\mathbf{u}(t)\|_{L^\infty}\,dt\) holds if and only if every maximal classical solution of periodic incompressible Navier--Stokes with smooth, periodic, divergence-free data is global. Lean also proves that the earlier hypotheses \texttt{HypothesisB} and \texttt{BKMCriterion} are false. Kato local existence, Fujita--Kato small-data global regularity, and the Beale--Kato--Majda continuation criterion itself are not formalized in this repository and are not claimed as proved or as kernel-certified. Clay Millennium Problem Statement~(B) remains open.
 \end{abstract}
 
-\section{The Lean-certified implication}
+\section{The Lean-certified equivalence}
 
 The companion repository
 \url{https://github.com/BenFrohman/frohmanian-tether-conditional-regularity}
-proves, as \texttt{ClassicalNS.analyticBridge\_of\_formB}, the following statement, which is the only theorem claimed here.
+proves, as \texttt{ClassicalNS.analyticBridge\_iff\_formB}, the following statement, which is the only regularity theorem claimed here.
 
-\begin{theorem}[Conditional implication]\label{thm:conditional}
-For every bound \(C_\star:\mathbb{R}\to\mathbb{R}\), if Lean's \texttt{HypothesisB} holds for \(C_\star\) and if Lean's \texttt{BKMCriterion} holds, then for every viscosity \(\nu>0\) and every smooth, periodic, divergence-free initial datum, every maximal classical solution (an object of type \texttt{NSSolution}) is global (\(T^\star=\top\)) and has finite \(\int_0^T\|\nabla\mathbf{u}(t)\|_{L^\infty}\,dt\) for every finite \(T>0\).
+\begin{theorem}[Conditional equivalence]\label{thm:conditional}
+Suppose Lean's \texttt{BKMCriterionSmooth} holds: for every viscosity \(\nu\) and every smooth, periodic, divergence-free initial datum, every maximal classical solution (an object of type \texttt{NSSolution}) with \(T^\star\neq\top\) has \(\int_{[0,T^\star)}^\texttt{-}\texttt{ENNReal.ofReal}(\texttt{gradLinf}(\mathbf{u}(t)))\,dt=\top\). Then the following are equivalent: (a) for every viscosity \(\nu>0\), every smooth, periodic, divergence-free initial datum, every maximal classical solution and every \(T>0\), there is a real number \(C\) with \(\texttt{gradIntegral}(\mathrm{sol},T)\le\texttt{ENNReal.ofReal}(C)\); (b) for every viscosity \(\nu>0\) and every smooth, periodic, divergence-free initial datum, every maximal classical solution is global (\(T^\star=\top\)) and has \(\texttt{gradIntegral}(\mathrm{sol},T)<\top\) for every \(T>0\).
 \end{theorem}
 
-The two hypotheses are named assumptions in the Lean development. They are not proved in Lean. An independent review of whether those encodings are faithful to the textbook Beale--Kato--Majda criterion, and whether they are vacuous, is in progress. This note transcribes the Lean statement as it stands. The unconditioned analytic-bridge statement is recorded only as the proposition \texttt{analytic\_bridge\_unconditional\_Statement}, which has no proof.
+\texttt{BKMCriterionSmooth} is a named assumption in the Lean development, written after the Beale--Kato--Majda continuation criterion~\cite{BKM1984}. It is not proved in Lean. Lean proves that the uniform \texttt{HypothesisB} is false for every bound \(C_\star\) (\texttt{not\_hypothesisB}) and that the continuation statement \texttt{BKMCriterion} over all initial data is false (\texttt{not\_BKMCriterion}). The unconditioned analytic-bridge statement is recorded only as the proposition \texttt{analytic\_bridge\_unconditional\_Statement}, which has no proof.
 
 The official kernel certificate is the GitHub Actions artifact for the commit and run in the certificate block below.
 
@@ -52,7 +52,8 @@ Earlier versions of this note stated three classical theorems with proof sketche
 \toprule
 \textbf{Item} & \textbf{Status} & \textbf{Content} \\
 \midrule
-Theorem~\ref{thm:conditional} & Lean-certified, conditional & \(\texttt{HypothesisB}\,C_\star\to\texttt{BKMCriterion}\to\texttt{AnalyticBridgeStatement}\) \\
+Theorem~\ref{thm:conditional} & Lean-certified, conditional & \(\texttt{BKMCriterionSmooth}\to(\texttt{FormBPerSolution}\leftrightarrow\texttt{AnalyticBridgeStatement})\) \\
+\texttt{not\_hypothesisB}, \texttt{not\_BKMCriterion} & Lean-certified & \(\forall C_\star,\ \neg\,\texttt{HypothesisB}\,C_\star\) and \(\neg\,\texttt{BKMCriterion}\) \\
 Former Thm.~2.1, Kato local existence & Open, not formalized & not claimed \\
 Former Thm.~3.1, Fujita--Kato & Open, not formalized & not claimed \\
 Former Thm.~4.1, Beale--Kato--Majda & Open, not formalized & not claimed \\

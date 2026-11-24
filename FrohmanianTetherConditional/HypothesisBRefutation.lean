@@ -115,8 +115,7 @@ lemma laplacian_shearU (A ν t : ℝ) (j : Fin 3) (x : E3) :
     exact pd_comp_coord1 i
       (fun s => hasDerivAt_cos2pi ((shearAmp A ν t * (e 0) j) * (2 * π) * (e i) 1) s) x
   simp only [hi, Fin.sum_univ_three, e_apply]
-  simp
-  ring
+  by_cases hj : j = 0 <;> simp [hj] <;> ring
 
 lemma advection_shearU (A ν t : ℝ) (j : Fin 3) (x : E3) :
     advection (shearU A ν t) j x = 0 := by
@@ -172,7 +171,7 @@ theorem shear_isClassicalNS (A ν : ℝ) :
   div_free := fun t _ x => divergence_shearU A ν t x
   momentum := by
     intro t _ x j
-    have hp : pd j (shearP t) x = 0 := by simp [shearP]
+    have hp : pd j (shearP t) x = 0 := by simp [pd, shearP]
     rw [laplacian_shearU, advection_shearU, hp]
     have h := (hasDerivAt_shearAmp A ν t).mul_const (Real.sin (2 * π * x 1) * (e 0) j)
     convert h using 1
@@ -196,12 +195,12 @@ lemma zero_mem_cube : (0 : E3) ∈ cube :=
 
 lemma gradLinf_shearU_ge (A ν t : ℝ) :
     2 * π * |shearAmp A ν t| ≤ gradLinf (shearU A ν t) := by
-  set g : ℝ → ℝ := fun s => shearAmp A ν t * Real.sin (2 * π * s)
   have hg := hasDerivAt_sin2pi (shearAmp A ν t) ((0 : E3) 1)
-  have hc : HasFDerivAt (fun y : E3 => g (y 1))
+  have hc : HasFDerivAt (fun y : E3 => shearAmp A ν t * Real.sin (2 * π * y 1))
       ((shearAmp A ν t * (2 * π) * Real.cos (2 * π * (0 : E3) 1)) •
         EuclideanSpace.proj (𝕜 := ℝ) 1) 0 :=
-    hg.comp_hasFDerivAt (0 : E3) (hasFDerivAt_coord 1 0)
+    HasDerivAt.comp_hasFDerivAt (h₂ := fun s => shearAmp A ν t * Real.sin (2 * π * s))
+      (f := fun y : E3 => y 1) (0 : E3) hg (hasFDerivAt_coord 1 0)
   have hF : HasFDerivAt (shearU A ν t)
       (((shearAmp A ν t * (2 * π) * Real.cos (2 * π * (0 : E3) 1)) •
         EuclideanSpace.proj (𝕜 := ℝ) 1).smulRight (e 0)) 0 :=

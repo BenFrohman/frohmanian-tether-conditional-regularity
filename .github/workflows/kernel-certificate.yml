@@ -41,6 +41,20 @@ jobs:
             echo "FAIL: certified build log contains sorry or sorryAx"
             exit 1
           fi
+      - name: Guard lake-manifest.json against post-build drift
+        run: |
+          set -euo pipefail
+          if ! git cat-file -e HEAD:lake-manifest.json; then
+            echo "FAIL: committed tree has no lake-manifest.json"
+            exit 1
+          fi
+          git show HEAD:lake-manifest.json > /tmp/committed-lake-manifest.json
+          if ! cmp -s /tmp/committed-lake-manifest.json lake-manifest.json; then
+            echo "FAIL: lake-manifest.json differs from the committed version after the build"
+            git diff --no-index -- /tmp/committed-lake-manifest.json lake-manifest.json || true
+            exit 1
+          fi
+          echo "OK: lake-manifest.json matches the committed file"
       - name: No-skip guard
         run: python3 scripts/check_no_skips.py
       - name: sorry / admit / native_decide / axiom scan
@@ -94,6 +108,43 @@ jobs:
           done < cert-out/modules.txt | tee -a cert-out/leanchecker.txt
           if grep -q ': FAILED$' cert-out/leanchecker.txt; then exit 1; fi
           echo "RESULT: $(grep -c ': OK (' cert-out/leanchecker.txt) of $(grep -c . cert-out/modules.txt) modules replayed through the kernel, 0 failures" | tee -a cert-out/leanchecker.txt
+      - name: Collect lake-manifest and lean-toolchain hashes into cert-out
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p cert-out
+          if [ ! -f lake-manifest.json ]; then
+            echo "FAIL: lake-manifest.json was not present in the checkout" | tee cert-out/MISSING-lake-manifest.txt
+            exit 1
+          fi
+          if [ ! -f lean-toolchain ]; then
+            echo "FAIL: lean-toolchain was not present in the checkout" | tee cert-out/MISSING-lean-toolchain.txt
+            exit 1
+          fi
+          cp -a lake-manifest.json cert-out/lake-manifest.json
+          sha256sum lake-manifest.json | tee cert-out/lake-manifest.json.sha256sum
+          awk '{print $1}' cert-out/lake-manifest.json.sha256sum | tee cert-out/lake-manifest.json.sha256
+          cp -a lean-toolchain cert-out/lean-toolchain
+          sha256sum lean-toolchain | tee cert-out/lean-toolchain.sha256sum
+          awk '{print $1}' cert-out/lean-toolchain.sha256sum | tee cert-out/lean-toolchain.sha256
+          echo "lake-manifest.json sha256: $(cat cert-out/lake-manifest.json.sha256)"
+          echo "lean-toolchain sha256: $(cat cert-out/lean-toolchain.sha256)"
+          {
+            echo "commit: $(git rev-parse HEAD)"
+            echo "github_sha: ${GITHUB_SHA:-not set in environment}"
+            echo "github_run_id: ${GITHUB_RUN_ID:-not set in environment}"
+            echo "github_run_attempt: ${GITHUB_RUN_ATTEMPT:-not set in environment}"
+            echo "github_event_name: ${GITHUB_EVENT_NAME:-not set in environment}"
+            echo "github_repository: ${GITHUB_REPOSITORY:-not set in environment}"
+            echo "lake-manifest.json sha256: $(cat cert-out/lake-manifest.json.sha256)"
+            echo "lean-toolchain sha256: $(cat cert-out/lean-toolchain.sha256)"
+            echo "elan --version:"
+            if command -v elan >/dev/null 2>&1; then elan --version; else echo "elan was not on PATH"; fi
+            echo "lake --version:"
+            if command -v lake >/dev/null 2>&1; then lake --version; else echo "lake was not on PATH"; fi
+            echo "lean --version:"
+            if command -v lean >/dev/null 2>&1; then lean --version; else echo "lean was not on PATH"; fi
+          } | tee cert-out/versions.txt
       - name: Upload certificate files
         if: always()
         uses: actions/upload-artifact@v4

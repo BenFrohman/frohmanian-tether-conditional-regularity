@@ -24,6 +24,7 @@ roots = [
   "FrohmanianTetherConditional.ClassicalNS",
   "FrohmanianTetherConditional.ClassicalNSOpenTarget",
   "FrohmanianTetherConditional.FrohmanianTripleArchitectureLifespan",
+  "FrohmanianTetherConditional.HypothesisBRefutation",
   "FrohmanianTetherConditional.Semantics",
   "FrohmanianTetherConditional.SemanticsPillars",
   "FrohmanianTetherConditional.SemanticsUnifiedHs",

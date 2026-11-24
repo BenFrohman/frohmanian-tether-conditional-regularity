@@ -14,8 +14,8 @@ import FrohmanianTetherConditional.ClassicalNS
 whenever `u₀` is not periodic: any extension to `T' > 0` would make `u₀ = u 0` periodic.
 Such a solution has `T⋆ ≠ ⊤` and gradient integral `0`, so `BKMCriterion` fails.
 
-`BKMCriterionSmooth` restricts the statement to the data of `AnalyticBridgeStatement`:
-smooth, periodic, divergence-free `u₀`.
+`BKMCriterionSmooth` (in `ClassicalNS.lean`) restricts the statement to smooth, periodic,
+divergence-free `u₀`.
 -/
 
 open Set MeasureTheory
@@ -70,13 +70,7 @@ theorem not_BKMCriterion : ¬ BKMCriterion := by
   have h := bkm rampSolution (by simp [rampSolution])
   simp [rampSolution] at h
 
-/-- The Beale–Kato–Majda continuation statement restricted to smooth, periodic,
-divergence-free initial data (every `NSSolution` carries `ν > 0`). -/
-def BKMCriterionSmooth : Prop :=
-  ∀ {ν : ℝ} {u0 : E3 → E3}, ContDiff ℝ ∞ u0 → IsPeriodic u0 → (∀ x, divergence u0 x = 0) →
-    ∀ (sol : NSSolution ν u0), sol.Tstar ≠ ⊤ →
-      ∫⁻ t in Ico 0 sol.Tstar.toReal, ENNReal.ofReal (gradLinf (sol.u t)) = ⊤
-
+/-- The unrestricted criterion implies `BKMCriterionSmooth` (defined in `ClassicalNS.lean`). -/
 theorem bkmCriterionSmooth_of_bkmCriterion (bkm : BKMCriterion) : BKMCriterionSmooth :=
   fun _ _ _ sol hne => bkm sol hne
 

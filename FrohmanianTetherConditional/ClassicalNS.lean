@@ -231,14 +231,22 @@ lemma gradLinf_continuousOn {ν : ℝ} {u0 : E3 → E3} (sol : NSSolution ν u0)
 
 /-! ## Genuine BKM criterion (cited hypothesis) and its consequences -/
 
-/-- **Beale–Kato–Majda / Kato continuation criterion (cited, not proved).**
-If a maximal classical solution has finite lifespan then
-`∫₀^{T⋆} ‖∇u(t)‖_∞ dt = ∞`. This is a statement about genuine solutions; it is a
-known theorem (BKM 1984, with Kato's local theory and uniqueness of classical
-solutions), not formalized here. -/
+/-- The continuation statement quantified over **all** initial data `u₀`. It is false
+(`not_BKMCriterion` in `BKMCriterionRefutation.lean`): `NSSolution ν u₀` constrains `u₀` only
+through `u 0 = u₀`, and a non-periodic `u₀` gives a maximal object with `T⋆ = 0`. -/
 def BKMCriterion : Prop :=
   ∀ {ν : ℝ} {u0 : E3 → E3} (sol : NSSolution ν u0), sol.Tstar ≠ ⊤ →
     ∫⁻ t in Ico 0 sol.Tstar.toReal, ENNReal.ofReal (gradLinf (sol.u t)) = ⊤
+
+/-- **Beale–Kato–Majda continuation criterion (cited, not proved).** For smooth, periodic,
+divergence-free `u₀` (and `ν > 0`, carried by every `NSSolution`), if a maximal classical
+solution has finite lifespan then `∫₀^{T⋆} ‖∇u(t)‖_∞ dt = ∞`. Classical theorem
+(Beale–Kato–Majda 1984, with Kato's local theory and uniqueness of classical solutions);
+not formalized here. -/
+def BKMCriterionSmooth : Prop :=
+  ∀ {ν : ℝ} {u0 : E3 → E3}, ContDiff ℝ ∞ u0 → IsPeriodic u0 → (∀ x, divergence u0 x = 0) →
+    ∀ (sol : NSSolution ν u0), sol.Tstar ≠ ⊤ →
+      ∫⁻ t in Ico 0 sol.Tstar.toReal, ENNReal.ofReal (gradLinf (sol.u t)) = ⊤
 
 /-- The BKM conclusion holds trivially for global solutions such as `constSolution`;
 in particular the `T⋆ = 1` zero object that made the LEGACY `BKMCriterion`
@@ -273,12 +281,14 @@ theorem global_implies_gradIntegral_finite {ν : ℝ} {u0 : E3 → E3} (sol : NS
           rw [Real.volume_Icc]
           exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top
 
-/-- Under BKM, finite `∫₀ᵀ ‖∇u‖_∞` for all `T` forces `T⋆ = ⊤`. -/
-theorem gradIntegral_finite_implies_global (bkm : BKMCriterion) {ν : ℝ} {u0 : E3 → E3}
+/-- Under BKM, for smooth periodic divergence-free data, finite `∫₀ᵀ ‖∇u‖_∞` for all `T`
+forces `T⋆ = ⊤`. -/
+theorem gradIntegral_finite_implies_global (bkm : BKMCriterionSmooth) {ν : ℝ} {u0 : E3 → E3}
+    (hs : ContDiff ℝ ∞ u0) (hp : IsPeriodic u0) (hd : ∀ x, divergence u0 x = 0)
     (sol : NSSolution ν u0) (h : ∀ T : ℝ, 0 < T → gradIntegral sol T < ⊤) :
     sol.Tstar = ⊤ := by
   by_contra hne
-  have hB := bkm sol hne
+  have hB := bkm hs hp hd sol hne
   have hT0 : 0 ≤ sol.Tstar.toReal := ENNReal.toReal_nonneg
   have hsub : Ico 0 sol.Tstar.toReal ⊆ lifeIco sol.Tstar (sol.Tstar.toReal + 1) :=
     fun t ht => ⟨ht.1, by linarith [ht.2], (ENNReal.ofReal_lt_iff_lt_toReal ht.1 hne).2 ht.2⟩
@@ -288,23 +298,37 @@ theorem gradIntegral_finite_implies_global (bkm : BKMCriterion) {ν : ℝ} {u0 :
 
 /-- Clay (B) for one solution ⇔ BKM integrability (genuine content; needs BKM only
 for `⇐`). -/
-theorem clayB_iff_gradIntegral_finite (bkm : BKMCriterion) {ν : ℝ} {u0 : E3 → E3}
+theorem clayB_iff_gradIntegral_finite (bkm : BKMCriterionSmooth) {ν : ℝ} {u0 : E3 → E3}
+    (hs : ContDiff ℝ ∞ u0) (hp : IsPeriodic u0) (hd : ∀ x, divergence u0 x = 0)
     (sol : NSSolution ν u0) :
     sol.Tstar = ⊤ ↔ ∀ T : ℝ, 0 < T → gradIntegral sol T < ⊤ :=
   ⟨fun h T _ => global_implies_gradIntegral_finite sol h T,
-    gradIntegral_finite_implies_global bkm sol⟩
+    gradIntegral_finite_implies_global bkm hs hp hd sol⟩
 
-/-- **Hypothesis B / Form B** (an assumption of Clay strength; whether it holds is
-open): a uniform bound on `∫₀ᵀ ‖∇u‖_∞` over all genuine maximal solutions. -/
+/-- **Hypothesis B**: a bound `C⋆(T)` on `∫₀ᵀ ‖∇u‖_∞`, uniform over all maximal solutions.
+It is false for every `C⋆` (`not_hypothesisB` in `HypothesisBRefutation.lean`). -/
 def HypothesisB (C_star : ℝ → ℝ) : Prop :=
   ∀ {ν : ℝ} {u0 : E3 → E3} (sol : NSSolution ν u0) (T : ℝ), 0 < T →
     gradIntegral sol T ≤ ENNReal.ofReal (C_star T)
 
-/-- CONDITIONAL: Hypothesis B + BKM ⇒ every maximal solution is global. -/
-theorem formB_implies_clayB {C_star : ℝ → ℝ} (hB : HypothesisB C_star) (bkm : BKMCriterion)
-    {ν : ℝ} {u0 : E3 → E3} (sol : NSSolution ν u0) : sol.Tstar = ⊤ :=
-  gradIntegral_finite_implies_global bkm sol fun T hT =>
-    lt_of_le_of_lt (hB sol T hT) ENNReal.ofReal_lt_top
+/-- **Form B (per solution)**: for every `ν > 0`, every smooth, periodic, divergence-free
+`u₀`, every maximal solution and every `T > 0`, `∫₀ᵀ ‖∇u‖_∞` is bounded by a real number. -/
+def FormBPerSolution : Prop :=
+  ∀ (ν : ℝ), 0 < ν → ∀ (u0 : E3 → E3), ContDiff ℝ ∞ u0 → IsPeriodic u0 →
+    (∀ x, divergence u0 x = 0) →
+    ∀ (sol : NSSolution ν u0) (T : ℝ), 0 < T → ∃ C : ℝ, gradIntegral sol T ≤ ENNReal.ofReal C
+
+lemma exists_bound_iff_lt_top (x : ENNReal) : (∃ C : ℝ, x ≤ ENNReal.ofReal C) ↔ x < ⊤ :=
+  ⟨fun ⟨_, h⟩ => lt_of_le_of_lt h ENNReal.ofReal_lt_top,
+    fun h => ⟨x.toReal, (ENNReal.ofReal_toReal h.ne).ge⟩⟩
+
+/-- CONDITIONAL: Form B per solution + BKM ⇒ every maximal solution with smooth periodic
+divergence-free data is global. -/
+theorem formB_implies_clayB (hB : FormBPerSolution) (bkm : BKMCriterionSmooth)
+    {ν : ℝ} {u0 : E3 → E3} (hs : ContDiff ℝ ∞ u0) (hp : IsPeriodic u0)
+    (hd : ∀ x, divergence u0 x = 0) (sol : NSSolution ν u0) : sol.Tstar = ⊤ :=
+  gradIntegral_finite_implies_global bkm hs hp hd sol fun T hT =>
+    (exists_bound_iff_lt_top _).1 (hB ν sol.visc_pos u0 hs hp hd sol T hT)
 
 /-- The analytic bridge statement with the genuine definitions. Modulo standard,
 unformalized local existence/uniqueness facts this is Clay Millennium Problem (B)
@@ -314,12 +338,17 @@ def AnalyticBridgeStatement : Prop :=
     (∀ x, divergence u0 x = 0) →
     ∀ sol : NSSolution ν u0, sol.Tstar = ⊤ ∧ ∀ T : ℝ, 0 < T → gradIntegral sol T < ⊤
 
-/-- CONDITIONAL: Hypothesis B + BKM imply the analytic bridge statement. -/
-theorem analyticBridge_of_formB {C_star : ℝ → ℝ} (hB : HypothesisB C_star)
-    (bkm : BKMCriterion) : AnalyticBridgeStatement := by
-  intro ν _ u0 _ _ _ sol
-  have hG := formB_implies_clayB hB bkm sol
+/-- CONDITIONAL: Form B per solution + BKM imply the analytic bridge statement. -/
+theorem analyticBridge_of_formB (hB : FormBPerSolution) (bkm : BKMCriterionSmooth) :
+    AnalyticBridgeStatement := by
+  intro ν _ u0 hs hp hd sol
+  have hG := formB_implies_clayB hB bkm hs hp hd sol
   exact ⟨hG, fun T _ => global_implies_gradIntegral_finite sol hG T⟩
+
+/-- The analytic bridge statement implies Form B per solution (no hypothesis). -/
+theorem formB_of_analyticBridge (h : AnalyticBridgeStatement) : FormBPerSolution :=
+  fun ν hν u0 hs hp hd sol T hT =>
+    (exists_bound_iff_lt_top _).2 ((h ν hν u0 hs hp hd sol).2 T hT)
 
 /-- The statement is not refuted by the zero solution (its conclusion holds there). -/
 theorem analyticBridge_conclusion_zeroSolution (ν : ℝ) (hν : 0 < ν) :
@@ -478,13 +507,13 @@ theorem kp_trivial (s : ℝ) : KatoPonceEnergy (fun _ _ => 0) s 0 where
   HsR_cont := fun _ _ _ _ => continuousOn_const
   energy := fun _ _ _ => by simp
 
-/-- CONDITIONAL direct `Hˢ` bound: Kato–Ponce + Hypothesis B + BKM give
-`‖u(t)‖_{Hˢ} ≤ ‖u₀‖_{Hˢ} exp(C_s · max(C⋆(T), 0))` on `[0, T]`. -/
-theorem formB_Hs_bound {HsR : ℝ → (E3 → E3) → ℝ} {s C_s : ℝ} (kp : KatoPonceEnergy HsR s C_s)
-    {C_star : ℝ → ℝ} (hB : HypothesisB C_star) (bkm : BKMCriterion)
-    {ν : ℝ} {u0 : E3 → E3} (sol : NSSolution ν u0) (T : ℝ) (hTpos : 0 < T) :
-    ∀ t ∈ Icc 0 T, HsR s (sol.u t) ≤ HsR s u0 * Real.exp (C_s * max (C_star T) 0) := by
-  have hGlobal : sol.Tstar = ⊤ := formB_implies_clayB hB bkm sol
+/-- On a global solution, a bound `∫₀ᵀ ‖∇u‖_∞ ≤ C` and the cited Kato–Ponce energy inequality
+give `HsR(u(t)) ≤ HsR(u₀) exp(C_s max(C, 0))` on `[0, T]`. -/
+theorem Hs_bound_of_gradIntegral_le {HsR : ℝ → (E3 → E3) → ℝ} {s C_s : ℝ}
+    (kp : KatoPonceEnergy HsR s C_s) {ν : ℝ} {u0 : E3 → E3} (sol : NSSolution ν u0)
+    (hGlobal : sol.Tstar = ⊤) (T : ℝ) (hTpos : 0 < T) (C : ℝ)
+    (hC : gradIntegral sol T ≤ ENNReal.ofReal C) :
+    ∀ t ∈ Icc 0 T, HsR s (sol.u t) ≤ HsR s u0 * Real.exp (C_s * max C 0) := by
   have life : ∀ t : ℝ, ENNReal.ofReal t < sol.Tstar := fun t => by
     rw [hGlobal]; exact ENNReal.ofReal_lt_top
   have hTle : 0 ≤ T := hTpos.le
@@ -500,33 +529,44 @@ theorem formB_Hs_bound {HsR : ℝ → (E3 → E3) → ℝ} {s C_s : ℝ} (kp : K
     simpa [mul_assoc] using kp.energy sol t ⟨ht.1, life t⟩
   have hG := integral_gronwall_bound hTle hy_cont hβ_cont hβ_nonneg hineq
   intro t ht
-  -- `∫₀ᵗ ‖∇u‖_∞ ≤ max (C⋆ T) 0`, converted from the Lebesgue bound of Hypothesis B.
-  have hM : 0 ≤ max (C_star T) 0 := le_max_right _ _
+  -- `∫₀ᵗ ‖∇u‖_∞ ≤ max C 0`, converted from the Lebesgue bound of the bound.
+  have hM : 0 ≤ max C 0 := le_max_right _ _
   have hint : IntegrableOn (fun τ => gradLinf (sol.u τ)) (Ioo 0 t) :=
     ((hg_cont.mono (Icc_subset_Icc_right ht.2)).integrableOn_Icc).mono_set Ioo_subset_Icc_self
   have hsubset : Ioo 0 t ⊆ lifeIco sol.Tstar T := fun τ hτ =>
     ⟨hτ.1.le, lt_of_lt_of_le hτ.2 ht.2, life τ⟩
-  have hreal : (∫ τ in (0 : ℝ)..t, gradLinf (sol.u τ)) ≤ max (C_star T) 0 := by
+  have hreal : (∫ τ in (0 : ℝ)..t, gradLinf (sol.u τ)) ≤ max C 0 := by
     rw [intervalIntegral.integral_of_le ht.1, integral_Ioc_eq_integral_Ioo]
     have hofReal : ENNReal.ofReal (∫ τ in Ioo 0 t, gradLinf (sol.u τ)) ≤
-        ENNReal.ofReal (max (C_star T) 0) := by
+        ENNReal.ofReal (max C 0) := by
       rw [ofReal_integral_eq_lintegral_ofReal hint (ae_of_all _ fun τ => gradLinf_nonneg _)]
       calc ∫⁻ τ in Ioo 0 t, ENNReal.ofReal (gradLinf (sol.u τ))
           ≤ gradIntegral sol T := lintegral_mono_set hsubset
-        _ ≤ ENNReal.ofReal (C_star T) := hB sol T hTpos
-        _ ≤ ENNReal.ofReal (max (C_star T) 0) := ENNReal.ofReal_le_ofReal (le_max_left _ _)
+        _ ≤ ENNReal.ofReal C := hC
+        _ ≤ ENNReal.ofReal (max C 0) := ENNReal.ofReal_le_ofReal (le_max_left _ _)
     exact (ENNReal.ofReal_le_ofReal_iff hM).1 hofReal
-  have hβ_int_le : (∫ τ in (0 : ℝ)..t, C_s * gradLinf (sol.u τ)) ≤ C_s * max (C_star T) 0 := by
+  have hβ_int_le : (∫ τ in (0 : ℝ)..t, C_s * gradLinf (sol.u τ)) ≤ C_s * max C 0 := by
     rw [intervalIntegral.integral_const_mul]
     exact mul_le_mul_of_nonneg_left hreal kp.C_s_nonneg
   exact le_trans (hG t ht)
     (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hβ_int_le) (kp.HsR_nonneg u0))
 
+/-- CONDITIONAL direct `Hˢ` bound: Kato–Ponce + Form B per solution + BKM give, for smooth
+periodic divergence-free `u₀`, each maximal solution and each `T > 0`, a real `C` with
+`HsR(u(t)) ≤ HsR(u₀) exp(C_s max(C, 0))` on `[0, T]`. -/
+theorem formB_Hs_bound {HsR : ℝ → (E3 → E3) → ℝ} {s C_s : ℝ} (kp : KatoPonceEnergy HsR s C_s)
+    (hB : FormBPerSolution) (bkm : BKMCriterionSmooth)
+    {ν : ℝ} {u0 : E3 → E3} (hs : ContDiff ℝ ∞ u0) (hp : IsPeriodic u0)
+    (hd : ∀ x, divergence u0 x = 0) (sol : NSSolution ν u0) (T : ℝ) (hTpos : 0 < T) :
+    ∃ C : ℝ, ∀ t ∈ Icc 0 T, HsR s (sol.u t) ≤ HsR s u0 * Real.exp (C_s * max C 0) := by
+  obtain ⟨C, hC⟩ := hB ν sol.visc_pos u0 hs hp hd sol T hTpos
+  exact ⟨C, Hs_bound_of_gradIntegral_le kp sol (formB_implies_clayB hB bkm hs hp hd sol)
+    T hTpos C hC⟩
 
-/-- The conditional analytic-bridge theorem with all arguments explicit.
-This is the statement locked by the Truth Gate against the Unified paper. -/
-theorem analyticBridge_of_formB_forall :
-    ∀ (C_star : ℝ → ℝ), HypothesisB C_star → BKMCriterion → AnalyticBridgeStatement :=
-  fun _ hB bkm => analyticBridge_of_formB hB bkm
+/-- Theorem A: under the cited `BKMCriterionSmooth`, Form B per solution is equivalent to the
+analytic bridge statement. -/
+theorem analyticBridge_iff_formB :
+    BKMCriterionSmooth → (FormBPerSolution ↔ AnalyticBridgeStatement) :=
+  fun bkm => ⟨fun hB => analyticBridge_of_formB hB bkm, formB_of_analyticBridge⟩
 
 end ClassicalNS

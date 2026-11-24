@@ -19,15 +19,7 @@ No such bound exists. The decaying shear flow
 the advection term `(u·∇)u` vanishes, `∂ₜu = νΔu` and `div u = 0`. Its gradient has
 `‖∇u(t)‖_∞ ≥ 2π A e^{-4π²νt}`, so `∫₀ᵀ ‖∇u‖_∞ ≥ 2π A e^{-4π²νT} T`, which exceeds any
 given number for large `A`. Hence `¬ HypothesisB C⋆` for every `C⋆`
-(`not_hypothesisB`), and `analyticBridge_of_formB_forall` holds only vacuously.
-
-The statement with content is Form B **per solution**: for every smooth periodic
-divergence-free datum, every maximal solution and every `T > 0`, the integral
-`∫₀ᵀ ‖∇u‖_∞` is bounded by some real number (depending on the solution and `T`).
-Given the cited `BKMCriterion` it is equivalent to the analytic bridge statement
-(Clay (B) for this class): `formBPerSolution_iff_analyticBridge`. Its converse
-direction needs no hypothesis (`formBPerSolution_of_analyticBridge`). Whether it holds is
-OPEN; nothing here proves it.
+(`not_hypothesisB`). The per-solution form `FormBPerSolution` is in `ClassicalNS.lean`.
 -/
 
 open Real Set MeasureTheory intervalIntegral Filter Topology
@@ -283,131 +275,15 @@ theorem not_hypothesisB : ∀ C_star : ℝ → ℝ, ¬ HypothesisB C_star := by
 
 /-! ## Form B per solution -/
 
-/-- **Form B (per solution).** For every smooth, `1`-periodic, divergence-free datum, every
-maximal classical solution and every `T > 0`, `∫₀ᵀ ‖∇u‖_∞` is bounded by a real number
-(depending on the solution and on `T`). OPEN; given `BKMCriterion` it is equivalent to
-`AnalyticBridgeStatement` (`formBPerSolution_iff_analyticBridge`). -/
-def FormBPerSolution : Prop :=
-  ∀ (ν : ℝ), 0 < ν → ∀ (u0 : E3 → E3), ContDiff ℝ ∞ u0 → IsPeriodic u0 →
-    (∀ x, divergence u0 x = 0) →
-    ∀ (sol : NSSolution ν u0) (T : ℝ), 0 < T → ∃ C : ℝ, gradIntegral sol T ≤ ENNReal.ofReal C
-
-lemma exists_bound_iff_lt_top (x : ENNReal) : (∃ C : ℝ, x ≤ ENNReal.ofReal C) ↔ x < ⊤ :=
-  ⟨fun ⟨_, h⟩ => lt_of_le_of_lt h ENNReal.ofReal_lt_top,
-    fun h => ⟨x.toReal, (ENNReal.ofReal_toReal h.ne).ge⟩⟩
-
-/-- CONDITIONAL (on the cited `BKMCriterion`): Form B per solution implies the analytic
-bridge statement. -/
-theorem analyticBridge_of_formBPerSolution (hB : FormBPerSolution) (bkm : BKMCriterion) :
-    AnalyticBridgeStatement := by
-  intro ν hν u0 hs hp hd sol
-  have hG : sol.Tstar = ⊤ :=
-    (clayB_iff_gradIntegral_finite bkm sol).2 fun T hT =>
-      (exists_bound_iff_lt_top _).1 (hB ν hν u0 hs hp hd sol T hT)
-  exact ⟨hG, fun T _ => global_implies_gradIntegral_finite sol hG T⟩
-
-/-- The converse needs no hypothesis. -/
-theorem formBPerSolution_of_analyticBridge (h : AnalyticBridgeStatement) : FormBPerSolution :=
-  fun ν hν u0 hs hp hd sol T hT =>
-    (exists_bound_iff_lt_top _).2 ((h ν hν u0 hs hp hd sol).2 T hT)
-
-/-- Given `BKMCriterion`, Form B per solution is equivalent to the analytic bridge statement. -/
-theorem formBPerSolution_iff_analyticBridge (bkm : BKMCriterion) :
-    FormBPerSolution ↔ AnalyticBridgeStatement :=
-  ⟨fun h => analyticBridge_of_formBPerSolution h bkm, formBPerSolution_of_analyticBridge⟩
-
-/-- The uniform hypothesis implies the per-solution one (it is strictly stronger; in fact
-false by `not_hypothesisB`). -/
+/-- The uniform hypothesis implies the per-solution one. -/
 theorem formBPerSolution_of_hypothesisB {C_star : ℝ → ℝ} (hB : HypothesisB C_star) :
     FormBPerSolution :=
   fun _ _ _ _ _ _ sol T hT => ⟨C_star T, hB sol T hT⟩
 
-/-- Non-vacuity: the per-solution conclusion holds for the shear flows, whose gradient
-integrals are unbounded. -/
+/-- The per-solution bound holds for the shear flows, whose gradient integrals are unbounded
+in `A`. -/
 theorem formBPerSolution_shear (A ν : ℝ) (hν : 0 < ν) (T : ℝ) :
     ∃ C : ℝ, gradIntegral (shearSolution A ν hν) T ≤ ENNReal.ofReal C :=
   (exists_bound_iff_lt_top _).2 (global_implies_gradIntegral_finite _ rfl T)
-
-/-! ## `Hˢ` bound from Form B per solution -/
-
-/-- On a global solution, a bound `∫₀ᵀ ‖∇u‖_∞ ≤ C` and the cited Kato–Ponce energy inequality
-give `HsR(u(t)) ≤ HsR(u₀) exp(C_s max(C, 0))` on `[0, T]`. -/
-theorem Hs_bound_of_gradIntegral_le {HsR : ℝ → (E3 → E3) → ℝ} {s C_s : ℝ}
-    (kp : KatoPonceEnergy HsR s C_s) {ν : ℝ} {u0 : E3 → E3} (sol : NSSolution ν u0)
-    (hGlobal : sol.Tstar = ⊤) (T : ℝ) (hTpos : 0 < T) (C : ℝ)
-    (hC : gradIntegral sol T ≤ ENNReal.ofReal C) :
-    ∀ t ∈ Icc 0 T, HsR s (sol.u t) ≤ HsR s u0 * Real.exp (C_s * max C 0) := by
-  have life : ∀ t : ℝ, ENNReal.ofReal t < sol.Tstar := fun t => by
-    rw [hGlobal]; exact ENNReal.ofReal_lt_top
-  have hTle : 0 ≤ T := hTpos.le
-  have hy_cont := kp.HsR_cont sol T hTle (life T)
-  have hg_cont := gradLinf_continuousOn sol hTle (life T)
-  have hβ_cont : ContinuousOn (fun t => C_s * gradLinf (sol.u t)) (Icc 0 T) :=
-    continuousOn_const.mul hg_cont
-  have hβ_nonneg : ∀ t ∈ Icc 0 T, 0 ≤ C_s * gradLinf (sol.u t) := fun t _ =>
-    mul_nonneg kp.C_s_nonneg (gradLinf_nonneg _)
-  have hineq : ∀ t ∈ Icc 0 T, HsR s (sol.u t) ≤
-      HsR s u0 + ∫ τ in (0 : ℝ)..t, (C_s * gradLinf (sol.u τ)) * HsR s (sol.u τ) := by
-    intro t ht
-    simpa [mul_assoc] using kp.energy sol t ⟨ht.1, life t⟩
-  have hG := integral_gronwall_bound hTle hy_cont hβ_cont hβ_nonneg hineq
-  intro t ht
-  -- `∫₀ᵗ ‖∇u‖_∞ ≤ max C 0`, converted from the Lebesgue bound of the per-solution bound.
-  have hM : 0 ≤ max C 0 := le_max_right _ _
-  have hint : IntegrableOn (fun τ => gradLinf (sol.u τ)) (Ioo 0 t) :=
-    ((hg_cont.mono (Icc_subset_Icc_right ht.2)).integrableOn_Icc).mono_set Ioo_subset_Icc_self
-  have hsubset : Ioo 0 t ⊆ lifeIco sol.Tstar T := fun τ hτ =>
-    ⟨hτ.1.le, lt_of_lt_of_le hτ.2 ht.2, life τ⟩
-  have hreal : (∫ τ in (0 : ℝ)..t, gradLinf (sol.u τ)) ≤ max C 0 := by
-    rw [intervalIntegral.integral_of_le ht.1, integral_Ioc_eq_integral_Ioo]
-    have hofReal : ENNReal.ofReal (∫ τ in Ioo 0 t, gradLinf (sol.u τ)) ≤
-        ENNReal.ofReal (max C 0) := by
-      rw [ofReal_integral_eq_lintegral_ofReal hint (ae_of_all _ fun τ => gradLinf_nonneg _)]
-      calc ∫⁻ τ in Ioo 0 t, ENNReal.ofReal (gradLinf (sol.u τ))
-          ≤ gradIntegral sol T := lintegral_mono_set hsubset
-        _ ≤ ENNReal.ofReal C := hC
-        _ ≤ ENNReal.ofReal (max C 0) := ENNReal.ofReal_le_ofReal (le_max_left _ _)
-    exact (ENNReal.ofReal_le_ofReal_iff hM).1 hofReal
-  have hβ_int_le : (∫ τ in (0 : ℝ)..t, C_s * gradLinf (sol.u τ)) ≤ C_s * max C 0 := by
-    rw [intervalIntegral.integral_const_mul]
-    exact mul_le_mul_of_nonneg_left hreal kp.C_s_nonneg
-  exact le_trans (hG t ht)
-    (mul_le_mul_of_nonneg_left (Real.exp_le_exp.mpr hβ_int_le) (kp.HsR_nonneg u0))
-
-/-- CONDITIONAL direct `Hˢ` bound (per solution): Kato–Ponce + Form B per solution + BKM give,
-for each smooth periodic divergence-free datum, each maximal solution and each `T > 0`, a real
-`C` with `HsR(u(t)) ≤ HsR(u₀) exp(C_s max(C, 0))` on `[0, T]`. -/
-theorem formBPerSolution_Hs_bound {HsR : ℝ → (E3 → E3) → ℝ} {s C_s : ℝ}
-    (kp : KatoPonceEnergy HsR s C_s) (hB : FormBPerSolution) (bkm : BKMCriterion)
-    {ν : ℝ} {u0 : E3 → E3} (hs : ContDiff ℝ ∞ u0) (hp : IsPeriodic u0)
-    (hd : ∀ x, divergence u0 x = 0) (sol : NSSolution ν u0) (T : ℝ) (hTpos : 0 < T) :
-    ∃ C : ℝ, ∀ t ∈ Icc 0 T, HsR s (sol.u t) ≤ HsR s u0 * Real.exp (C_s * max C 0) := by
-  have hG := (analyticBridge_of_formBPerSolution hB bkm ν sol.visc_pos u0 hs hp hd sol).1
-  obtain ⟨C, hC⟩ := hB ν sol.visc_pos u0 hs hp hd sol T hTpos
-  exact ⟨C, Hs_bound_of_gradIntegral_le kp sol hG T hTpos C hC⟩
-
-/-- CONDITIONAL (on `BKMCriterionSmooth`): Form B per solution implies the analytic bridge
-statement. -/
-theorem analyticBridge_of_formBPerSolution_smooth (hB : FormBPerSolution)
-    (bkm : BKMCriterionSmooth) : AnalyticBridgeStatement := by
-  intro ν hν u0 hs hp hd sol
-  have hG : sol.Tstar = ⊤ := by
-    by_contra hne
-    have hI := bkm hs hp hd sol hne
-    have hsub : Ico 0 sol.Tstar.toReal ⊆ lifeIco sol.Tstar (sol.Tstar.toReal + 1) :=
-      fun t ht => ⟨ht.1, by linarith [ht.2], (ENNReal.ofReal_lt_iff_lt_toReal ht.1 hne).2 ht.2⟩
-    have hle : (⊤ : ENNReal) ≤ gradIntegral sol (sol.Tstar.toReal + 1) := by
-      rw [← hI]; exact lintegral_mono_set hsub
-    have hfin := (exists_bound_iff_lt_top _).1
-      (hB ν hν u0 hs hp hd sol (sol.Tstar.toReal + 1) (by positivity))
-    exact absurd hfin (not_lt.2 hle)
-  exact ⟨hG, fun T _ => global_implies_gradIntegral_finite sol hG T⟩
-
-/-- Given `BKMCriterionSmooth`, Form B per solution is equivalent to the analytic bridge
-statement. -/
-theorem formBPerSolution_iff_analyticBridge_smooth (bkm : BKMCriterionSmooth) :
-    FormBPerSolution ↔ AnalyticBridgeStatement :=
-  ⟨fun h => analyticBridge_of_formBPerSolution_smooth h bkm,
-    formBPerSolution_of_analyticBridge⟩
 
 end ClassicalNS

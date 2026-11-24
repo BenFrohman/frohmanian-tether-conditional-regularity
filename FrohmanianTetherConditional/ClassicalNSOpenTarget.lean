@@ -24,7 +24,7 @@ The file is part of the certified build and of every scan. A later commit may pr
 the statement; until then it remains a statement only.
 
 What *is* proved (audited, in `ClassicalNS.lean`):
-`analyticBridge_of_formB : HypothesisB C⋆ → BKMCriterion → AnalyticBridgeStatement`
+`analyticBridge_of_formB : FormBPerSolution → BKMCriterionSmooth → AnalyticBridgeStatement`
 (conditional), and the non-vacuity lemmas.
 -/
 

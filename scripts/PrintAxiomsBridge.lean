@@ -51,7 +51,9 @@ Machine-checked Lean 4 module.
 #print axioms ClassicalNS.clayB_iff_gradIntegral_finite
 #print axioms ClassicalNS.formB_implies_clayB
 #print axioms ClassicalNS.analyticBridge_of_formB
-#print axioms ClassicalNS.analyticBridge_of_formB_forall
+#print axioms ClassicalNS.analyticBridge_iff_formB
+#print axioms ClassicalNS.formB_of_analyticBridge
+#print axioms ClassicalNS.Hs_bound_of_gradIntegral_le
 #print axioms ClassicalNS.gronwall_differential_bound
 #print axioms ClassicalNS.integral_gronwall_bound
 #print axioms ClassicalNS.formB_Hs_bound

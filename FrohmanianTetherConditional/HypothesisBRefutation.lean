@@ -171,7 +171,9 @@ theorem shear_isClassicalNS (A ν : ℝ) :
   div_free := fun t _ x => divergence_shearU A ν t x
   momentum := by
     intro t _ x j
-    have hp : pd j (shearP t) x = 0 := by simp [pd, shearP]
+    have hp : pd j (shearP t) x = 0 := by
+      show fderiv ℝ (fun _ : E3 => (0 : ℝ)) x (e j) = 0
+      simp
     rw [laplacian_shearU, advection_shearU, hp]
     have h := (hasDerivAt_shearAmp A ν t).mul_const (Real.sin (2 * π * x 1) * (e 0) j)
     convert h using 1
@@ -208,6 +210,8 @@ lemma gradLinf_shearU_ge (A ν t : ℝ) :
   have hval : ‖fderiv ℝ (shearU A ν t) 0 (e 1)‖ = 2 * π * |shearAmp A ν t| := by
     rw [hF.fderiv]
     simp [e_apply, norm_e, abs_mul, abs_of_pos Real.pi_pos]
+    rw [norm_smul, norm_e, mul_one, Real.norm_eq_abs, abs_mul, abs_mul,
+      abs_of_pos Real.pi_pos, abs_two]
     ring
   have hle : ‖fderiv ℝ (shearU A ν t) 0 (e 1)‖ ≤ ‖fderiv ℝ (shearU A ν t) 0‖ := by
     simpa [norm_e] using (fderiv ℝ (shearU A ν t) 0).le_opNorm (e 1)

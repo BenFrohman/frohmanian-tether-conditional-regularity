@@ -20,6 +20,7 @@ name = "FrohmanianTetherConditional"
 name = "AnalyticBridgeAudit"
 roots = [
   "FrohmanianTetherConditional.AnalyticBridgeRefutation",
+  "FrohmanianTetherConditional.BKMCriterionRefutation",
   "FrohmanianTetherConditional.ClassicalNS",
   "FrohmanianTetherConditional.ClassicalNSOpenTarget",
   "FrohmanianTetherConditional.FrohmanianTripleArchitectureLifespan",
